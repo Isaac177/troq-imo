@@ -1,0 +1,26 @@
+{
+  "name": "@mungini/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mungini/i18n": "workspace:*",
+    "@mungini/ui-native": "workspace:*",
+    "expo": "~57.0.33",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@types/react": "~19.2.18",
+    "babel-preset-expo": "~57.0.16",
+    "typescript": "~5.9.3"
+  }
+}

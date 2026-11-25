@@ -1,0 +1,190 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@source "./";
+@source "../../ui-web/src";
+
+@theme inline {
+  --font-sans: var(--font-sans-stack);
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-hover: hsl(var(--primary-hover));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-scrim: hsl(var(--scrim));
+  --color-success: hsl(var(--success));
+  --color-warning: hsl(var(--warning));
+  --color-info: hsl(var(--info));
+  --color-tone-identity: hsl(var(--tone-identity));
+  --color-tone-place: hsl(var(--tone-place));
+  --color-tone-count: hsl(var(--tone-count));
+  --color-tone-people: hsl(var(--tone-people));
+  --color-tone-attention: hsl(var(--tone-attention));
+  --color-tone-problem: hsl(var(--tone-problem));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+  --color-chart-6: hsl(var(--chart-6));
+  --color-chart-7: hsl(var(--chart-7));
+  --color-chart-8: hsl(var(--chart-8));
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-card: var(--radius-card-value);
+  --radius-chip: var(--radius-chip-value);
+
+  --shadow-elevated: var(--shadow-elevated-value);
+  --shadow-segment: var(--shadow-segment-value);
+}
+
+@theme {
+  --text-micro: 0.625rem;
+  --text-micro--line-height: 0.875rem;
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1rem;
+  --text-body: 0.75rem;
+  --text-body--line-height: 1.125rem;
+  --text-title: 0.9375rem;
+  --text-title--line-height: 1.375rem;
+
+  --animate-fade-in: mg-fade-in 200ms ease-in-out both;
+  --animate-fade-out: mg-fade-out 200ms ease-in-out both;
+  --animate-dialog-in: mg-dialog-in 200ms ease-in-out both;
+  --animate-dialog-out: mg-dialog-out 150ms ease-in-out both;
+  --animate-pop-in: mg-pop-in 150ms ease-in-out both;
+  --animate-pop-out: mg-pop-out 120ms ease-in-out both;
+  --animate-drawer-in: mg-drawer-in 250ms ease-in-out both;
+  --animate-drawer-out: mg-drawer-out 200ms ease-in-out both;
+  --animate-sheet-in: mg-sheet-in 300ms ease-in-out both;
+  --animate-sheet-out: mg-sheet-out 300ms ease-in-out both;
+  --animate-toast-in: mg-toast-in 200ms ease-in-out both;
+
+  @keyframes mg-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes mg-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes mg-dialog-in {
+    from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  @keyframes mg-dialog-out {
+    from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    to { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+  }
+
+  @keyframes mg-pop-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes mg-pop-out {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.96); }
+  }
+
+  @keyframes mg-drawer-in {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+
+  @keyframes mg-drawer-out {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+  }
+
+  @keyframes mg-sheet-in {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes mg-sheet-out {
+    from { transform: translateY(0); }
+    to { transform: translateY(100%); }
+  }
+
+  @keyframes mg-toast-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --text-label: 0.75rem;
+    --text-label--line-height: 1rem;
+    --text-body: 0.8125rem;
+    --text-body--line-height: 1.25rem;
+    --text-title: 1rem;
+    --text-title--line-height: 1.5rem;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html,
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans-stack);
+  }
+
+  body {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

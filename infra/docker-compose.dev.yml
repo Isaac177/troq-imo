@@ -1,0 +1,123 @@
+name: mungini-dev
+
+services:
+
+  db:
+    image: postgis/postgis:17-3.5
+    platform: linux/amd64
+    container_name: mungini-db-dev
+    restart: unless-stopped
+    env_file: .env.dev
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-mungini_dev}
+    ports:
+      - "6200:5432"
+    volumes:
+      - mungini_db_data:/var/lib/postgresql/data
+      - ./postgres/init-extensions.sql:/docker-entrypoint-initdb.d/init-extensions.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mungini-network-dev
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: mungini-redis-dev
+    restart: unless-stopped
+    env_file: .env.dev
+    command:
+      - sh
+      - -c
+      - |
+        redis-server \
+          --requirepass "$$REDIS_PASSWORD" \
+          --maxmemory 128mb \
+          --maxmemory-policy allkeys-lru
+    ports:
+      - "6380:6379"
+    volumes:
+      - mungini_redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mungini-network-dev
+
+  minio:
+    image: cgr.dev/chainguard/minio:latest-dev
+    container_name: mungini-minio-dev
+    restart: unless-stopped
+    user: "0:0"
+    env_file: .env.dev
+    command: ["server", "/data", "--console-address", ":9001"]
+    ports:
+      - "9100:9000"
+      - "9101:9001"
+    volumes:
+      - mungini_minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "mc alias set h http://localhost:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD >/dev/null && mc ready h"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - mungini-network-dev
+
+  minio-init:
+    image: cgr.dev/chainguard/minio:latest-dev
+    container_name: mungini-minio-init-dev
+    env_file: .env.dev
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD; do
+        sleep 2;
+      done;
+      mc mb --ignore-existing local/$$STORAGE_BUCKET_PUBLIC &&
+      mc anonymous set download local/$$STORAGE_BUCKET_PUBLIC &&
+      mc mb --ignore-existing local/$$STORAGE_BUCKET_PRIVATE
+      "
+    networks:
+      - mungini-network-dev
+
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    image: mungini-api:dev
+    container_name: mungini-api-dev
+    restart: unless-stopped
+    env_file: .env.dev
+    environment:
+      - API_PORT=8080
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-mungini_dev}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - STORAGE_S3_ENDPOINT=http://minio:9000
+    ports:
+      - "${MUNGINI_API_HOST_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    networks:
+      - mungini-network-dev
+
+volumes:
+  mungini_db_data:
+  mungini_redis_data:
+  mungini_minio_data:
+
+networks:
+  mungini-network-dev:
+    name: mungini-network-dev

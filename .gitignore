@@ -1,0 +1,16 @@
+node_modules/
+target/
+dist/
+.next/
+.expo/
+build/
+coverage/
+backups/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+!.env.prod.example
+*.tsbuildinfo
+next-env.d.ts

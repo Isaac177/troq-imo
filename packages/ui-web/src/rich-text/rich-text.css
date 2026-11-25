@@ -1,0 +1,54 @@
+.mungini-rich-text {
+  --ck-color-base-background: hsl(var(--background));
+  --ck-color-base-foreground: hsl(var(--muted));
+  --ck-color-base-border: hsl(var(--border));
+  --ck-color-base-text: hsl(var(--foreground));
+  --ck-color-base-active: hsl(var(--primary));
+  --ck-color-base-active-focus: hsl(var(--primary));
+  --ck-color-focus-border: hsl(var(--ring));
+  --ck-color-text: hsl(var(--foreground));
+  --ck-color-shadow-drop: hsl(0 0% 0% / 0.12);
+  --ck-color-toolbar-background: hsl(var(--muted));
+  --ck-color-toolbar-border: hsl(var(--border));
+  --ck-color-button-default-hover-background: hsl(var(--accent));
+  --ck-color-button-default-active-background: hsl(var(--accent));
+  --ck-color-button-on-background: hsl(var(--accent));
+  --ck-color-button-on-hover-background: hsl(var(--accent));
+  --ck-color-button-on-color: hsl(var(--tone-identity));
+  --ck-color-button-action-background: hsl(var(--primary));
+  --ck-color-panel-background: hsl(var(--popover));
+  --ck-color-panel-border: hsl(var(--border));
+  --ck-color-dropdown-panel-background: hsl(var(--popover));
+  --ck-color-dropdown-panel-border: hsl(var(--border));
+  --ck-color-list-background: hsl(var(--popover));
+  --ck-color-list-button-hover-background: hsl(var(--accent));
+  --ck-color-list-button-on-background: hsl(var(--primary));
+  --ck-color-input-background: hsl(var(--background));
+  --ck-color-input-border: hsl(var(--input));
+  --ck-color-input-text: hsl(var(--foreground));
+  --ck-border-radius: var(--radius);
+  --ck-font-face: var(--font-sans-stack);
+  --ck-font-size-base: var(--text-body);
+  overflow: hidden;
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius);
+}
+
+.mungini-rich-text .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+  min-height: 160px;
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  color: hsl(var(--foreground));
+}
+
+.mungini-rich-text .ck.ck-editor__main > .ck-editor__editable {
+  background: hsl(var(--background));
+}
+
+.mungini-rich-text .ck.ck-toolbar {
+  border-width: 0 0 1px 0;
+}
+
+.mungini-rich-text .ck.ck-editor__editable_inline {
+  border: 0;
+}

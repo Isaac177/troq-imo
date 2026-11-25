@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Mungini",
+    "slug": "mungini",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mungini.app"
+    },
+    "android": {
+      "package": "com.mungini.app",
+      "edgeToEdgeEnabled": true
+    }
+  }
+}

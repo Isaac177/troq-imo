@@ -1,0 +1,11 @@
+.mungini-shell-header { align-items: center; border-bottom: 1px solid hsl(var(--border)); display: flex; height: 48px; justify-content: space-between; padding: 0 16px; }
+.mungini-shell-header h1 { font-size: 15px; font-weight: 600; margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mungini-shell-actions { align-items: center; display: flex; flex-shrink: 0; gap: 8px; }
+.mungini-breadcrumb { font-size: 12px; }
+.mungini-breadcrumb ol { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.mungini-breadcrumb li { align-items: center; display: flex; gap: 8px; }
+.mungini-breadcrumb li + li::before { color: hsl(var(--muted-foreground)); content: '/'; }
+.mungini-breadcrumb a { color: hsl(var(--muted-foreground)); text-decoration: none; transition: color 200ms ease-in-out; }
+.mungini-breadcrumb a:hover { color: hsl(var(--primary)); }
+.mungini-breadcrumb [aria-current='page'] { color: hsl(var(--foreground)); font-weight: 500; }
+@media (min-width: 768px) { .mungini-shell-header { height: 52px; padding: 0 32px; } .mungini-breadcrumb { font-size: 13px; } }

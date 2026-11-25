@@ -1,0 +1,12 @@
+**/target
+**/node_modules
+**/.git
+.git
+apps
+packages
+docs
+backups
+**/.env
+**/.env.*
+**/*.log
+**/.DS_Store

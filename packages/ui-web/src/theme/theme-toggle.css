@@ -1,0 +1,21 @@
+.mungini-theme-toggle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
+  width: 36px;
+}
+.mungini-theme-toggle:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+}
+.mungini-theme-toggle:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}

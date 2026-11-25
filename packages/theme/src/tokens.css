@@ -1,0 +1,99 @@
+:root {
+  --font-sans-stack: "Onest", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --background: 0 0% 100%;
+  --foreground: 215 25% 27%;
+  --card: 0 0% 100%;
+  --card-foreground: 215 25% 27%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 215 25% 27%;
+  --primary: 160 84% 22%;
+  --primary-hover: 160 84% 18%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 217 14% 96%;
+  --secondary-foreground: 215 25% 27%;
+  --muted: 217 14% 96%;
+  --muted-foreground: 215 14% 42%;
+  --accent: 160 30% 94%;
+  --accent-foreground: 215 25% 27%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 13% 91%;
+  --input: 220 13% 88%;
+  --ring: 160 84% 22%;
+  --scrim: 215 25% 10%;
+
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --info: 199 89% 48%;
+
+  --tone-identity: 160 84% 22%;
+  --tone-place: 200 98% 39%;
+  --tone-count: 262 83% 58%;
+  --tone-people: 175 84% 32%;
+  --tone-attention: 32 95% 44%;
+  --tone-problem: 0 72% 51%;
+
+  --chart-1: 160 84% 30%;
+  --chart-2: 217 91% 50%;
+  --chart-3: 38 92% 45%;
+  --chart-4: 0 84% 55%;
+  --chart-5: 271 70% 50%;
+  --chart-6: 215 14% 46%;
+  --chart-7: 187 72% 36%;
+  --chart-8: 330 75% 50%;
+
+  --radius: 0.5rem;
+  --radius-card-value: 14px;
+  --radius-chip-value: 6px;
+
+  --shadow-elevated-value: 0 0 0 1px hsl(0 0% 0% / 0.04), 0 2px 6px hsl(0 0% 0% / 0.06), 0 4px 8px hsl(0 0% 0% / 0.12);
+  --shadow-segment-value: 0 1px 2px hsl(0 0% 0% / 0.08);
+}
+
+html.dark {
+  --background: 0 0% 9%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 160 75% 28%;
+  --primary-hover: 160 75% 34%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 68%;
+  --accent: 160 30% 16%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 90% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 20%;
+  --input: 0 0% 26%;
+  --ring: 160 60% 45%;
+  --scrim: 0 0% 0%;
+
+  --success: 142 76% 46%;
+  --warning: 43 96% 56%;
+  --info: 199 89% 60%;
+
+  --tone-identity: 160 60% 62%;
+  --tone-place: 199 89% 60%;
+  --tone-count: 255 92% 76%;
+  --tone-people: 172 66% 50%;
+  --tone-attention: 43 96% 56%;
+  --tone-problem: 0 90% 60%;
+
+  --chart-1: 160 70% 45%;
+  --chart-2: 217 91% 65%;
+  --chart-3: 38 92% 58%;
+  --chart-4: 0 90% 65%;
+  --chart-5: 271 80% 70%;
+  --chart-6: 215 16% 62%;
+  --chart-7: 187 72% 50%;
+  --chart-8: 330 85% 68%;
+
+  --shadow-elevated-value: 0 0 0 1px hsl(0 0% 100% / 0.06), 0 4px 12px hsl(0 0% 0% / 0.5);
+  --shadow-segment-value: 0 1px 2px hsl(0 0% 0% / 0.4);
+}

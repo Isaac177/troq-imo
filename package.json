@@ -1,0 +1,19 @@
+{
+  "name": "mungini",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "typecheck": "bun run --filter '*' typecheck"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.18",
+    "@types/react-dom": "~19.2.3",
+    "typescript": "~5.9.3"
+  },
+  "overrides": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "@types/react": "~19.2.18",
+    "@types/react-dom": "~19.2.3"
+  }
+}

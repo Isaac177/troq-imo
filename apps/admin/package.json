@@ -1,0 +1,27 @@
+{
+  "name": "@mungini/admin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5274",
+    "build": "vite build",
+    "preview": "vite preview --port 5274",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit"
+  },
+  "dependencies": {
+    "@mungini/i18n": "workspace:*",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "@mungini/ui-web": "workspace:*",
+    "@mungini/theme": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/react": "~19.2.18",
+    "@types/react-dom": "~19.2.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "~5.9.3",
+    "vite": "^6.4.4"
+  }
+}
