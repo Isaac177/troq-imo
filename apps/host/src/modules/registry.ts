@@ -1,4 +1,4 @@
-import { Building2, ClipboardCheck, LayoutDashboard, Users } from 'lucide-react';
+import { BadgePercent, Building2, CalendarDays, CalendarRange, ClipboardCheck, LayoutDashboard, Settings, Star, Users, Wallet } from 'lucide-react';
 import type { ModuleDefinition } from '@/types/modules/module';
 
 export const moduleRegistry: ModuleDefinition[] = [
@@ -19,6 +19,46 @@ export const moduleRegistry: ModuleDefinition[] = [
     permission: 'properties.read',
   },
   {
+    id: 'reservations',
+    labelKey: 'navReservations',
+    section: 'sectionWorkspace',
+    route: '/reservations',
+    icon: CalendarDays,
+    permission: 'reservations.read',
+  },
+  {
+    id: 'calendar',
+    labelKey: 'navCalendar',
+    section: 'sectionWorkspace',
+    route: '/calendar',
+    icon: CalendarRange,
+    permission: 'reservations.read',
+  },
+  {
+    id: 'credits',
+    labelKey: 'navCredits',
+    section: 'sectionWorkspace',
+    route: '/credits',
+    icon: Wallet,
+    permission: 'billing.read',
+  },
+  {
+    id: 'rates',
+    labelKey: 'navRates',
+    section: 'sectionWorkspace',
+    route: '/rates',
+    icon: BadgePercent,
+    permission: 'properties.read',
+  },
+  {
+    id: 'reviews',
+    labelKey: 'navReviews',
+    section: 'sectionWorkspace',
+    route: '/reviews',
+    icon: Star,
+    permission: 'reviews.write',
+  },
+  {
     id: 'team',
     labelKey: 'navTeam',
     section: 'sectionWorkspace',
@@ -32,5 +72,12 @@ export const moduleRegistry: ModuleDefinition[] = [
     section: 'sectionAccount',
     route: '/onboarding',
     icon: ClipboardCheck,
+  },
+  {
+    id: 'settings',
+    labelKey: 'navSettings',
+    section: 'sectionAccount',
+    route: '/settings',
+    icon: Settings,
   },
 ];

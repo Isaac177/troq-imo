@@ -1,0 +1,30 @@
+export const hostCredits = {
+  title: 'Credits',
+  subtitle: 'Your prepaid balance and the commission taken from each booking.',
+  balance: 'Balance',
+  commissionRate: 'Commission rate',
+  status: 'Account status',
+  enabled: 'Enabled',
+  low: 'Low balance',
+  disabled: 'Disabled',
+  lowThreshold: 'Low balance alert from',
+  ledger: 'Credit history',
+  date: 'Date',
+  type: 'Type',
+  amount: 'Amount',
+  balanceAfter: 'Balance after',
+  detail: 'Detail',
+  empty: 'No credit movement yet.',
+  error: 'Credits could not be loaded.',
+  loading: 'Loading credits...',
+  noHost: 'You do not manage a host in this city yet.',
+  noHostAction: 'Start an application',
+  types: {
+    TOPUP: 'Top-up',
+    COMMISSION: 'Commission',
+    REFUND: 'Refund',
+    ADJUSTMENT: 'Adjustment',
+  },
+};
+
+export type HostCreditsLocale = typeof hostCredits;

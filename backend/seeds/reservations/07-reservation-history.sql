@@ -1,0 +1,18 @@
+INSERT INTO kernel_audit_records (id, city_id, actor_user_id, actor_scope, action, resource_type, resource_id, reason, correlation_id, change_record, created_at)
+VALUES
+    ('seed-audit-goma-amendable-hold', 'GOMA', 'seed-user-goma-invitee', '{}'::jsonb, 'reservation.hold', 'reservation', 'seed-res-goma-amendable', NULL, 'seed-history', '{"to":"REQUESTED"}'::jsonb, '2026-08-01T10:00:00Z'),
+    ('seed-audit-goma-amendable-decide', 'GOMA', 'seed-user-goma-host', '{}'::jsonb, 'reservation.decide', 'reservation', 'seed-res-goma-amendable', 'ACCEPT', 'seed-history', '{"from":"REQUESTED","to":"CONFIRMED"}'::jsonb, '2026-08-01T12:00:00Z'),
+    ('seed-audit-goma-amendable-proposed', 'GOMA', 'seed-user-goma-host', '{}'::jsonb, 'reservation.amendment_proposed', 'reservation', 'seed-res-goma-amendable', NULL, 'seed-history', '{}'::jsonb, '2026-11-20T09:00:00Z'),
+    ('seed-audit-goma-requested-hold', 'GOMA', 'seed-user-goma-invitee', '{}'::jsonb, 'reservation.hold', 'reservation', 'seed-res-goma-requested', NULL, 'seed-history', '{"to":"REQUESTED"}'::jsonb, '2026-11-24T08:00:00Z'),
+    ('seed-audit-goma-confirmed-hold', 'GOMA', 'seed-user-goma-invitee', '{}'::jsonb, 'reservation.hold', 'reservation', 'seed-res-goma-confirmed', NULL, 'seed-history', '{"to":"REQUESTED"}'::jsonb, '2026-11-10T09:15:00Z'),
+    ('seed-audit-goma-confirmed-decide', 'GOMA', 'seed-user-goma-host', '{}'::jsonb, 'reservation.decide', 'reservation', 'seed-res-goma-confirmed', 'ACCEPT', 'seed-history', '{"from":"REQUESTED","to":"CONFIRMED"}'::jsonb, '2026-11-10T11:45:00Z'),
+    ('seed-audit-goma-checkedin-hold', 'GOMA', 'seed-user-goma-invitee', '{}'::jsonb, 'reservation.hold', 'reservation', 'seed-res-goma-checkedin', NULL, 'seed-history', '{"to":"REQUESTED"}'::jsonb, '2026-11-01T09:00:00Z'),
+    ('seed-audit-goma-checkedin-decide', 'GOMA', 'seed-user-goma-host', '{}'::jsonb, 'reservation.decide', 'reservation', 'seed-res-goma-checkedin', 'ACCEPT', 'seed-history', '{"from":"REQUESTED","to":"CONFIRMED"}'::jsonb, '2026-11-01T10:00:00Z'),
+    ('seed-audit-goma-checkedin-arrival', 'GOMA', 'seed-user-goma-host', '{}'::jsonb, 'reservation.check_in', 'reservation', 'seed-res-goma-checkedin', NULL, 'seed-history', '{"from":"CONFIRMED","to":"CHECKED_IN"}'::jsonb, '2026-11-24T15:30:00Z'),
+    ('seed-audit-goma-cancelled-hold', 'GOMA', 'seed-user-goma-invitee', '{}'::jsonb, 'reservation.hold', 'reservation', 'seed-res-goma-cancelled', NULL, 'seed-history', '{"to":"REQUESTED"}'::jsonb, '2026-10-20T09:00:00Z'),
+    ('seed-audit-goma-cancelled-decide', 'GOMA', 'seed-user-goma-host', '{}'::jsonb, 'reservation.decide', 'reservation', 'seed-res-goma-cancelled', 'ACCEPT', 'seed-history', '{"from":"REQUESTED","to":"CONFIRMED"}'::jsonb, '2026-10-20T10:00:00Z'),
+    ('seed-audit-goma-cancelled-guest', 'GOMA', 'seed-user-goma-invitee', '{}'::jsonb, 'reservation.cancelled', 'reservation', 'seed-res-goma-cancelled', 'FREE_CANCELLATION', 'seed-history', '{"from":"CONFIRMED","to":"CANCELLED"}'::jsonb, '2026-10-25T14:00:00Z'),
+    ('seed-audit-goma-noshow-hold', 'GOMA', 'seed-user-goma-invitee', '{}'::jsonb, 'reservation.hold', 'reservation', 'seed-res-goma-noshow', NULL, 'seed-history', '{"to":"REQUESTED"}'::jsonb, '2026-11-05T09:00:00Z'),
+    ('seed-audit-goma-noshow-decide', 'GOMA', 'seed-user-goma-host', '{}'::jsonb, 'reservation.decide', 'reservation', 'seed-res-goma-noshow', 'ACCEPT', 'seed-history', '{"from":"REQUESTED","to":"CONFIRMED"}'::jsonb, '2026-11-05T10:00:00Z'),
+    ('seed-audit-goma-noshow-marked', 'GOMA', 'seed-user-goma-host', '{}'::jsonb, 'reservation.no_show', 'reservation', 'seed-res-goma-noshow', NULL, 'seed-history', '{"from":"CONFIRMED","to":"NO_SHOW"}'::jsonb, '2026-11-22T20:00:00Z')
+ON CONFLICT (id) DO NOTHING;

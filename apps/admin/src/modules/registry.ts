@@ -1,10 +1,12 @@
-import { Building2, ClipboardList, LayoutDashboard, Users, CalendarDays } from 'lucide-react';
+import { Building2, ClipboardList, FolderOpen, LayoutDashboard, Star, Users, CalendarDays } from 'lucide-react';
 import DashboardView from '@/views/dashboard/DashboardView';
 import ApplicationsView from '@/views/applications/ApplicationsView';
 import HostsView from '@/views/hosts/HostsView';
 import GuestsView from '@/views/guests/GuestsView';
 import ReservationsView from '@/views/reservations/ReservationsView';
 import CalendarView from '@/views/calendar/CalendarView';
+import ReviewsView from '@/views/reviews/ReviewsView';
+import CasesView from '@/views/cases/CasesView';
 import type { ModuleDefinition } from '@/types/modules/module';
 
 export const moduleRegistry: ModuleDefinition[] = [
@@ -52,6 +54,16 @@ export const moduleRegistry: ModuleDefinition[] = [
   {
     id: 'reservations', component: ReservationsView, labelKey: 'navReservations',
     section: 'sectionOperations', route: '/reservations', icon: CalendarDays,
+    permission: 'properties.moderate',
+  },
+  {
+    id: 'reviews', component: ReviewsView, labelKey: 'navReviews',
+    section: 'sectionOperations', route: '/reviews', icon: Star,
+    permission: 'reviews.moderate',
+  },
+  {
+    id: 'cases', component: CasesView, labelKey: 'navCases',
+    section: 'sectionOperations', route: '/cases', icon: FolderOpen,
     permission: 'properties.moderate',
   },
 ];

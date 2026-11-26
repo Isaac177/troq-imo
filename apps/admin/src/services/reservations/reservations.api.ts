@@ -9,3 +9,5 @@ export const getReservation = (client: SessionClient, reservationId: string, pag
   client.api.GET('/api/admin/reservations/{reservationId}', {
     params: { path: { reservationId }, query: { page, pageSize: 10 } },
   });
+
+export const listCities = (client: SessionClient) => client.api.GET('/api/public/cities');

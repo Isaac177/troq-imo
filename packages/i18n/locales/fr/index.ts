@@ -1,9 +1,17 @@
 export { common } from './common';
 export { auth } from './auth';
 export { host } from './host';
+export { hostReservations } from './hostReservations';
+export { hostCalendar } from './hostCalendar';
+export { hostCredits } from './hostCredits';
+export { hostRates } from './hostRates';
+export { hostSettings } from './hostSettings';
+export { hostReviews } from './hostReviews';
 export { admin } from './admin';
 export { guest } from './guest';
 export { ui } from './ui';
 export { trips } from './trips';
 export { adminReservations } from './adminReservations';
+export { adminReviews } from './adminReviews';
+export { adminCases } from './adminCases';
 export { booking } from './booking';

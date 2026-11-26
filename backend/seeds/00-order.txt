@@ -33,6 +33,7 @@ reservations/03-cases-claims-goma.sql
 reservations/04-cases-tasks-kin.sql
 reservations/05-tasks-goma.sql
 reservations/06-guest-trips.sql
+reservations/07-reservation-history.sql
 inventory/05-assignments-feeds.sql
 reviews/01-reviews-goma.sql
 reviews/02-reviews-kin.sql

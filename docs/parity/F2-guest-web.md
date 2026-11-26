@@ -1,0 +1,68 @@
+# F2 guest web parity: trips and trip actions
+
+Status: open. Written 26/11/2026 for the guest trip actions slice. This ledger is not closed and parity is not complete.
+
+Legacy reference: `troq-front/troqzone-web/src/components/user/stays` and `src/shared/i18n/locales/{en,fr}/stays.json` on the TROQ repository, read-only.
+
+Mungini locations: `apps/web/src/{app,components,hooks,services,types}/trips`, `packages/i18n/locales/{en,fr}/trips.ts`.
+
+## Screens
+
+| # | Legacy feature | Legacy location | Mungini location | Status | Notes |
+|---|---|---|---|---|---|
+| 1 | Guest stays list | `components/user/stays/StaysTab.tsx` | `components/trips/TripsView.tsx`, `hooks/trips/useTrips.ts` | done | Paginated list with city and status filter, loading, error and empty text. |
+| 2 | Status tabs with counts (all, pending, upcoming, active, past, cancelled) | `hooks/useMyStays.ts`, `StaysTab.tsx` | `components/trips/TripsView.tsx` | open | Mungini has a status selector and no server-computed counts. |
+| 3 | Total count label | `StaysTab.tsx` | none | open | Pagination shows the page number only. |
+| 4 | Reference highlight from `?reference=` | `hooks/useMyStays.ts` | none | open | |
+| 5 | Explore stays call to action on the empty list | `StaysTab.tsx` | none | open | |
+| 6 | Stay row: number, photo, property, unit, dates, nights, guests, reference, total, status dot and label | `MyStayRow.tsx` | `TripsView.tsx` | open | Mungini shows property, unit, dates, total and state label, without number, photo, nights, guests or reference. |
+| 7 | Approval deadline on a requested row | `MyStayRow.tsx`, `hooks/useMyStays.ts` | none | open | |
+| 8 | Trip detail sheet with photos, status, facts and pricing | `MyStayDetailSheet.tsx`, `hooks/useMyStayDetail.ts` | `components/trips/TripDetailView.tsx`, `hooks/trips/useTripDetail.ts` | partial | Reference, status, dates, nights, guest and contact, occupancy, total, deadlines and one cover image are shown. State explanation text and a full photo gallery remain open. |
+| 9 | State information text per reservation state | `hooks/useMyStayDetail.ts` | none | open | |
+| 10 | Night price lines and discount | `hooks/useMyStayDetail.ts` | `TripDetailView.tsx` | partial | Night lines and total are shown. The guest detail response carries no discount field, so a discount line is open until the contract changes. |
+| 11 | Guest name and contact details on the detail | `useMyStayDetail.ts` | `useTripDetail.ts` | done | Name, email and phone with mail and phone links. |
+| 12 | Nights count, approval deadline and hold expiry on the detail | `useMyStayDetail.ts` | `useTripDetail.ts` | done | Deadlines use the city time zone from `/api/public/cities`. |
+| 13 | Unit photos on the detail | `useMyStayDetail.ts` | `TripDetailView.tsx` | partial | The unit cover image is shown; a gallery remains open. |
+| 14 | View listing link | `MyStayDetailSheet.tsx` | `TripDetailView.tsx` | done | Links to `/stays/{propertyId}`. |
+
+## Trip actions
+
+| # | Legacy feature | Legacy location | Mungini location | Status | Notes |
+|---|---|---|---|---|---|
+| 15 | Cancel a confirmed trip | `MyStayCancel.tsx`, `hooks/useMyStayCancel.ts` | `components/trips/TripActions.tsx`, `hooks/trips/useTripActions.ts`, `services/trips/trips.api.ts` | done | Shown only for `CONFIRMED`, behind a dialog and a confirm button. |
+| 16 | Cancellation preview: total, refund, penalty, deadline | `hooks/useMyStayCancel.ts` | `hooks/trips/useTripActions.ts` | done | Loaded from `GET /api/guest/reservations/{reservationId}/cancellation`. Amounts in CDF through the shared formatter. Deadline as dd/mm/yyyy HH:mm in the city time zone from `/api/public/cities`. |
+| 17 | Penalty rendered as "no charge" when zero | `MyStayCancel.tsx` | `TripActions.tsx` | done | |
+| 18 | Cancel with expected version | `hooks/useMyStayCancel.ts` | `services/trips/trips.api.ts` | done | Sends `expectedVersion` and a generated idempotency key. Refreshes the trip and shows the charge due at the property. |
+| 19 | Withdraw a requested trip | `MyStayCancel.tsx`, `useMyStayCancel.ts` | `TripActions.tsx`, `useTripActions.ts` | done | Shown for `REQUESTED` and `PENDING_PAYMENT`, behind a confirm dialog, sends `expectedVersion`. |
+| 20 | Withdraw a `PENDING_PAYMENT` trip | `useMyStayCancel.ts` | `TripActions.tsx`, `useTripActions.ts` | done | The withdraw action is offered for both `REQUESTED` and `PENDING_PAYMENT`. |
+| 21 | Cancel hidden once the stay has started | `useMyStayCancel.ts` | `useTripActions.ts`, `TripDetailView.tsx` | done | Cancel is hidden and blocked when the property-city date is on or after the check-in date, and the detail explains why. |
+| 22 | Cancelling and withdraw success text | `MyStayCancel.tsx` | `TripActions.tsx` | done | Success notice with charge due at the property and the refund when non-zero. |
+| 23 | Action error text | `useMyStayCancel.ts` | `useTripActions.ts` | done | Maps `CANNOT_CANCEL`, `NO_CANCELLATION_DEADLINE`, `NO_CANCELLATION_POLICY`, `RESERVATION_VERSION_CONFLICT`, `REQUEST_IN_PROGRESS`, `CANNOT_WITHDRAW`, `APPROVAL_WINDOW_CLOSED` and a generic fallback to translated messages. |
+| 24 | Close the dialog after a completed action | `MyStayCancel.tsx` | `TripActions.tsx` | done | Both dialogs close on success; the success notice stays on the page. |
+
+## Endpoints used
+
+| # | Endpoint | Legacy source | Mungini location | Status |
+|---|---|---|---|---|
+| 25 | `GET /api/guest/reservations/mine` | `lib/stays/stayClient.ts` | `services/trips/trips.api.ts` | done |
+| 26 | `GET /api/guest/reservations/{reservationId}` | `lib/stays/stayClient.ts` | `services/trips/trips.api.ts` | done |
+| 27 | `GET /api/guest/reservations/{reservationId}/cancellation` | `lib/stays/stayClient.ts` | `services/trips/trips.api.ts` | done |
+| 28 | `POST /api/guest/reservations/{reservationId}/cancel` | `lib/stays/stayClient.ts` | `services/trips/trips.api.ts` | done |
+| 29 | `POST /api/guest/reservations/{reservationId}/withdraw` | `lib/stays/stayClient.ts` | `services/trips/trips.api.ts` | done |
+
+## States, seeds and translations
+
+| # | Legacy item | Legacy location | Mungini location | Status | Notes |
+|---|---|---|---|---|---|
+| 30 | State labels for requested, pending payment, confirmed, checked in, checked out, no show, completed, cancelled, expired, declined, held | `stays.json` `stays.mine.state` | `packages/i18n/locales/{en,fr}/trips.ts` | done | |
+| 31 | Cancellation, withdraw and error strings in English and French | `stays.json` `stays.mine.booking` | `packages/i18n/locales/{en,fr}/trips.ts` | done | French satisfies the English type. |
+| 32 | Demo trips for every state | `stay-service/seeds` | `backend/seeds/reservations/01-reservations-goma.sql`, `06-guest-trips.sql` | done | Existing seeds cover `CONFIRMED`, `REQUESTED`, `PENDING_PAYMENT`, checked in, checked out, cancelled, declined, expired and no show for the seeded guest. |
+| 33 | Demo cancelled trip with a charge due at the property | legacy seeds | none | open | No seeded confirmed trip has a non-zero penalty, so the charged cancellation path has no demo data. Seeds are outside this slice. |
+| 34 | Demo trip with an approved cancellation on a past deadline | legacy seeds | none | open | The seeded confirmed trip is still inside its free window. |
+| 35 | Deadline formatting in the city time zone | `useMyStays.ts`, `useMyStayDetail.ts` | `useTripActions.ts` | done | Time zone read from `CityView.timezone` returned by `/api/public/cities`, not a hardcoded map. |
+
+## Verification
+
+- `bunx tsc --noEmit` in `apps/web`: passed.
+- `bunx tsc --noEmit` in `packages/i18n`: passed.
+- Runtime, seed load, live API calls and 375px checks in English and French: not run.

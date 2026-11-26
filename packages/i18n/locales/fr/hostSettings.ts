@@ -1,0 +1,30 @@
+export const hostSettings = {
+  title: 'Paramètres',
+  subtitle: 'Votre compte et les notifications que vous recevez.',
+  account: 'Compte',
+  name: 'Nom',
+  email: 'E-mail',
+  phone: 'Téléphone',
+  city: 'Ville de résidence',
+  notifications: 'Notifications',
+  notificationsHint: 'Choisissez comment chaque événement hôte vous parvient.',
+  inApp: 'Dans l’application',
+  push: 'Notification push',
+  eventLabels: {
+    'stay.reservation_held.host': 'Nouvelle demande de réservation',
+    'stay.review_submitted.host': 'Nouvel avis de séjour',
+    'stay.reservation_cancelled.host': 'Réservation annulée',
+    'stay.amendment_proposed.host': 'Changement de dates demandé',
+    'stay.amendment_accepted.host': 'Changement de dates accepté',
+    'stay.amendment_declined.host': 'Changement de dates refusé',
+    'stay.message.host': 'Nouveau message client',
+    'stay.special_request_decided.host': 'Demande particulière traitée',
+    'stay.property_suspended.host': 'Hébergement suspendu',
+  },
+  generalUpdate: 'Actualité hôte',
+  saved: 'Enregistré.',
+  error: 'Les paramètres n’ont pas pu être chargés.',
+  loading: 'Chargement des paramètres...',
+};
+
+export type HostSettingsLocale = typeof hostSettings;

@@ -1,0 +1,30 @@
+export const hostSettings = {
+  title: 'Settings',
+  subtitle: 'Your account and the notifications you receive.',
+  account: 'Account',
+  name: 'Name',
+  email: 'Email',
+  phone: 'Phone',
+  city: 'Home city',
+  notifications: 'Notifications',
+  notificationsHint: 'Choose how each host event reaches you.',
+  inApp: 'In app',
+  push: 'Push',
+  eventLabels: {
+    'stay.reservation_held.host': 'New booking request',
+    'stay.review_submitted.host': 'New stay review',
+    'stay.reservation_cancelled.host': 'Booking cancelled',
+    'stay.amendment_proposed.host': 'Date change requested',
+    'stay.amendment_accepted.host': 'Date change accepted',
+    'stay.amendment_declined.host': 'Date change declined',
+    'stay.message.host': 'New guest message',
+    'stay.special_request_decided.host': 'Special request answered',
+    'stay.property_suspended.host': 'Property suspended',
+  },
+  generalUpdate: 'Host update',
+  saved: 'Saved.',
+  error: 'Settings could not be loaded.',
+  loading: 'Loading settings...',
+};
+
+export type HostSettingsLocale = typeof hostSettings;

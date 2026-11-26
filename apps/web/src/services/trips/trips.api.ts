@@ -19,3 +19,27 @@ export const getTrip = async (client: SessionClient, reservationId: string) => {
   if (!result.data) throw new Error('TRIP_LOAD_FAILED');
   return result.data.data;
 };
+
+export const getCancellationPreview = async (client: SessionClient, reservationId: string) => {
+  const result = await client.api.GET('/api/guest/reservations/{reservationId}/cancellation', { params: { path: { reservationId } } });
+  if (!result.data) throw new Error(result.error?.error.code ?? 'CANCELLATION_PREVIEW_FAILED');
+  return result.data.data;
+};
+
+export const cancelTrip = async (client: SessionClient, reservationId: string, expectedVersion: number, idempotencyKey: string) => {
+  const result = await client.api.POST('/api/guest/reservations/{reservationId}/cancel', {
+    params: { path: { reservationId } },
+    body: { expectedVersion, idempotencyKey },
+  });
+  if (!result.data) throw new Error(result.error?.error.code ?? 'TRIP_CANCEL_FAILED');
+  return result.data.data;
+};
+
+export const withdrawTrip = async (client: SessionClient, reservationId: string, expectedVersion: number) => {
+  const result = await client.api.POST('/api/guest/reservations/{reservationId}/withdraw', {
+    params: { path: { reservationId } },
+    body: { expectedVersion },
+  });
+  if (!result.data) throw new Error(result.error?.error.code ?? 'TRIP_WITHDRAW_FAILED');
+  return result.data.data;
+};

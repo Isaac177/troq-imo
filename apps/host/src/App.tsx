@@ -6,6 +6,12 @@ import RequireSession from '@/components/layout/RequireSession';
 import LoginView from '@/views/auth/LoginView';
 import DashboardView from '@/views/dashboard/DashboardView';
 import PropertiesView from '@/views/properties/PropertiesView';
+import ReservationsView from '@/views/reservations/ReservationsView';
+import CalendarView from '@/views/calendar/CalendarView';
+import CreditsView from '@/views/credits/CreditsView';
+import RatesView from '@/views/rates/RatesView';
+import ReviewsView from '@/views/reviews/ReviewsView';
+import SettingsView from '@/views/settings/SettingsView';
 import TeamView from '@/views/team/TeamView';
 import OnboardingView from '@/views/onboarding/OnboardingView';
 import { sessionClient } from '@/services/session/sessionClient';
@@ -21,6 +27,12 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route index element={<DashboardView />} />
               <Route path="properties" element={<PropertiesView />} />
+              <Route path="reservations" element={<ReservationsView />} />
+              <Route path="calendar" element={<CalendarView />} />
+              <Route path="credits" element={<CreditsView />} />
+              <Route path="rates" element={<RatesView />} />
+              <Route path="reviews" element={<ReviewsView />} />
+              <Route path="settings" element={<SettingsView />} />
               <Route path="team" element={<TeamView />} />
               <Route path="onboarding" element={<OnboardingView />} />
             </Route>

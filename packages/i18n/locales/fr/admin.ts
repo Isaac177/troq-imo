@@ -45,6 +45,7 @@ export const admin = {
   navGuests: 'Clients',
   navReservations: 'R\u00e9servations',
   navReviews: 'Avis',
+  navCases: 'Dossiers',
   sectionPlatform: 'Plateforme',
   sectionOperations: 'Op\u00e9rations',
   dashboardTitle: 'Tableau de bord',

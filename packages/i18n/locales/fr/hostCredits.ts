@@ -1,0 +1,30 @@
+export const hostCredits = {
+  title: 'Crédits',
+  subtitle: 'Votre solde prépayé et la commission prélevée sur chaque réservation.',
+  balance: 'Solde',
+  commissionRate: 'Taux de commission',
+  status: 'État du compte',
+  enabled: 'Actif',
+  low: 'Solde faible',
+  disabled: 'Désactivé',
+  lowThreshold: 'Alerte de solde faible à partir de',
+  ledger: 'Historique des crédits',
+  date: 'Date',
+  type: 'Type',
+  amount: 'Montant',
+  balanceAfter: 'Solde après',
+  detail: 'Détail',
+  empty: 'Aucun mouvement de crédit.',
+  error: 'Les crédits n’ont pas pu être chargés.',
+  loading: 'Chargement des crédits...',
+  noHost: 'Vous ne gérez encore aucun hôte dans cette ville.',
+  noHostAction: 'Démarrer une candidature',
+  types: {
+    TOPUP: 'Rechargement',
+    COMMISSION: 'Commission',
+    REFUND: 'Remboursement',
+    ADJUSTMENT: 'Ajustement',
+  },
+};
+
+export type HostCreditsLocale = typeof hostCredits;
