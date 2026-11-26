@@ -11,7 +11,7 @@ Rust is read-checked only. No cargo command has been run.
 | Request and response ID headers in health OpenAPI | `backend/crates/api/src/health.rs` | implemented; owner compile and generated-spec verification open |
 | Request ID response propagation | `backend/crates/api/src/request_id.rs` | implemented; tests written but not run, owner compile and runtime verification open |
 | Shared error schemas | `backend/crates/api` | open |
-| CORS, compression, tracing and rate limiting | `backend/crates/api` | open |
+| CORS, compression, tracing and rate limiting | `backend/crates/api/src/cors.rs` | open: configured CORS wired; owner compile and browser verification, compression, tracing and rate limiting remain |
 | Identity directory | `backend/crates/api/src/directory.rs` | open; B1 replaces the fail-closed directory |
 
 No application features or seeds were added in this foundation slice.

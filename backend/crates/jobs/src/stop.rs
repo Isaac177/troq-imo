@@ -18,6 +18,14 @@ pub async fn pause(stop: &mut Stop, duration: Duration) -> bool {
     }
 }
 
+pub async fn wait(stop: &mut Stop) {
+    while !is_stopped(stop) {
+        if stop.changed().await.is_err() {
+            return;
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

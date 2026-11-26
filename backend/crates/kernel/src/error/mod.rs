@@ -6,6 +6,7 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
 use serde::Serialize;
+use utoipa::ToSchema;
 use serde_json::{json, Value};
 
 pub use codes::ErrorCode;
@@ -125,14 +126,14 @@ impl fmt::Display for Error {
 
 impl std::error::Error for Error {}
 
-#[derive(Serialize)]
-struct ErrorBody {
+#[derive(Serialize, ToSchema)]
+pub struct ErrorBody {
     success: bool,
     error: ErrorDetail,
 }
 
-#[derive(Serialize)]
-struct ErrorDetail {
+#[derive(Serialize, ToSchema)]
+pub struct ErrorDetail {
     code: ErrorCode,
     #[serde(skip_serializing_if = "Option::is_none")]
     params: Option<Value>,

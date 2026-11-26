@@ -21,9 +21,6 @@ async fn apply_subscribers(
     subscribers: &[&dyn TransactionalSubscriber],
 ) -> Result<()> {
     let interested: Vec<_> = subscribers.iter().filter(|subscriber| subscriber.accepts(&event.event_type)).collect();
-    if interested.is_empty() {
-        return Err(Error::internal("no subscriber registered for outbox event"));
-    }
     for subscriber in interested {
         let inserted = sqlx::query(
             "INSERT INTO kernel_inbox (consumer_name, event_id, event_type) VALUES ($1, $2, $3) ON CONFLICT (consumer_name, event_id) DO NOTHING",

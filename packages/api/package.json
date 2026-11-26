@@ -8,13 +8,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mungini/types": "workspace:*"
+    "@mungini/types": "workspace:*",
+    "openapi-fetch": "0.15.0"
   },
   "peerDependencies": {
     "react": ">=19.0.0 <20.0.0"
   },
   "devDependencies": {
     "@types/react": "~19.2.18",
+    "openapi-typescript": "7.10.1",
     "typescript": "~5.9.3"
   }
 }

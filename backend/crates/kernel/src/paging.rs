@@ -1,3 +1,4 @@
+use utoipa::ToSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::error::codes::{PAGE_INVALID, PAGE_SIZE_INVALID};
@@ -43,7 +44,7 @@ impl PageRequest {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Page<T: Serialize> {
     pub items: Vec<T>,

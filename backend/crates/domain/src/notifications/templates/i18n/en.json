@@ -1,0 +1,50 @@
+{
+  "document": {
+    "brand": "{brand}",
+    "page": "Page"
+  },
+  "stayVoucher": {
+    "title": "Booking voucher",
+    "reference": "Booking reference",
+    "guest": "Guest",
+    "property": "Property",
+    "address": "Address",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "total": "Total paid",
+    "footer": "Present this voucher at check-in. Check-in and check-out times are set by the property.",
+    "subject": "Your booking voucher {{reference}}",
+    "body": "Your booking is confirmed. Your voucher is attached to this email.",
+    "missing": "N/A"
+  },
+  "stayCancellation": {
+    "title": "Cancellation confirmation",
+    "reference": "Booking reference",
+    "guest": "Guest",
+    "property": "Property",
+    "address": "Address",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "charge": "Amount due at the property",
+    "footer": "This confirmation records the cancellation of your booking. Any amount due is payable at the property under its cancellation policy.",
+    "subject": "Cancellation of your booking {{reference}}",
+    "body": "Your booking has been cancelled. The confirmation is attached to this email.",
+    "missing": "N/A"
+  },
+  "stayDamageClaim": {
+    "title": "Damage claim notice",
+    "reference": "Booking reference",
+    "claimNumber": "Claim reference",
+    "guest": "Guest",
+    "property": "Property",
+    "address": "Address",
+    "checkOut": "Check-out",
+    "disputeDeadline": "Dispute deadline",
+    "reason": "Reason for the claim",
+    "amount": "Amount claimed (payable at the property)",
+    "footer": "You may dispute this claim before the dispute deadline by replying through your booking messages. The amount is payable at the property, not through {brand}.",
+    "subject": "Damage claim notice for booking {{reference}}",
+    "body": "A damage claim has been raised for your recent stay. The notice is attached to this email.",
+    "missing": "N/A"
+  }
+}

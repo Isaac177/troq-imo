@@ -82,11 +82,15 @@ async fn concurrent_workers_deliver_once(pool: PgPool) {
 }
 
 #[sqlx::test(migrator = "MIGRATOR")]
-async fn unknown_event_is_scheduled_for_retry(pool: PgPool) {
+async fn event_without_an_accepting_subscriber_is_marked_delivered(pool: PgPool) {
     prepare(&pool).await;
-    assert!(deliver_one(&pool, &[]).await.is_err());
+    assert!(deliver_one(&pool, &[]).await.unwrap());
     let state: String = sqlx::query_scalar("SELECT state FROM kernel_outbox WHERE id = 'seed-event'")
         .fetch_one(&pool).await.unwrap();
-    assert_eq!(state, "FAILED");
+    assert_eq!(state, "PUBLISHED");
+    let attempts: i32 = sqlx::query_scalar("SELECT attempts FROM kernel_outbox WHERE id = 'seed-event'")
+        .fetch_one(&pool).await.unwrap();
+    assert_eq!(attempts, 0);
     assert_eq!(count(&pool, "kernel_inbox").await, 0);
+    assert!(!deliver_one(&pool, &[]).await.unwrap());
 }

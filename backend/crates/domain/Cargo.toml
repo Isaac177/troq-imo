@@ -5,11 +5,24 @@ edition.workspace = true
 
 [dependencies]
 kernel = { path = "../kernel" }
-utoipa = "5"
+utoipa = { version = "5", features = ["chrono"] }
 futures = "0.3"
-sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres", "chrono"] }
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres", "chrono", "macros", "migrate"] }
 serde = { version = "1", features = ["derive"] }
 sha2 = "0.10"
 hex = "0.4"
 serde_json = "1"
 chrono = { version = "0.4", features = ["serde"] }
+axum = "0.7"
+tracing = "0.1"
+tokio = { version = "1", features = ["sync", "time", "rt", "fs"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "http2", "charset"] }
+handlebars = "6"
+lopdf = "0.34"
+chromiumoxide = { version = "0.7", default-features = false, features = ["tokio-runtime"] }
+jsonwebtoken = "9"
+base64 = "0.22"
+anyhow = "1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

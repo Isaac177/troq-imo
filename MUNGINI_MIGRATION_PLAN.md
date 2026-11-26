@@ -53,6 +53,7 @@ Work that depends on an open decision must wait or follow the default and say so
 | D10 | What does the TROQ marketplace show after removal where it promotes Stay (home promo section, nav entries, drawer links)? | Remove them. A link to Mungini can be added later. |
 | D11 | Visual language. TROQ's `DESIGN.md` (green, Onest, status dots, curved panels; the stays pages are its reference) and Troqbound's `DESIGN.md` (lime, Plus Jakarta Sans, tone pills) differ in look and agree on behaviour. Which look does Mungini use, and does it get its own brand colour and typeface? | Keep the TROQ stays language for the ported screens so parity is easy to check, expressed as semantic tokens in one theme file so a Mungini brand change is a one file edit. Comparison in `MUNGINI_UI_DESIGN.md` section 2. |
 | D12 | Locale file format. TROQ uses JSON files in `shared-i18n`. Troqbound uses typed per-feature TypeScript files where `fr` must satisfy the type of `en`, so a missing key is a compile error. | Typed per-feature files in `packages/i18n`, English and French. JSON locales are converted during the port. |
+| D13 | Translatable content storage. Stay keeps `nameEn` and `nameFr` style columns, the agent rules ask for per-locale content tables. | Owner decided on 26/11/2026: keep the Stay columns for the port, convert to per-locale tables in a later migration. |
 
 ## Source of truth for extraction
 

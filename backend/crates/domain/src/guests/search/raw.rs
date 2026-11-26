@@ -1,0 +1,30 @@
+use chrono::NaiveDate;
+
+#[derive(Debug, Default, Clone)]
+pub struct RawSearch {
+    pub property_id: Option<String>,
+    pub search: Option<String>,
+    pub check_in: Option<NaiveDate>,
+    pub check_out: Option<NaiveDate>,
+    pub adults: Option<i32>,
+    pub children: Option<i32>,
+    pub child_ages: Vec<i32>,
+    pub instant_booking: bool,
+    pub property_types: Vec<String>,
+    pub meal_plans: Vec<String>,
+    pub payment_collections: Vec<String>,
+    pub accessibility: Vec<String>,
+    pub amenities: Vec<String>,
+    pub categories: Vec<String>,
+    pub price_min: Option<String>,
+    pub price_max: Option<String>,
+    pub min_free_cancellation_hours: Option<i64>,
+    pub max_penalty_percent: Option<i64>,
+    pub latitude: Option<f64>,
+    pub longitude: Option<f64>,
+    pub max_distance_km: Option<f64>,
+    pub sort: Option<String>,
+    pub page: Option<i64>,
+    pub page_size: Option<i64>,
+    pub analytics_consent: bool,
+}

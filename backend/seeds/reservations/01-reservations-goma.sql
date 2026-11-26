@@ -1,0 +1,127 @@
+INSERT INTO stay_reservations (id, reference, city_id, "propertyId", "operatorId", "guestUserId", state, source, "bookingMode", currency, "totalAmount", "contractSnapshot", "approvalDeadlineAt", "cancelledAt", "cancellationReason", "cancellationChargeAmount", "specialRequest", "specialRequestState", "commissionRateBps", "commissionAmount", version)
+VALUES
+    ('seed-res-goma-confirmed', 'STY-GOMA-0001', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-1', 'CONFIRMED', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}},{"id":"seed-policy-pay-prepay-v1","kind":"PAYMENT","content":{"collection":"PREPAY"}}],"cancellationDeadline":"2026-12-18T23:00:00Z","commission":{"rateBps":0,"amount":"0.00","net":"410000.00"}}',
+     NULL, NULL, NULL, 0, 'Could we have an extra pillow and a late arrival around 22:00?', 'REQUESTED', 0, 0, 1),
+    ('seed-res-goma-requested', 'STY-GOMA-0002', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-2', 'REQUESTED', 'DIRECT', 'REQUEST', 'CDF', 260000.00,
+     '{"policies":[{"id":"seed-policy-cancel-strict-v1","kind":"CANCELLATION","content":{"freeUntilHours":168,"penaltyPercent":50}}],"cancellationDeadline":"2026-12-13T00:00:00Z"}',
+     '2026-12-10T18:00:00Z', NULL, NULL, 0, NULL, 'NONE', 0, 0, 1),
+    ('seed-res-goma-cancelled', 'STY-GOMA-0003', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-3', 'CANCELLED', 'DIRECT', 'INSTANT', 'CDF', 180000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-10-20T00:00:00Z"}',
+     NULL, '2026-10-13T07:03:40Z', 'GUEST_REQUEST', 0, NULL, 'NONE', 0, 0, 2),
+    ('seed-res-goma-checkedin', 'STY-GOMA-0007', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-1', 'CHECKED_IN', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-11-02T00:00:00Z"}',
+     NULL, NULL, NULL, 0, 'Quiet room away from the generator, please.', 'ACCEPTED', 0, 0, 3),
+    ('seed-res-goma-declined', 'STY-GOMA-0008', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-2', 'DECLINED', 'DIRECT', 'REQUEST', 'CDF', 260000.00,
+     '{"policies":[{"id":"seed-policy-cancel-strict-v1","kind":"CANCELLATION","content":{"freeUntilHours":168,"penaltyPercent":50}}],"cancellationDeadline":"2026-11-28T00:00:00Z"}',
+     NULL, NULL, NULL, 0, 'Can we bring a small dog?', 'DECLINED', 0, 0, 2),
+    ('seed-res-goma-expired', 'STY-GOMA-0009', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-3', 'EXPIRED', 'DIRECT', 'REQUEST', 'CDF', 260000.00,
+     '{"policies":[{"id":"seed-policy-cancel-strict-v1","kind":"CANCELLATION","content":{"freeUntilHours":168,"penaltyPercent":50}}],"cancellationDeadline":"2026-11-13T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 0, 0, 2),
+    ('seed-res-goma-noshow', 'STY-GOMA-0010', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-1', 'NO_SHOW', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-moderate-v1","kind":"CANCELLATION","content":{"freeUntilHours":72,"penaltyPercent":50}}],"cancellationDeadline":"2026-10-25T00:00:00Z"}',
+     NULL, NULL, NULL, 205000.00, NULL, 'NONE', 1000, 41000.00, 2),
+    ('seed-res-goma-pendingpay', 'STY-GOMA-0011', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-2', 'PENDING_PAYMENT', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-12-26T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 0, 0, 1),
+    ('seed-res-goma-checkedout-reviewed', 'STY-GOMA-0004', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-1', 'CHECKED_OUT', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-09-08T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 1000, 41000.00, 4),
+    ('seed-res-goma-checkedout-pending', 'STY-GOMA-0005', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-2', 'CHECKED_OUT', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-09-16T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 1000, 41000.00, 4),
+    ('seed-res-goma-checkedout-hidden', 'STY-GOMA-0006', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-3', 'CHECKED_OUT', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-09-23T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 1000, 41000.00, 4),
+    ('seed-res-goma-owner-stay', 'STY-GOMA-0015', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-user-goma-host', 'CHECKED_OUT', 'DIRECT', 'REQUEST', 'CDF', 260000.00,
+     '{"policies":[{"id":"seed-policy-cancel-strict-v1","kind":"CANCELLATION","content":{"freeUntilHours":168,"penaltyPercent":50}}],"cancellationDeadline":"2026-10-13T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 0, 0, 4),
+    ('seed-res-goma-arrives-today', 'STY-GOMA-0012', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-1', 'CONFIRMED', 'DIRECT', 'INSTANT', 'CDF', 260000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-11-04T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 0, 0, 1),
+    ('seed-res-goma-late-arrival', 'STY-GOMA-0013', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-2', 'CONFIRMED', 'DIRECT', 'INSTANT', 'CDF', 260000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-10-26T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 0, 0, 1),
+    ('seed-res-goma-needs-room', 'STY-GOMA-0014', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-3', 'CONFIRMED', 'DIRECT', 'INSTANT', 'CDF', 130000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}}],"cancellationDeadline":"2026-12-24T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 0, 0, 1),
+    ('seed-res-goma-amendable', 'STY-GOMA-0016', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-1', 'CONFIRMED', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}},{"id":"seed-policy-pay-prepay-v1","kind":"PAYMENT","content":{"collection":"PREPAY"}}],"cancellationDeadline":"2027-01-08T00:00:00Z","discount":null}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 0, 0, 1),
+    ('seed-res-goma-declinable', 'STY-GOMA-0017', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-guest-goma-2', 'REQUESTED', 'DIRECT', 'REQUEST', 'CDF', 130000.00,
+     '{"policies":[{"id":"seed-policy-cancel-strict-v1","kind":"CANCELLATION","content":{"freeUntilHours":168,"penaltyPercent":50}}],"cancellationDeadline":"2027-04-03T00:00:00Z"}',
+     '2027-01-10T18:00:00Z', NULL, NULL, 0, NULL, 'NONE', 0, 0, 1),
+    ('seed-res-goma-owner-upcoming', 'STY-GOMA-0018', 'GOMA', 'seed-prop-goma-lakeside', 'seed-host-goma-lake', 'seed-user-goma-host', 'CONFIRMED', 'DIRECT', 'INSTANT', 'CDF', 410000.00,
+     '{"policies":[{"id":"seed-policy-cancel-flex-v1","kind":"CANCELLATION","content":{"freeUntilHours":48,"penaltyPercent":0}},{"id":"seed-policy-pay-prepay-v1","kind":"PAYMENT","content":{"collection":"PREPAY"}}],"cancellationDeadline":"2027-05-03T00:00:00Z"}',
+     NULL, NULL, NULL, 0, NULL, 'NONE', 0, 0, 2)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO stay_reservation_items (id, "reservationId", "propertyId", "unitTypeId", "ratePlanId", quantity, "adultCount", "childCount", "checkIn", "checkOut", "nightlyCharges", "subtotalAmount")
+VALUES
+    ('seed-item-goma-confirmed', 'seed-res-goma-confirmed', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 4, 0, '2026-12-20', '2026-12-22', '[{"date":"2026-12-20","amount":"205000.00"},{"date":"2026-12-21","amount":"205000.00"}]', 410000.00),
+    ('seed-item-goma-requested', 'seed-res-goma-requested', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-room', 'seed-rate-goma-room-request', 1, 2, 0, '2026-12-20', '2026-12-21', '[{"date":"2026-12-20","amount":"260000.00"}]', 260000.00),
+    ('seed-item-goma-cancelled', 'seed-res-goma-cancelled', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 2, 0, '2026-10-25', '2026-10-27', '[{"date":"2026-10-25","amount":"90000.00"},{"date":"2026-10-26","amount":"90000.00"}]', 180000.00),
+    ('seed-item-goma-checkedin', 'seed-res-goma-checkedin', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 2, 1, '2026-11-24', '2026-11-28', '[{"date":"2026-11-24","amount":"102500.00"},{"date":"2026-11-25","amount":"102500.00"},{"date":"2026-11-26","amount":"102500.00"},{"date":"2026-11-27","amount":"102500.00"}]', 410000.00),
+    ('seed-item-goma-declined', 'seed-res-goma-declined', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-room', 'seed-rate-goma-room-request', 1, 2, 1, '2026-12-05', '2026-12-07', '[{"date":"2026-12-05","amount":"130000.00"},{"date":"2026-12-06","amount":"130000.00"}]', 260000.00),
+    ('seed-item-goma-expired', 'seed-res-goma-expired', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-room', 'seed-rate-goma-room-request', 1, 2, 1, '2026-11-20', '2026-11-22', '[{"date":"2026-11-20","amount":"130000.00"},{"date":"2026-11-21","amount":"130000.00"}]', 260000.00),
+    ('seed-item-goma-noshow', 'seed-res-goma-noshow', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 2, 1, '2026-10-28', '2026-10-30', '[{"date":"2026-10-28","amount":"205000.00"},{"date":"2026-10-29","amount":"205000.00"}]', 410000.00),
+    ('seed-item-goma-pendingpay', 'seed-res-goma-pendingpay', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 2, 1, '2026-12-28', '2026-12-30', '[{"date":"2026-12-28","amount":"205000.00"},{"date":"2026-12-29","amount":"205000.00"}]', 410000.00),
+    ('seed-item-goma-checkedout-reviewed', 'seed-res-goma-checkedout-reviewed', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 4, 0, '2026-09-10', '2026-09-12', '[{"date":"2026-09-10","amount":"205000.00"},{"date":"2026-09-11","amount":"205000.00"}]', 410000.00),
+    ('seed-item-goma-checkedout-pending', 'seed-res-goma-checkedout-pending', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 2, 0, '2026-09-18', '2026-09-20', '[{"date":"2026-09-18","amount":"205000.00"},{"date":"2026-09-19","amount":"205000.00"}]', 410000.00),
+    ('seed-item-goma-checkedout-hidden', 'seed-res-goma-checkedout-hidden', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 3, 0, '2026-09-25', '2026-09-27', '[{"date":"2026-09-25","amount":"205000.00"},{"date":"2026-09-26","amount":"205000.00"}]', 410000.00),
+    ('seed-item-goma-owner-stay', 'seed-res-goma-owner-stay', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-room', 'seed-rate-goma-room-request', 1, 2, 0, '2026-10-20', '2026-10-22', '[{"date":"2026-10-20","amount":"130000.00"},{"date":"2026-10-21","amount":"130000.00"}]', 260000.00),
+    ('seed-item-goma-arrives-today', 'seed-res-goma-arrives-today', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-room', 'seed-rate-goma-room-request', 1, 2, 0, '2026-11-06', '2026-11-08', '[{"date":"2026-11-06","amount":"130000.00"},{"date":"2026-11-07","amount":"130000.00"}]', 260000.00),
+    ('seed-item-goma-late-arrival', 'seed-res-goma-late-arrival', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-room', 'seed-rate-goma-room-request', 1, 2, 0, '2026-10-28', '2026-10-30', '[{"date":"2026-10-28","amount":"130000.00"},{"date":"2026-10-29","amount":"130000.00"}]', 260000.00),
+    ('seed-item-goma-needs-room', 'seed-res-goma-needs-room', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-room', 'seed-rate-goma-room-request', 1, 1, 0, '2026-12-26', '2026-12-27', '[{"date":"2026-12-26","amount":"130000.00"}]', 130000.00),
+    ('seed-item-goma-amendable', 'seed-res-goma-amendable', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 2, 0, '2027-01-10', '2027-01-12', '[{"date":"2027-01-10","amount":"205000.00"},{"date":"2027-01-11","amount":"205000.00"}]', 410000.00),
+    ('seed-item-goma-declinable', 'seed-res-goma-declinable', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-room', 'seed-rate-goma-room-request', 1, 2, 0, '2027-04-10', '2027-04-11', '[{"date":"2027-04-10","amount":"130000.00"}]', 130000.00),
+    ('seed-item-goma-owner-upcoming', 'seed-res-goma-owner-upcoming', 'seed-prop-goma-lakeside', 'seed-unit-type-goma-villa', 'seed-rate-goma-villa-instant', 1, 2, 1, '2027-05-05', '2027-05-07', '[{"date":"2027-05-05","amount":"205000.00"},{"date":"2027-05-06","amount":"205000.00"}]', 410000.00)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO stay_reservation_guests (id, "reservationItemId", "fullName", "contactPhone", "contactEmail", role, "consentBasis", "retainUntil", "anonymizedAt")
+VALUES
+    ('seed-guest-goma-confirmed-primary', 'seed-item-goma-confirmed', 'Jean-Pierre Kahindo', '+243810000001', 'jp.kahindo@example.test', 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-requested-primary', 'seed-item-goma-requested', 'Amina Bahati', '+243810000002', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-cancelled-primary', 'seed-item-goma-cancelled', 'Patrick Mugisho', '+243810000003', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-checkedin-primary', 'seed-item-goma-checkedin', 'Grace Mwamba', '+243810000100', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-checkedin-additional', 'seed-item-goma-checkedin', 'Daniel Mwamba', NULL, NULL, 'ADDITIONAL', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-declined-primary', 'seed-item-goma-declined', 'Patrick Lukusa', '+243810000101', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-expired-primary', 'seed-item-goma-expired', 'Sarah Ilunga', '+243810000102', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-noshow-primary', 'seed-item-goma-noshow', 'David Mutombo', '+243810000103', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-pendingpay-primary', 'seed-item-goma-pendingpay', 'Chantal Kabuya', '+243810000104', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-checkedout-reviewed-primary', 'seed-item-goma-checkedout-reviewed', 'Jean-Pierre Kahindo', '+243810000001', 'jp.kahindo@example.test', 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-checkedout-pending-primary', 'seed-item-goma-checkedout-pending', 'Amina Bahati', '+243810000002', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-checkedout-hidden-primary', 'seed-item-goma-checkedout-hidden', 'REDACTED', NULL, NULL, 'PRIMARY', 'CONTRACT', '2026-10-31', '2026-11-01T02:00:00Z'),
+    ('seed-guest-goma-owner-stay-primary', 'seed-item-goma-owner-stay', 'Host Owner', '+243810000030', 'goma-host@example.test', 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-arrives-today-primary', 'seed-item-goma-arrives-today', 'Esther Namegabe', '+243810000021', 'esther.namegabe@example.test', 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-late-arrival-primary', 'seed-item-goma-late-arrival', 'Olivier Safari', '+243810000022', NULL, 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-needs-room-primary', 'seed-item-goma-needs-room', 'Brigitte Mapendo', '+243810000023', 'b.mapendo@example.test', 'PRIMARY', 'CONTRACT', '2027-12-31', NULL),
+    ('seed-guest-goma-amendable-primary', 'seed-item-goma-amendable', 'Pascal Kasereka', '+243810000041', 'pascal.kasereka@example.test', 'PRIMARY', 'CONTRACT', '2028-12-31', NULL),
+    ('seed-guest-goma-declinable-primary', 'seed-item-goma-declinable', 'Josiane Baraka', '+243810000042', NULL, 'PRIMARY', 'CONTRACT', '2028-12-31', NULL),
+    ('seed-guest-goma-owner-upcoming-primary', 'seed-item-goma-owner-upcoming', 'Host Owner', '+243810000030', 'goma-host@example.test', 'PRIMARY', 'CONTRACT', '2028-12-31', NULL)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO stay_records (id, "reservationItemId", "physicalUnitId", "actualArrivalAt", "actualDepartureAt", "authorizedByUserId")
+VALUES
+    ('seed-record-goma-checkedin', 'seed-item-goma-checkedin', 'seed-physical-goma-villa', '2026-11-24T13:20:00Z', NULL, 'seed-user-goma-host'),
+    ('seed-record-goma-checkedout-reviewed', 'seed-item-goma-checkedout-reviewed', 'seed-physical-goma-villa', '2026-09-10T14:00:00Z', '2026-09-12T10:05:00Z', 'seed-user-goma-host')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO stay_amendments (id, city_id, "reservationId", "originalVersion", "proposedContract", "deltaAmount", state, "expiresAt", "createdAt", "respondedAt")
+VALUES
+    ('seed-amend-goma-proposed', 'GOMA', 'seed-res-goma-amendable', 1,
+     '{"checkIn":"2027-01-10","checkOut":"2027-01-13","nights":[{"date":"2027-01-10","amount":"205000.00"},{"date":"2027-01-11","amount":"205000.00"},{"date":"2027-01-12","amount":"205000.00"}],"total":"615000.00","subtotal":"615000.00","discount":null,"cancellationDeadline":"2027-01-08T00:00:00Z"}',
+     205000.00, 'PROPOSED', '2027-01-05T18:00:00Z', '2026-11-20T09:00:00Z', NULL),
+    ('seed-amend-goma-declined', 'GOMA', 'seed-res-goma-amendable', 1,
+     '{"checkIn":"2027-01-09","checkOut":"2027-01-12","nights":[{"date":"2027-01-09","amount":"205000.00"},{"date":"2027-01-10","amount":"205000.00"},{"date":"2027-01-11","amount":"205000.00"}],"total":"615000.00","subtotal":"615000.00","discount":null,"cancellationDeadline":"2027-01-07T00:00:00Z"}',
+     205000.00, 'DECLINED', '2026-11-18T18:00:00Z', '2026-11-10T09:00:00Z', '2026-11-11T08:30:00Z'),
+    ('seed-amend-goma-expired', 'GOMA', 'seed-res-goma-amendable', 1,
+     '{"checkIn":"2027-01-11","checkOut":"2027-01-12","nights":[{"date":"2027-01-11","amount":"205000.00"}],"total":"205000.00","subtotal":"205000.00","discount":null,"cancellationDeadline":"2027-01-09T00:00:00Z"}',
+     -205000.00, 'EXPIRED', '2026-11-05T18:00:00Z', '2026-11-01T09:00:00Z', '2026-11-05T18:00:00Z'),
+    ('seed-amend-goma-accepted', 'GOMA', 'seed-res-goma-owner-upcoming', 1,
+     '{"checkIn":"2027-05-05","checkOut":"2027-05-07","nights":[{"date":"2027-05-05","amount":"205000.00"},{"date":"2027-05-06","amount":"205000.00"}],"total":"410000.00","subtotal":"410000.00","discount":null,"cancellationDeadline":"2027-05-03T00:00:00Z"}',
+     0.00, 'ACCEPTED', '2026-10-30T18:00:00Z', '2026-10-20T09:00:00Z', '2026-10-21T10:00:00Z'),
+    ('seed-amend-goma-superseded', 'GOMA', 'seed-res-goma-owner-upcoming', 1,
+     '{"checkIn":"2027-05-04","checkOut":"2027-05-07","nights":[{"date":"2027-05-04","amount":"205000.00"},{"date":"2027-05-05","amount":"205000.00"},{"date":"2027-05-06","amount":"205000.00"}],"total":"615000.00","subtotal":"615000.00","discount":null,"cancellationDeadline":"2027-05-02T00:00:00Z"}',
+     205000.00, 'SUPERSEDED', '2026-11-30T18:00:00Z', '2026-10-15T09:00:00Z', '2026-10-20T09:00:00Z')
+ON CONFLICT (id) DO NOTHING;

@@ -1,0 +1,50 @@
+{
+  "document": {
+    "brand": "{brand}",
+    "page": "Page"
+  },
+  "stayVoucher": {
+    "title": "Bon de réservation",
+    "reference": "Référence de réservation",
+    "guest": "Voyageur",
+    "property": "Hébergement",
+    "address": "Adresse",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ",
+    "total": "Total payé",
+    "footer": "Présentez ce bon à votre arrivée. Les heures d'arrivée et de départ sont fixées par l'hébergement.",
+    "subject": "Votre bon de réservation {{reference}}",
+    "body": "Votre réservation est confirmée. Votre bon est joint à cet email.",
+    "missing": "N/A"
+  },
+  "stayCancellation": {
+    "title": "Confirmation d'annulation",
+    "reference": "Référence de réservation",
+    "guest": "Voyageur",
+    "property": "Hébergement",
+    "address": "Adresse",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ",
+    "charge": "Montant dû à l'hébergement",
+    "footer": "Cette confirmation atteste de l'annulation de votre réservation. Tout montant dû est payable à l'hébergement selon sa politique d'annulation.",
+    "subject": "Annulation de votre réservation {{reference}}",
+    "body": "Votre réservation a été annulée. La confirmation est jointe à cet email.",
+    "missing": "N/A"
+  },
+  "stayDamageClaim": {
+    "title": "Avis de réclamation pour dégâts",
+    "reference": "Référence de réservation",
+    "claimNumber": "Référence de la réclamation",
+    "guest": "Voyageur",
+    "property": "Hébergement",
+    "address": "Adresse",
+    "checkOut": "Départ",
+    "disputeDeadline": "Date limite de contestation",
+    "reason": "Motif de la réclamation",
+    "amount": "Montant réclamé (payable à l'hébergement)",
+    "footer": "Vous pouvez contester cette réclamation avant la date limite en répondant via les messages de votre réservation. Le montant est payable à l'hébergement, et non via {brand}.",
+    "subject": "Avis de réclamation pour dégâts, réservation {{reference}}",
+    "body": "Une réclamation pour dégâts a été ouverte suite à votre séjour. L'avis est joint à cet email.",
+    "missing": "N/A"
+  }
+}

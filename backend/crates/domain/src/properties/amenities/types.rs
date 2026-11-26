@@ -14,7 +14,7 @@ pub struct AmenityFilters {
     pub search: Option<String>,
 }
 
-#[derive(Debug, Serialize, sqlx::FromRow)]
+#[derive(Debug, Serialize, sqlx::FromRow, utoipa::ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct AmenityGroup {
     pub code: String,
@@ -26,7 +26,7 @@ pub struct AmenityGroup {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Serialize, sqlx::FromRow)]
+#[derive(Debug, Serialize, sqlx::FromRow, utoipa::ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Amenity {
     pub code: String,

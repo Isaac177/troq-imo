@@ -1,0 +1,15 @@
+:root {
+  --ink: #18181b;
+  --body: #3f3f46;
+  --muted: #71717a;
+  --hairline: #e4e4e7;
+  --rule: #d4d4d8;
+  --brand: #0f766e;
+  --font-family: 'Onest', sans-serif;
+  --size-body: 10.5px;
+  --size-label: 8.5px;
+  --size-title: 18px;
+  --size-total: 14px;
+  --space-section: 18px;
+  --space-cell: 9px;
+}

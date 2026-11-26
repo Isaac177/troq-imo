@@ -1,0 +1,13 @@
+INSERT INTO stay_unit_types (id, city_id, "propertyId", "inventoryModel", "categoryCode", "nameEn", "nameFr", "descriptionEn", "descriptionFr", "maxAdults", "maxChildren", "bedroomCount", "bedCount", "bathroomCount", accessibility, status)
+VALUES
+    ('seed-unit-type-goma-villa', 'GOMA', 'seed-prop-goma-lakeside', 'WHOLE_UNIT', 'VILLA', 'Whole villa', 'Villa entière', 'Three bedrooms, private garden.', 'Trois chambres, jardin privé.', 6, 2, 3, 4, 2, '["STEP_FREE_ENTRY"]', 'ACTIVE'),
+    ('seed-unit-type-goma-room', 'GOMA', 'seed-prop-goma-lakeside', 'POOLED_ROOM', 'HOTEL_ROOM', 'Lake room', 'Chambre lac', 'Double room with lake view.', 'Chambre double vue lac.', 2, 1, 1, 1, 1, '[]', 'ACTIVE'),
+    ('seed-unit-type-goma-triple', 'GOMA', 'seed-prop-goma-lakeside', 'POOLED_ROOM', 'HOTEL_ROOM', 'Triple room', 'Chambre triple', 'Three single beds, shared bathroom.', 'Trois lits simples, salle de bain partagée.', 3, 1, 1, 3, 1, '[]', 'ACTIVE'),
+    ('seed-unit-type-goma-dorm', 'GOMA', 'seed-prop-goma-lakeside', 'POOLED_ROOM', 'DORMITORY_BED', 'Dormitory bed', 'Lit en dortoir', 'Bed in a shared dormitory.', 'Lit dans un dortoir partagé.', 1, 0, 1, 1, 1, '["GROUND_FLOOR", "ACCESSIBLE_BATHROOM"]', 'ACTIVE'),
+    ('seed-unit-type-goma-inactive', 'GOMA', 'seed-prop-goma-lakeside', 'WHOLE_UNIT', 'STUDIO', 'Garden studio', 'Studio jardin', 'Closed for renovation.', 'Fermé pour rénovation.', 2, 0, 1, 1, 1, '[]', 'INACTIVE'),
+    ('seed-unit-type-goma-archived', 'GOMA', 'seed-prop-goma-lakeside', 'WHOLE_UNIT', 'APARTMENT', 'Old apartment', 'Ancien appartement', 'Removed from the property.', 'Retiré de la propriété.', 4, 1, 2, 2, 1, '[]', 'ARCHIVED'),
+    ('seed-unit-type-goma-ready-house', 'GOMA', 'seed-prop-goma-ready', 'WHOLE_UNIT', 'GUEST_HOUSE', 'Guest house', 'Maison d''hôtes', 'Two bedrooms and a shared terrace.', 'Deux chambres et une terrasse commune.', 4, 2, 2, 2, 1, '["GROUND_FLOOR"]', 'ACTIVE'),
+    ('seed-unit-type-goma-virunga-suite', 'GOMA', 'seed-prop-goma-virunga', 'WHOLE_UNIT', 'HOTEL_ROOM', 'Virunga suite', 'Suite Virunga', 'Suite facing the volcanoes.', 'Suite face aux volcans.', 2, 1, 1, 1, 1, '["WIDE_DOORWAYS"]', 'ACTIVE'),
+    ('seed-unit-type-kin-apartment', 'KIN', 'seed-prop-kin-gombe', 'WHOLE_UNIT', 'APARTMENT', 'Two-bedroom apartment', 'Appartement deux chambres', '', '', 4, 1, 2, 2, 1, '[]', 'ACTIVE'),
+    ('seed-unit-type-kin-suite', 'KIN', 'seed-prop-kin-gombe', 'POOLED_ROOM', 'HOTEL_ROOM', 'River suite', 'Suite fleuve', 'Suite with a view of the river.', 'Suite avec vue sur le fleuve.', 2, 1, 1, 1, 1, '["STEP_FREE_ENTRY", "HEARING_LOOP"]', 'ACTIVE')
+ON CONFLICT (id) DO NOTHING;

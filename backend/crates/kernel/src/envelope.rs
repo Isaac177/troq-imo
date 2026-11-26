@@ -1,14 +1,15 @@
 use axum::response::{IntoResponse, Response};
 use axum::Json;
+use utoipa::ToSchema;
 use serde::Serialize;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Metadata {
     pub request_id: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct Envelope<T: Serialize> {
     pub success: bool,
     pub data: T,

@@ -72,3 +72,5 @@ Slice F0, written 25/11/2026. Decision D11 followed at its default: the TROQ sta
 | Theme toggle | `components/ui/ThemeToggle.tsx` | `packages/ui-web/src/theme/ThemeToggle.tsx`, host and admin home headers | done, rendered verification pending |
 | Inline confirm panel | `components/stays/confirm/StayConfirmPanel.tsx` | screens that use it (ConfirmDialog covers the modal form) | open, F3 |
 | Collapsible money breakdown | `components/stays/money/StayMoneyBreakdown.tsx` | feature component, not a section 4 primitive | open, F3 |
+
+Theme toggle runtime: initialization now runs in the browser, tolerates unavailable storage, follows system changes until an explicit choice, and accepts cross-tab changes. Runtime verification remains open.

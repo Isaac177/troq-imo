@@ -1,0 +1,16 @@
+use kernel::ErrorCode;
+
+macro_rules! codes {
+    ($($name:ident),* $(,)?) => {
+        $(pub const $name: ErrorCode = ErrorCode::new(stringify!($name));)*
+    };
+}
+
+codes! {
+    HOST_REQUIRED, HOST_NOT_FOUND, RESERVATION_NOT_FOUND,
+    RATE_INVALID, RATE_REASON_UNKNOWN, RATE_UNCHANGED,
+    TOPUP_REASON_UNKNOWN, ADJUST_REASON_UNKNOWN, DIRECTION_UNKNOWN,
+    ENTRY_TYPE_UNKNOWN, CREDIT_STATUS_UNKNOWN,
+    NOTE_TOO_LONG, PAYMENT_REF_TOO_LONG, PAYMENT_REF_REQUIRED,
+    CREDIT_LISTING_UNAVAILABLE, CREDIT_INSUFFICIENT,
+}

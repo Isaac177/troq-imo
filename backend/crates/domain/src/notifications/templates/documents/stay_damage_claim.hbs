@@ -1,0 +1,34 @@
+<header class="top">
+  <div class="brand">{{brand}}</div>
+  <div class="ref">
+    <div class="title">{{labels.title}}</div>
+    <div>{{labels.reference}} {{reference}}</div>
+    <div>{{labels.claimNumber}} {{caseId}}</div>
+  </div>
+</header>
+<section class="meta">
+  <div class="issuer">
+    <div class="label">{{labels.property}}</div>
+    <div class="name">{{propertyName}}</div>
+    <div>{{labels.address}}: {{propertyAddress}}</div>
+  </div>
+  <div class="buyer">
+    <div class="label">{{labels.guest}}</div>
+    <div class="name">{{guestName}}</div>
+  </div>
+</section>
+<table>
+  <tbody>
+    <tr><td>{{labels.checkOut}}</td><td class="num">{{checkOutDisplay}}</td></tr>
+    <tr><td>{{labels.disputeDeadline}}</td><td class="num">{{disputeDeadlineDisplay}}</td></tr>
+  </tbody>
+</table>
+<div class="letter">
+  <p class="label">{{labels.reason}}</p>
+  <p>{{claimReason}}</p>
+</div>
+<div class="total">
+  <span>{{labels.amount}}</span>
+  <strong>{{amountDisplay}}</strong>
+</div>
+<footer>{{labels.footer}}</footer>

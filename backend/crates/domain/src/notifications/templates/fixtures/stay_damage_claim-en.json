@@ -1,0 +1,33 @@
+{
+  "reservationId": "11111111-2222-4333-8444-555555555555",
+  "reference": "STY-2026-000042",
+  "state": "CHECKED_OUT",
+  "hostId": "seed-host-goma-lake",
+  "propertyId": "seed-property-goma-lake",
+  "city": "GOMA",
+  "currency": "CDF",
+  "totalAmount": "450000.00",
+  "checkIn": "2026-11-02",
+  "checkOut": "2026-11-05",
+  "propertyName": {
+    "en": "Kivu View Guesthouse",
+    "fr": "Maison d'hôtes Vue Kivu"
+  },
+  "propertyAddress": "12 avenue de la Paix, Goma",
+  "guest": {
+    "fullName": "Jean Mbala",
+    "contactPhone": "+243811111111",
+    "contactEmail": "jean@example.com"
+  },
+  "language": "en",
+  "metadata": {
+    "city": "GOMA",
+    "requestId": "preview",
+    "timestamp": "2026-10-15T00:00:00Z",
+    "language": "en"
+  },
+  "caseId": "case-0123456789abcdef0123456789abcdef",
+  "claimAmount": "25000.00",
+  "claimReason": "Broken window in the living room, replacement required.",
+  "disputeDeadline": "2026-11-12T10:00:00+00:00"
+}

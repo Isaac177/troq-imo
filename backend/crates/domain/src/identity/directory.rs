@@ -38,7 +38,7 @@ impl AccessDirectory for IdentityDirectory {
             .map(HostId::new)
             .collect();
             let rows = sqlx::query_as::<_, (String, String, Option<String>)>(
-                "SELECT g.permission, g.scope_type, g.scope_id FROM identity_grants g WHERE g.user_id = $1 AND (g.expires_at IS NULL OR g.expires_at > now()) AND (g.scope_type = 'PLATFORM' OR EXISTS (SELECT 1 FROM host_members m JOIN hosts h ON h.id = m.host_id WHERE m.user_id = g.user_id AND m.host_id = g.host_id AND m.status = 'ACTIVE' AND h.status = 'ACTIVE')) ORDER BY g.id",
+                "SELECT g.permission, g.scope_type, g.scope_id FROM identity_grants g WHERE g.user_id = $1 AND g.scope_type <> 'PROPERTY' AND (g.expires_at IS NULL OR g.expires_at > now()) AND (g.scope_type = 'PLATFORM' OR EXISTS (SELECT 1 FROM host_members m JOIN hosts h ON h.id = m.host_id WHERE m.user_id = g.user_id AND m.host_id = g.host_id AND m.status = 'ACTIVE' AND h.status = 'ACTIVE')) ORDER BY g.id",
             )
             .bind(user_id.as_str())
             .fetch_all(&self.pool)
@@ -53,7 +53,7 @@ impl AccessDirectory for IdentityDirectory {
                 })
                 .collect();
             let rows = sqlx::query_as::<_, (String, String, Option<String>, String)>(
-                "SELECT o.permission, o.scope_type, o.scope_id, o.effect FROM identity_member_overrides o WHERE o.user_id = $1 AND (o.scope_type = 'PLATFORM' OR EXISTS (SELECT 1 FROM host_members m JOIN hosts h ON h.id = m.host_id WHERE m.user_id = o.user_id AND m.host_id = o.host_id AND m.status = 'ACTIVE' AND h.status = 'ACTIVE')) ORDER BY o.created_at, o.id",
+                "SELECT o.permission, o.scope_type, o.scope_id, o.effect FROM identity_member_overrides o WHERE o.user_id = $1 AND o.scope_type <> 'PROPERTY' AND (o.scope_type = 'PLATFORM' OR EXISTS (SELECT 1 FROM host_members m JOIN hosts h ON h.id = m.host_id WHERE m.user_id = o.user_id AND m.host_id = o.host_id AND m.status = 'ACTIVE' AND h.status = 'ACTIVE')) ORDER BY o.created_at, o.id",
             )
             .bind(user_id.as_str())
             .fetch_all(&self.pool)

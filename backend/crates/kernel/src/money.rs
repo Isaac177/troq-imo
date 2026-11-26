@@ -82,7 +82,10 @@ impl Money {
     }
 
     pub fn to_wire(self) -> String {
-        format!("{}.{:02}", self.0 / SCALE, self.0 % SCALE)
+        let sign = if self.0 < 0 { "-" } else { "" };
+        let magnitude = self.0.unsigned_abs();
+        let scale = SCALE as u64;
+        format!("{sign}{}.{:02}", magnitude / scale, magnitude % scale)
     }
 
     pub fn percent_of(self, percent_minor: i64) -> Self {

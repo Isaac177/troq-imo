@@ -34,6 +34,7 @@ pub struct Config {
     pub api_port: u16,
     pub database_url: String,
     pub redis_url: String,
+    pub cors_allowed_origins: Vec<String>,
     pub cities: Vec<City>,
     pub default_city: City,
     pub jwt_secret: String,
@@ -60,6 +61,13 @@ impl Config {
             api_port: parsed_or("API_PORT", 8080)?,
             database_url: required("DATABASE_URL")?,
             redis_url: required("REDIS_URL")?,
+            cors_allowed_origins: optional("CORS_ALLOWED_ORIGINS")
+                .unwrap_or_default()
+                .split(',')
+                .map(str::trim)
+                .filter(|origin| !origin.is_empty())
+                .map(str::to_owned)
+                .collect(),
             cities,
             default_city,
             jwt_secret: required("JWT_SECRET")?,

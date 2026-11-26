@@ -29,12 +29,16 @@ pub struct HostOverride {
     pub effect: OverrideEffect,
 }
 
-fn authorize(actor: &Actor, host_id: &str, permission: &str, effect: OverrideEffect) -> Result<()> {
+pub(super) fn authorize_manager(actor: &Actor, host_id: &str) -> Result<()> {
     actor.ensure_writable()?;
     if !actor.access.is_member_of(host_id) {
         return Err(Error::not_found(codes::NOT_FOUND));
     }
-    actor.require_scoped(HOSTS_TEAM, Some(host_id), None)?;
+    actor.require_scoped(HOSTS_TEAM, Some(host_id), None)
+}
+
+fn authorize(actor: &Actor, host_id: &str, permission: &str, effect: OverrideEffect) -> Result<()> {
+    authorize_manager(actor, host_id)?;
     if !names::is_known(permission) {
         return Err(Error::bad_request(PERMISSION_INVALID));
     }
@@ -130,6 +134,16 @@ mod tests {
         let manager = actor(vec![Grant::host(HOSTS_TEAM, "host-a")], true);
         assert!(authorize(&manager, "host-b", names::PROPERTIES_READ, OverrideEffect::Deny).is_err());
         assert_eq!(authorize(&manager, "host-a", "unknown.action", OverrideEffect::Deny).unwrap_err().code().as_str(), "IDENTITY_PERMISSION_INVALID");
+    }
+
+    #[test]
+    fn clearing_requires_host_membership_and_team_management() {
+        let no_membership = actor(vec![Grant::host(HOSTS_TEAM, "host-a")], false);
+        assert_eq!(authorize_manager(&no_membership, "host-a").unwrap_err().code().as_str(), "NOT_FOUND");
+        let no_team_permission = actor(vec![Grant::host(names::PROPERTIES_READ, "host-a")], true);
+        assert_eq!(authorize_manager(&no_team_permission, "host-a").unwrap_err().code().as_str(), "PERMISSION_MISSING");
+        let manager = actor(vec![Grant::host(HOSTS_TEAM, "host-a")], true);
+        assert!(authorize_manager(&manager, "host-a").is_ok());
     }
 
     #[test]

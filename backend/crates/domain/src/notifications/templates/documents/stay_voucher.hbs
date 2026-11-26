@@ -1,0 +1,29 @@
+<header class="top">
+  <div class="brand">{{brand}}</div>
+  <div class="ref">
+    <div class="title">{{labels.title}}</div>
+    <div>{{labels.reference}} {{reference}}</div>
+  </div>
+</header>
+<section class="meta">
+  <div class="issuer">
+    <div class="label">{{labels.property}}</div>
+    <div class="name">{{propertyName}}</div>
+    <div>{{labels.address}}: {{propertyAddress}}</div>
+  </div>
+  <div class="buyer">
+    <div class="label">{{labels.guest}}</div>
+    <div class="name">{{guestName}}</div>
+  </div>
+</section>
+<table>
+  <tbody>
+    <tr><td>{{labels.checkIn}}</td><td class="num">{{checkInDisplay}}</td></tr>
+    <tr><td>{{labels.checkOut}}</td><td class="num">{{checkOutDisplay}}</td></tr>
+  </tbody>
+</table>
+<div class="total">
+  <span>{{labels.total}}</span>
+  <strong>{{totalDisplay}}</strong>
+</div>
+<footer>{{labels.footer}}</footer>

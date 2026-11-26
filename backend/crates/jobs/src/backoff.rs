@@ -1,6 +1,5 @@
 use std::time::Duration;
 
-pub const MAX_ATTEMPTS: i32 = 12;
 const BASE_SECONDS: u64 = 5;
 const CEILING_SECONDS: u64 = 3600;
 
@@ -25,7 +24,7 @@ mod tests {
 
     #[test]
     fn delay_never_exceeds_one_hour() {
-        assert_eq!(retry_delay(MAX_ATTEMPTS), Duration::from_secs(3600));
+        assert_eq!(retry_delay(12), Duration::from_secs(3600));
         assert_eq!(retry_delay(500), Duration::from_secs(3600));
     }
 
