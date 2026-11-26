@@ -12,13 +12,13 @@ Mungini locations: `apps/web/src/{app,components,hooks,services,types}/trips`, `
 |---|---|---|---|---|---|
 | 1 | Guest stays list | `components/user/stays/StaysTab.tsx` | `components/trips/TripsView.tsx`, `hooks/trips/useTrips.ts` | done | Paginated list with city and status filter, loading, error and empty text. |
 | 2 | Status tabs with counts (all, pending, upcoming, active, past, cancelled) | `hooks/useMyStays.ts`, `StaysTab.tsx` | `components/trips/TripsView.tsx` | open | Mungini has a status selector and no server-computed counts. |
-| 3 | Total count label | `StaysTab.tsx` | none | open | Pagination shows the page number only. |
-| 4 | Reference highlight from `?reference=` | `hooks/useMyStays.ts` | none | open | |
-| 5 | Explore stays call to action on the empty list | `StaysTab.tsx` | none | open | |
-| 6 | Stay row: number, photo, property, unit, dates, nights, guests, reference, total, status dot and label | `MyStayRow.tsx` | `TripsView.tsx` | open | Mungini shows property, unit, dates, total and state label, without number, photo, nights, guests or reference. |
-| 7 | Approval deadline on a requested row | `MyStayRow.tsx`, `hooks/useMyStays.ts` | none | open | |
+| 3 | Total count label | `StaysTab.tsx` | `components/trips/TripsView.tsx` | done | Header shows the total returned by the server. |
+| 4 | Reference highlight from `?reference=` | `hooks/useMyStays.ts` | `components/trips/TripsView.tsx`, `hooks/trips/useTrips.ts` | done | The matching row is highlighted and labelled; when the reference is on another page or filter, a translated note points it out. |
+| 5 | Explore stays call to action on the empty list | `StaysTab.tsx` | `components/trips/TripsView.tsx` | done | Links to the discovery home. |
+| 6 | Stay row: number, photo, property, unit, dates, nights, guests, reference, total, status dot and label | `MyStayRow.tsx` | `components/trips/TripsView.tsx`, `hooks/trips/useTrips.ts` | partial | Cover photo, property, unit, dates, nights, guest counts, reference, total and state label are shown. The row number and status dot are not. |
+| 7 | Approval deadline on a requested row | `MyStayRow.tsx`, `hooks/useMyStays.ts` | `hooks/trips/useTrips.ts` | done | Rendered in the city time zone when present. |
 | 8 | Trip detail sheet with photos, status, facts and pricing | `MyStayDetailSheet.tsx`, `hooks/useMyStayDetail.ts` | `components/trips/TripDetailView.tsx`, `hooks/trips/useTripDetail.ts` | partial | Reference, status, dates, nights, guest and contact, occupancy, total, deadlines and one cover image are shown. State explanation text and a full photo gallery remain open. |
-| 9 | State information text per reservation state | `hooks/useMyStayDetail.ts` | none | open | |
+| 9 | State information text per reservation state | `hooks/useMyStayDetail.ts` | `hooks/trips/useTripDetail.ts`, `TripDetailView.tsx` | done | Each state has a translated explanation in English and French. |
 | 10 | Night price lines and discount | `hooks/useMyStayDetail.ts` | `TripDetailView.tsx` | partial | Night lines and total are shown. The guest detail response carries no discount field, so a discount line is open until the contract changes. |
 | 11 | Guest name and contact details on the detail | `useMyStayDetail.ts` | `useTripDetail.ts` | done | Name, email and phone with mail and phone links. |
 | 12 | Nights count, approval deadline and hold expiry on the detail | `useMyStayDetail.ts` | `useTripDetail.ts` | done | Deadlines use the city time zone from `/api/public/cities`. |

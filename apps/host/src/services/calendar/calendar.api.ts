@@ -4,6 +4,8 @@ import { apiErrorCode } from '@mungini/session';
 import type { CalendarData, RequestResult } from '@/types/calendar/calendar';
 
 type BlockView = components['schemas']['BlockView'];
+type RestrictionOperation = components['schemas']['RestrictionOperation'];
+type BulkRestrictionResult = components['schemas']['BulkRestrictionResult'];
 
 const fail = <T>(error: unknown): RequestResult<T> => ({ data: null, error: apiErrorCode(error) });
 
@@ -27,6 +29,14 @@ export const removeBlock = async (client: SessionClient, blockId: string, expect
   const response = await client.api.DELETE('/api/host/blocks/{blockId}', {
     params: { path: { blockId } },
     body: { expectedVersion },
+  });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};
+
+export const setRestrictions = async (client: SessionClient, propertyId: string, operations: RestrictionOperation[]): Promise<RequestResult<BulkRestrictionResult>> => {
+  const response = await client.api.POST('/api/host/restrictions/bulk', {
+    body: { propertyId, operations, idempotencyKey: crypto.randomUUID() },
   });
   if (response.error || !response.data) return fail(response.error);
   return { data: response.data.data, error: null };

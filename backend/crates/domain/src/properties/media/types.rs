@@ -36,7 +36,7 @@ pub struct RemoveMediaInput {
 
 #[derive(Debug, Clone, Serialize, FromRow, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct MediaView {
+pub struct PropertyMediaView {
     pub id: String,
     pub owner_id: String,
     pub status: String,
@@ -54,14 +54,14 @@ pub struct MediaView {
 }
 
 #[derive(Debug, Serialize, ToSchema)]
-pub struct MediaContent {
-    pub media: MediaView,
+pub struct PropertyMediaContent {
+    pub media: PropertyMediaView,
     pub url: String,
 }
 
 #[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct MediaRemoved {
+pub struct PropertyMediaRemoved {
     pub media_id: String,
     pub status: String,
 }

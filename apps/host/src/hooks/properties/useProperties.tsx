@@ -158,6 +158,7 @@ export const useProperties = () => {
   return {
     hosts, hostId, setHostId, search, setSearch, page, setPage, pageSize: PAGE_SIZE, items, total, loading, error, notice, columns,
     selected, setSelected, createOpen, setCreateOpen, openCreate, nameEn, setNameEn, nameFr, setNameFr, addressLine, setAddressLine,
+    refresh,
     descriptionEn, setDescriptionEn, descriptionFr, setDescriptionFr, timezone, busy, formError, submitCreate,
     action, setAction, openLifecycle, submitLifecycle, lifecycleBusy, lifecycleError, blockers,
     blockerLabels: blockers.map((code) => {

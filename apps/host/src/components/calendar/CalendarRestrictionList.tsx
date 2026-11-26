@@ -1,8 +1,10 @@
+import { Button } from '@mungini/ui-web';
+
 type Row = { id: string; name: string; value: number | null | undefined; start: string; end: string };
 
-type Props = { rows: Row[]; empty: string };
+type Props = { rows: Row[]; empty: string; removeLabel: string; onRemove?: (row: Row) => void };
 
-export default function CalendarRestrictionList({ rows, empty }: Props) {
+export default function CalendarRestrictionList({ rows, empty, removeLabel, onRemove }: Props) {
   if (rows.length === 0) return <p className="text-body text-muted-foreground">{empty}</p>;
   return (
     <ul className="divide-y divide-border">
@@ -12,6 +14,7 @@ export default function CalendarRestrictionList({ rows, empty }: Props) {
             <span className="block truncate font-medium text-foreground">{row.name}{row.value === null || row.value === undefined ? '' : ` · ${row.value}`}</span>
             <span className="block truncate text-label tabular-nums text-muted-foreground">{row.start || '—'} – {row.end || '—'}</span>
           </span>
+          {onRemove ? <Button size="sm" variant="outline" onClick={() => onRemove(row)}>{removeLabel}</Button> : null}
         </li>
       ))}
     </ul>

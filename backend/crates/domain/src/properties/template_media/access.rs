@@ -6,7 +6,7 @@ use sqlx::PgPool;
 
 use crate::properties::media::kind::MediaKind;
 use crate::properties::media::service::{self, Owner};
-use crate::properties::media::types::MediaView;
+use crate::properties::media::types::PropertyMediaView;
 use crate::properties::messages::MEDIA_NOT_FOUND;
 use crate::properties::templates::access::template_for;
 
@@ -34,7 +34,7 @@ pub async fn scoped_media(
     media_id: &str,
     write: bool,
     as_admin: bool,
-) -> Result<(Scoped, MediaView)> {
+) -> Result<(Scoped, PropertyMediaView)> {
     let scope = scoped(pool, actor, template_id, write, as_admin).await?;
     let media = service::find(pool, MediaKind::Template, media_id).await?;
     if media.owner_id != scope.owner_id {

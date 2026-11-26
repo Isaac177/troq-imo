@@ -19,6 +19,10 @@ export const TripDetailView = ({ reservationId }: Props) => {
       {view.trip && view.coverUrl ? <img src={view.coverUrl} alt={view.trip.reference} className="h-[180px] w-full rounded-card object-cover" /> : null}
       {view.trip ? (
         <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <p className="text-body font-medium text-foreground">{view.state}</p>
+            {view.stateInfo ? <p className="text-label text-muted-foreground">{view.stateInfo}</p> : null}
+          </div>
           <dl className="grid grid-cols-1 gap-4 rounded-card border border-border bg-card p-4 text-body sm:grid-cols-2">
             <div><dt className="text-muted-foreground">{view.labels.reference}</dt><dd>{view.trip.reference}</dd></div>
             <div><dt className="text-muted-foreground">{view.labels.status}</dt><dd>{view.state}</dd></div>

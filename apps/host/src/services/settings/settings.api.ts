@@ -17,3 +17,9 @@ export const setPreference = async (client: SessionClient, preference: Preferenc
 };
 
 export const listCities = (client: SessionClient) => client.api.GET('/api/public/cities');
+
+export const updateProfile = async (client: SessionClient, input: { firstName: string; lastName: string; preferredLanguage: string }): Promise<RequestResult<{ message: string }>> => {
+  const response = await client.api.PATCH('/api/guest/profile', { body: input });
+  if (!response.data) return { data: null, error: 'INTERNAL_ERROR' };
+  return { data: response.data.data, error: null };
+};

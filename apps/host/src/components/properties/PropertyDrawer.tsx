@@ -1,6 +1,9 @@
 import { Archive, CheckCircle2, PauseCircle } from 'lucide-react';
 import { Button, ConfirmDialog, Drawer } from '@mungini/ui-web';
 import type { PropertiesView } from '@/hooks/properties/useProperties';
+import PropertyUnits from '@/components/properties/PropertyUnits';
+import PropertyPhotos from '@/components/properties/PropertyPhotos';
+import PropertyRevisions from '@/components/properties/PropertyRevisions';
 
 type Props = { view: PropertiesView };
 
@@ -57,6 +60,10 @@ export default function PropertyDrawer({ view }: Props) {
               {canPause ? <Button size="sm" variant="outline" icon={<PauseCircle />} onClick={() => view.openLifecycle('PAUSE')}>{view.labels.pause}</Button> : null}
               {canArchive ? <Button size="sm" variant="outline" icon={<Archive />} onClick={() => view.openLifecycle('ARCHIVE')}>{view.labels.archive}</Button> : null}
             </div>
+
+            <PropertyUnits propertyId={item.id} onChanged={() => void view.refresh()} />
+            <PropertyPhotos propertyId={item.id} onChanged={() => void view.refresh()} />
+            <PropertyRevisions propertyId={item.id} onChanged={() => void view.refresh()} />
           </div>
         ) : null}
       </Drawer>

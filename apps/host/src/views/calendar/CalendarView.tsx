@@ -5,14 +5,17 @@ import BlockDatesDialog from '@/components/calendar/BlockDatesDialog';
 import CalendarBlockList from '@/components/calendar/CalendarBlockList';
 import CalendarReservationList from '@/components/calendar/CalendarReservationList';
 import CalendarRestrictionList from '@/components/calendar/CalendarRestrictionList';
+import RestrictionDialog from '@/components/calendar/RestrictionDialog';
 import UnitStrip from '@/components/calendar/UnitStrip';
 import ReservationDrawer from '@/components/reservations/ReservationDrawer';
 import { useCalendarBlocks } from '@/hooks/calendar/useCalendarBlocks';
+import { useCalendarRestrictions } from '@/hooks/calendar/useCalendarRestrictions';
 import { useHostCalendar } from '@/hooks/calendar/useHostCalendar';
 
 export default function CalendarView() {
   const view = useHostCalendar();
   const blocks = useCalendarBlocks(view.propertyId, view.unitOptions, view.refresh);
+  const restrictions = useCalendarRestrictions(view.propertyId, view.unitOptions, view.refresh);
 
   if (!view.hasHost) {
     return (
@@ -84,9 +87,14 @@ export default function CalendarView() {
             </div>
 
             <div className="border-t border-border pt-4">
-              <h2 className="text-title font-semibold text-foreground">{view.labels.restrictions}</h2>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-title font-semibold text-foreground">{view.labels.restrictions}</h2>
+                {view.canWrite && view.propertyId ? <Button variant="outline" size="sm" icon={<Ban />} collapseLabel aria-label={restrictions.labels.addRestriction} title={restrictions.labels.addRestriction} onClick={restrictions.openCreate}>{restrictions.labels.addRestriction}</Button> : null}
+              </div>
+              {restrictions.error ? <p role="alert" className="mt-2 text-label text-destructive">{restrictions.error}</p> : null}
+              {restrictions.notice ? <p role="status" className="mt-2 text-label text-muted-foreground">{restrictions.notice}</p> : null}
               <div className="mt-2">
-                <CalendarRestrictionList rows={view.restrictions} empty={view.labels.noRestrictions} />
+                <CalendarRestrictionList rows={view.restrictions} empty={view.labels.noRestrictions} removeLabel={restrictions.labels.removeRestriction} onRemove={view.canWrite ? restrictions.setRemoveTarget : undefined} />
               </div>
             </div>
           </div>
@@ -94,6 +102,7 @@ export default function CalendarView() {
       </Section>
 
       <BlockDatesDialog view={blocks} unitOptions={view.unitOptions} />
+      <RestrictionDialog view={restrictions} />
       <ReservationDrawer reservationId={view.selected} onClose={() => view.setSelected(null)} onChanged={view.refresh} />
     </>
   );

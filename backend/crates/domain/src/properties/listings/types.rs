@@ -15,7 +15,7 @@ pub struct LifecycleInput {
 
 #[derive(Debug, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct DecisionInput {
+pub struct ListingDecisionInput {
     pub decision: String,
     #[serde(default)]
     pub reason_codes: Vec<String>,

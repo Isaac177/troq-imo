@@ -13,7 +13,7 @@ use super::kind::MediaKind;
 use super::queries::{self, NewMedia};
 use super::storage::{delete_image, image_url, upload_image};
 use super::types::{
-    AddMediaInput, MediaChanges, MediaContent, MediaRemoved, MediaView, RemoveMediaInput, UpdateMediaInput,
+    AddMediaInput, MediaChanges, PropertyMediaContent, PropertyMediaRemoved, PropertyMediaView, RemoveMediaInput, UpdateMediaInput,
 };
 use super::validation::{check_image, clean_alt_text};
 use crate::properties::messages::{
@@ -43,11 +43,11 @@ fn client_key(value: &str) -> Result<String> {
     Ok(trimmed.to_string())
 }
 
-pub async fn list(pool: &PgPool, owner: Owner<'_>) -> Result<Vec<MediaView>> {
+pub async fn list(pool: &PgPool, owner: Owner<'_>) -> Result<Vec<PropertyMediaView>> {
     queries::list(pool, owner.kind, owner.id).await
 }
 
-pub async fn find(pool: &PgPool, kind: MediaKind, media_id: &str) -> Result<MediaView> {
+pub async fn find(pool: &PgPool, kind: MediaKind, media_id: &str) -> Result<PropertyMediaView> {
     queries::find(pool, kind, media_id).await?.ok_or_else(|| Error::not_found(MEDIA_NOT_FOUND))
 }
 
@@ -57,7 +57,7 @@ pub async fn add(
     actor: &Actor,
     owner: Owner<'_>,
     input: AddMediaInput,
-) -> Result<MediaView> {
+) -> Result<PropertyMediaView> {
     actor.ensure_writable()?;
     let key = client_key(&input.client_key)?;
     if let Some(existing) = queries::find_by_client_key(pool, owner.kind, owner.id, &key).await? {
@@ -155,9 +155,9 @@ pub async fn update(
     pool: &PgPool,
     actor: &Actor,
     owner: Owner<'_>,
-    media: &MediaView,
+    media: &PropertyMediaView,
     input: UpdateMediaInput,
-) -> Result<MediaView> {
+) -> Result<PropertyMediaView> {
     actor.ensure_writable()?;
     if input.is_cover == Some(false) {
         return Err(Error::bad_request(MEDIA_COVER_CANNOT_BE_CLEARED));
@@ -197,9 +197,9 @@ pub async fn remove(
     storage: &Storage,
     actor: &Actor,
     owner: Owner<'_>,
-    media: &MediaView,
+    media: &PropertyMediaView,
     input: RemoveMediaInput,
-) -> Result<MediaRemoved> {
+) -> Result<PropertyMediaRemoved> {
     actor.ensure_writable()?;
     let storage_key = queries::storage_key(pool, owner.kind, &media.id, false).await?;
     let changes = MediaChanges { remove: true, ..MediaChanges::default() };
@@ -225,13 +225,13 @@ pub async fn remove(
             tracing::warn!(media_id = %media.id, error = %error, "media object deletion failed");
         }
     }
-    Ok(MediaRemoved { media_id: media.id.clone(), status: "REMOVED".into() })
+    Ok(PropertyMediaRemoved { media_id: media.id.clone(), status: "REMOVED".into() })
 }
 
-pub async fn content(pool: &PgPool, storage: &Storage, kind: MediaKind, media: MediaView) -> Result<MediaContent> {
+pub async fn content(pool: &PgPool, storage: &Storage, kind: MediaKind, media: PropertyMediaView) -> Result<PropertyMediaContent> {
     let key = queries::storage_key(pool, kind, &media.id, true)
         .await?
         .ok_or_else(|| Error::not_found(MEDIA_NOT_FOUND))?;
     let url = image_url(storage, &key).await?;
-    Ok(MediaContent { media, url })
+    Ok(PropertyMediaContent { media, url })
 }

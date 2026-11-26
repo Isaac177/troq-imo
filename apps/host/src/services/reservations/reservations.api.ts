@@ -7,6 +7,8 @@ type ReservationView = components['schemas']['ReservationView'];
 type AmendmentProposal = components['schemas']['AmendmentProposal'];
 type MessageView = components['schemas']['MessageView'];
 type MessagePage = components['schemas']['Envelope_Page_MessageView']['data'];
+type UnitOption = components['schemas']['UnitOptionView'];
+type Assignment = components['schemas']['AssignmentView'];
 
 export type ReservationQuery = {
   hostId: string;
@@ -127,3 +129,21 @@ export const sendMessage = async (client: SessionClient, reservationId: string, 
 };
 
 export const listCities = (client: SessionClient) => client.api.GET('/api/public/cities');
+
+export const listUnitOptions = async (client: SessionClient, itemId: string): Promise<RequestResult<UnitOption[]>> => {
+  const response = await client.api.GET('/api/host/reservation-items/{itemId}/unit-options', { params: { path: { itemId } } });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};
+
+export const assignUnit = async (client: SessionClient, itemId: string, physicalUnitId: string): Promise<RequestResult<Assignment>> => {
+  const response = await client.api.POST('/api/host/unit-assignments', { body: { reservationItemId: itemId, physicalUnitId } });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};
+
+export const moveAssignment = async (client: SessionClient, assignmentId: string, physicalUnitId: string, fromDate: string): Promise<RequestResult<Assignment>> => {
+  const response = await client.api.POST('/api/host/unit-assignments/{assignmentId}/move', { params: { path: { assignmentId } }, body: { physicalUnitId, fromDate } });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};

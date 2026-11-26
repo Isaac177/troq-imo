@@ -8,7 +8,7 @@ use kernel::permissions::{Access, Grant};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 
-use super::types::{DecisionInput, LifecycleInput, ModerationInput};
+use super::types::{ListingDecisionInput, LifecycleInput, ModerationInput};
 use super::{lifecycle, review};
 use crate::properties::property::queries::find;
 
@@ -61,7 +61,7 @@ async fn a_stale_decision_is_refused_before_anything_is_applied() {
         &pool,
         &moderator(),
         SUBMITTED_REVISION,
-        DecisionInput { decision: "APPROVE".into(), reason_codes: Vec::new(), guidance: None, expected_version: 99 },
+        ListingDecisionInput { decision: "APPROVE".into(), reason_codes: Vec::new(), guidance: None, expected_version: 99 },
     )
     .await;
     assert_eq!(result.unwrap_err().code().as_str(), "LISTING_VERSION_CONFLICT");

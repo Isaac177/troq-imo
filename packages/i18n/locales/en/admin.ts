@@ -46,6 +46,8 @@ export const admin = {
   navReservations: 'Reservations',
   navReviews: 'Reviews',
   navCases: 'Cases',
+  navListings: 'Listing reviews',
+  navClaims: 'Claims',
   sectionPlatform: 'Platform',
   sectionOperations: 'Operations',
   dashboardTitle: 'Dashboard',

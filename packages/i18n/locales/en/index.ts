@@ -14,4 +14,6 @@ export { trips } from './trips';
 export { adminReservations } from './adminReservations';
 export { adminReviews } from './adminReviews';
 export { adminCases } from './adminCases';
+export { adminListings } from './adminListings';
+export { adminClaims } from './adminClaims';
 export { booking } from './booking';

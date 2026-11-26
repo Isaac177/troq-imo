@@ -5,7 +5,7 @@ use kernel::City;
 use sqlx::postgres::PgPoolOptions;
 
 use super::review;
-use super::types::{DecisionInput, ModerationInput};
+use super::types::{ListingDecisionInput, ModerationInput};
 
 #[tokio::test]
 async fn moderation_writes_require_platform_permission_before_database_access() {
@@ -23,7 +23,7 @@ async fn moderation_writes_require_platform_permission_before_database_access() 
         city_access: CityAccess::Full,
         access: Access { grants: vec![], host_ids: vec![], auth_city: Some("GOMA".into()) },
     };
-    let decision = DecisionInput { decision: "APPROVE".into(), reason_codes: vec![], guidance: None, expected_version: 1 };
+    let decision = ListingDecisionInput { decision: "APPROVE".into(), reason_codes: vec![], guidance: None, expected_version: 1 };
     let suspend = ModerationInput { expected_version: 1, reason_code: Some("SAFETY_CONCERN".into()) };
     let reinstate = ModerationInput { expected_version: 1, reason_code: None };
     assert_eq!(review::decide(&pool, &actor, "seed-revision", decision).await.unwrap_err().code().as_str(), "PERMISSION_MISSING");

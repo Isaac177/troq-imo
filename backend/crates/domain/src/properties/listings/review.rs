@@ -9,7 +9,7 @@ use super::apply::apply_content;
 use super::events::payload;
 use super::guards::{ensure_not_archived, ensure_status, ensure_version};
 use super::revision_view::load;
-use super::types::{DecisionInput, ModerationInput};
+use super::types::{ListingDecisionInput, ModerationInput};
 use super::{queries, readiness};
 use crate::properties::messages::{
     DECISION_UNKNOWN, PROPERTY_NOT_FOUND, REASON_CODES_NOT_ALLOWED, REASON_CODES_REQUIRED, REASON_CODE_REQUIRED,
@@ -81,7 +81,7 @@ fn guidance(value: Option<String>) -> Result<Option<String>> {
     }
 }
 
-pub async fn decide(pool: &PgPool, actor: &Actor, revision_id: &str, input: DecisionInput) -> Result<RevisionView> {
+pub async fn decide(pool: &PgPool, actor: &Actor, revision_id: &str, input: ListingDecisionInput) -> Result<RevisionView> {
     actor.ensure_writable()?;
     crate::properties::scope::ensure_moderator(actor)?;
     let decision = Decision::parse(&input.decision)?;

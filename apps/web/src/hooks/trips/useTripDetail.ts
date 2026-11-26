@@ -36,6 +36,11 @@ export const useTripDetail = (reservationId: string) => {
     nightLines: (trip?.nights ?? []).map((night) => ({ date: formatIsoDay(night.date), amount: formatCdf(night.amount, i18n.language) })),
     approvalDeadline: trip?.approvalDeadlineAt ? formatDateTime(trip.approvalDeadlineAt, actions.timezone) : '',
     holdExpiry: trip?.holdExpiresAt ? formatDateTime(trip.holdExpiresAt, actions.timezone) : '',
+    stateInfo: trip ? (() => {
+      const key = `stateInfo.${trip.state}`;
+      const value = t(key);
+      return value === key ? '' : value;
+    })() : '',
     contactEmail: trip?.guest.contactEmail ?? '',
     contactPhone: trip?.guest.contactPhone ?? '',
     coverUrl: trip?.unitTypeCoverUrl ?? '',

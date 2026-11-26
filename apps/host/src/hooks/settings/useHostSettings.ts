@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@mungini/i18n';
 import { useSession } from '@mungini/session';
-import { getPreferences, listCities, setPreference } from '@/services/settings/settings.api';
+import { getPreferences, listCities, setPreference, updateProfile } from '@/services/settings/settings.api';
 import type { Preference } from '@/types/settings/settings';
 
 type Channel = 'inApp' | 'email' | 'push';
@@ -9,13 +9,19 @@ type Channel = 'inApp' | 'email' | 'push';
 export const useHostSettings = () => {
   const { t } = useTranslation('hostSettings');
   const translate = t as unknown as (key: string) => string;
-  const { session, client, city } = useSession();
+  const { session, client, city, reload } = useSession();
   const [preferences, setPreferences] = useState<Preference[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [cityName, setCityName] = useState(city);
+  const [editOpen, setEditOpen] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [preferredLanguage, setPreferredLanguage] = useState('en');
+  const [accountBusy, setAccountBusy] = useState(false);
+  const [accountError, setAccountError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -68,6 +74,28 @@ export const useHostSettings = () => {
     return label === `eventLabels.${key}` ? translate('generalUpdate') : label;
   };
 
+  const openAccount = () => {
+    setFirstName(user?.firstName ?? '');
+    setLastName(user?.lastName ?? '');
+    setPreferredLanguage(user?.preferredLanguage ?? 'en');
+    setAccountError(null);
+    setEditOpen(true);
+  };
+
+  const saveAccount = async () => {
+    setAccountBusy(true);
+    setAccountError(null);
+    const result = await updateProfile(client, { firstName, lastName, preferredLanguage });
+    setAccountBusy(false);
+    if (result.error) {
+      setAccountError(translate('error'));
+      return;
+    }
+    await reload();
+    setEditOpen(false);
+    setNotice(translate('accountSaved'));
+  };
+
   const user = session?.user;
   return {
     preferences,
@@ -83,10 +111,22 @@ export const useHostSettings = () => {
       phone: user?.phone || '—',
       city: cityName,
     },
+    editOpen, setEditOpen, openAccount, firstName, setFirstName, lastName, setLastName, preferredLanguage, setPreferredLanguage, accountBusy, accountError, saveAccount,
+    languageOptions: [
+      { value: 'en', label: translate('languages.en') },
+      { value: 'fr', label: translate('languages.fr') },
+    ],
     labels: {
       title: translate('title'),
       subtitle: translate('subtitle'),
       account: translate('account'),
+      editAccount: translate('editAccount'),
+      firstName: translate('firstName'),
+      lastName: translate('lastName'),
+      preferredLanguage: translate('preferredLanguage'),
+      accountSaved: translate('accountSaved'),
+      save: translate('save'),
+      close: translate('close'),
       name: translate('name'),
       email: translate('email'),
       phone: translate('phone'),

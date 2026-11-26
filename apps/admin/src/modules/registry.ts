@@ -1,4 +1,4 @@
-import { Building2, ClipboardList, FolderOpen, LayoutDashboard, Star, Users, CalendarDays } from 'lucide-react';
+import { Building2, ClipboardList, FileCheck2, FolderOpen, LayoutDashboard, ShieldAlert, Star, Users, CalendarDays } from 'lucide-react';
 import DashboardView from '@/views/dashboard/DashboardView';
 import ApplicationsView from '@/views/applications/ApplicationsView';
 import HostsView from '@/views/hosts/HostsView';
@@ -7,6 +7,8 @@ import ReservationsView from '@/views/reservations/ReservationsView';
 import CalendarView from '@/views/calendar/CalendarView';
 import ReviewsView from '@/views/reviews/ReviewsView';
 import CasesView from '@/views/cases/CasesView';
+import ListingReviewsView from '@/views/listings/ListingReviewsView';
+import ClaimsView from '@/views/claims/ClaimsView';
 import type { ModuleDefinition } from '@/types/modules/module';
 
 export const moduleRegistry: ModuleDefinition[] = [
@@ -64,6 +66,16 @@ export const moduleRegistry: ModuleDefinition[] = [
   {
     id: 'cases', component: CasesView, labelKey: 'navCases',
     section: 'sectionOperations', route: '/cases', icon: FolderOpen,
+    permission: 'properties.moderate',
+  },
+  {
+    id: 'listings', component: ListingReviewsView, labelKey: 'navListings',
+    section: 'sectionOperations', route: '/listings', icon: FileCheck2,
+    permission: 'properties.moderate',
+  },
+  {
+    id: 'claims', component: ClaimsView, labelKey: 'navClaims',
+    section: 'sectionOperations', route: '/claims', icon: ShieldAlert,
     permission: 'properties.moderate',
   },
 ];

@@ -7,7 +7,7 @@ use kernel::kernel::KernelState;
 use kernel::paging::Page;
 
 use super::types::{
-    AdminPropertyDetail, AdminPropertyItem, AdminPropertyQuery, AdminRevisionView, AdminUpdateInput, DecisionInput,
+    AdminPropertyDetail, AdminPropertyItem, AdminPropertyQuery, AdminRevisionView, AdminUpdateInput, ListingDecisionInput,
     LifecycleInput, ModerationInput, QueueItem, QueueQuery,
 };
 use super::{admin_list, admin_property, review, service};
@@ -40,10 +40,10 @@ where S: KernelState + Clone + Send + Sync + 'static {
 
 #[utoipa::path(
     post, path = "/api/admin/listings/{revisionId}/decision", operation_id = "admin_listing_decide",
-    params(("revisionId" = String, Path)), request_body = DecisionInput,
+    params(("revisionId" = String, Path)), request_body = ListingDecisionInput,
     responses((status = 200, body = Envelope<RevisionView>), (status = 400, body = ErrorBody), (status = 403, body = ErrorBody), (status = 404, body = ErrorBody), (status = 409, body = ErrorBody))
 )]
-pub async fn decide<S>(State(state): State<S>, actor: Actor, RequestId(rid): RequestId, Path(revision_id): Path<String>, JsonBody(input): JsonBody<DecisionInput>) -> Reply<RevisionView>
+pub async fn decide<S>(State(state): State<S>, actor: Actor, RequestId(rid): RequestId, Path(revision_id): Path<String>, JsonBody(input): JsonBody<ListingDecisionInput>) -> Reply<RevisionView>
 where S: KernelState + Clone + Send + Sync + 'static {
     ensure_moderator(&actor)?;
     Ok(Json(Envelope::ok(review::decide(state.kernel().db.pool(), &actor, &revision_id, input).await?, rid)))

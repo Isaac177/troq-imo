@@ -2,25 +2,25 @@ use kernel::error::Result;
 use sqlx::{PgPool, Postgres, Transaction};
 
 use super::kind::MediaKind;
-use super::types::{media_columns, MediaChanges, MediaView};
+use super::types::{media_columns, MediaChanges, PropertyMediaView};
 
-pub async fn list(pool: &PgPool, kind: MediaKind, owner_id: &str) -> Result<Vec<MediaView>> {
+pub async fn list(pool: &PgPool, kind: MediaKind, owner_id: &str) -> Result<Vec<PropertyMediaView>> {
     let sql = format!(
         r#"SELECT {} FROM {} WHERE {owner} = $1 AND status <> 'REMOVED' ORDER BY "sortOrder", "createdAt", id"#,
         media_columns(kind),
         kind.table(),
         owner = kind.owner_column()
     );
-    Ok(sqlx::query_as::<_, MediaView>(&sql).bind(owner_id).fetch_all(pool).await?)
+    Ok(sqlx::query_as::<_, PropertyMediaView>(&sql).bind(owner_id).fetch_all(pool).await?)
 }
 
-pub async fn find(pool: &PgPool, kind: MediaKind, media_id: &str) -> Result<Option<MediaView>> {
+pub async fn find(pool: &PgPool, kind: MediaKind, media_id: &str) -> Result<Option<PropertyMediaView>> {
     let sql = format!(
         "SELECT {} FROM {} WHERE id = $1 AND status <> 'REMOVED'",
         media_columns(kind),
         kind.table()
     );
-    Ok(sqlx::query_as::<_, MediaView>(&sql).bind(media_id).fetch_optional(pool).await?)
+    Ok(sqlx::query_as::<_, PropertyMediaView>(&sql).bind(media_id).fetch_optional(pool).await?)
 }
 
 pub async fn find_by_client_key(
@@ -28,14 +28,14 @@ pub async fn find_by_client_key(
     kind: MediaKind,
     owner_id: &str,
     client_key: &str,
-) -> Result<Option<MediaView>> {
+) -> Result<Option<PropertyMediaView>> {
     let sql = format!(
         r#"SELECT {} FROM {} WHERE {owner} = $1 AND "clientKey" = $2"#,
         media_columns(kind),
         kind.table(),
         owner = kind.owner_column()
     );
-    Ok(sqlx::query_as::<_, MediaView>(&sql).bind(owner_id).bind(client_key).fetch_optional(pool).await?)
+    Ok(sqlx::query_as::<_, PropertyMediaView>(&sql).bind(owner_id).bind(client_key).fetch_optional(pool).await?)
 }
 
 pub async fn storage_key(pool: &PgPool, kind: MediaKind, media_id: &str, ready_only: bool) -> Result<Option<String>> {

@@ -2,6 +2,7 @@ import { Ban, CalendarClock, Check, LogIn, LogOut, UserX, X } from 'lucide-react
 import { Button, ConfirmDialog, DateRangePicker, Dialog, Drawer, Skeleton, Textarea } from '@mungini/ui-web';
 import { useReservationDetail } from '@/hooks/reservations/useReservationDetail';
 import ReservationMessages from '@/components/reservations/ReservationMessages';
+import ReservationAssignment from '@/components/reservations/ReservationAssignment';
 
 type Props = { reservationId: string | null; onClose: () => void; onChanged: () => void };
 
@@ -98,6 +99,7 @@ export default function ReservationDrawer({ reservationId, onClose, onChanged }:
             </div>
 
             <ReservationMessages reservationId={detail.id} enabled={view.canMessage} />
+            <ReservationAssignment itemId={detail.itemId} state={detail.state} assignmentId={detail.assignmentId ?? null} assignedUnitCode={detail.assignedUnitCode ?? null} checkIn={detail.checkIn} enabled={view.canWrite} onChanged={() => { view.reload(); onChanged(); }} />
           </div>
         ) : null}
       </Drawer>

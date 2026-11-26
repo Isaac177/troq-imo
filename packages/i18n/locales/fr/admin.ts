@@ -46,6 +46,8 @@ export const admin = {
   navReservations: 'R\u00e9servations',
   navReviews: 'Avis',
   navCases: 'Dossiers',
+  navListings: 'Revues d’annonces',
+  navClaims: 'Réclamations',
   sectionPlatform: 'Plateforme',
   sectionOperations: 'Op\u00e9rations',
   dashboardTitle: 'Tableau de bord',
