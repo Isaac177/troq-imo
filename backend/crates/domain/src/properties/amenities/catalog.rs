@@ -21,11 +21,9 @@ pub async fn list_active_amenities(
         "SELECT COUNT(*) FROM property_amenities a JOIN property_amenity_groups g ON g.id = a.group_id WHERE a.active AND g.active AND ($1::text IS NULL OR g.code = $1)",
     ).bind(group).fetch_one(pool).await?;
     let items = sqlx::query_as::<_, Amenity>(r#"
-        SELECT a.code, g.code AS group_code, COALESCE(translated.name, original.name, '') AS name,
+        SELECT a.code, g.code AS group_code, CASE WHEN lower($2) LIKE 'fr%' THEN COALESCE(NULLIF(a."nameFr", ''), a."nameEn") ELSE COALESCE(NULLIF(a."nameEn", ''), a."nameFr") END AS name,
                a.icon, a.sort_order, a.active, a.revision, a.updated_at
         FROM property_amenities a JOIN property_amenity_groups g ON g.id = a.group_id
-        LEFT JOIN property_amenity_content translated ON translated.amenity_id = a.id AND translated.locale = $2
-        LEFT JOIN property_amenity_content original ON original.amenity_id = a.id AND original.locale = a.source_locale
         WHERE a.active AND g.active AND ($1::text IS NULL OR g.code = $1)
         ORDER BY g.sort_order, g.code, a.sort_order, a.code LIMIT $3 OFFSET $4
     "#).bind(group).bind(locale).bind(page.limit()).bind(page.offset()).fetch_all(pool).await?;

@@ -1,0 +1,12 @@
+INSERT INTO stay_accommodation_templates
+    (id, city_id, "operatorId", "categoryCode", "inventoryModel", "nameEn", "nameFr", "descriptionEn", "descriptionFr", "maxAdults", "maxChildren", "bedroomCount", "bedCount", "bathroomCount", accessibility, "baseNightlyAmount", status)
+VALUES
+    ('seed-template-goma-standard-room', 'GOMA', 'seed-host-goma-lake', 'HOTEL_ROOM', 'POOLED_ROOM', 'Standard double room', 'Chambre double standard', 'Double bed, private bathroom and fan.', 'Lit double, salle de bain privée et ventilateur.', 2, 1, 1, 1, 1, '[]', 95000, 'ACTIVE'),
+    ('seed-template-goma-family-room', 'GOMA', 'seed-host-goma-lake', 'HOTEL_ROOM', 'POOLED_ROOM', 'Family room', 'Chambre familiale', 'Two double beds for a family of four.', 'Deux lits doubles pour une famille de quatre.', 4, 2, 1, 2, 1, '["GROUND_FLOOR"]', 160000, 'ACTIVE'),
+    ('seed-template-goma-garden-flat', 'GOMA', 'seed-host-goma-lake', 'APARTMENT', 'WHOLE_UNIT', 'Garden flat', 'Appartement avec jardin', 'Two bedrooms with a private garden.', 'Deux chambres avec jardin privé.', 4, 2, 2, 3, 1, '["STEP_FREE_ENTRY", "GROUND_FLOOR"]', 220000, 'ACTIVE'),
+    ('seed-template-goma-dorm-bed', 'GOMA', 'seed-host-goma-lake', 'DORMITORY_BED', 'POOLED_ROOM', 'Dormitory bed', 'Lit en dortoir', 'One bed in a shared six-bed dormitory.', 'Un lit dans un dortoir partagé de six lits.', 1, 0, 1, 1, 1, '[]', 25000, 'ACTIVE'),
+    ('seed-template-goma-old-bungalow', 'GOMA', 'seed-host-goma-lake', 'BUNGALOW', 'WHOLE_UNIT', 'Lakeside bungalow (retired)', 'Bungalow du lac (retiré)', 'No longer offered.', 'Plus proposé.', 2, 0, 1, 1, 1, '[]', 120000, 'ARCHIVED'),
+    ('seed-template-kin-river-suite', 'KIN', 'seed-host-kin-river', 'HOTEL_ROOM', 'POOLED_ROOM', 'River suite', 'Suite fleuve', 'Suite with a view of the river.', 'Suite avec vue sur le fleuve.', 2, 1, 1, 1, 1, '["STEP_FREE_ENTRY", "HEARING_LOOP"]', 180000, 'ACTIVE'),
+    ('seed-template-kin-apartment', 'KIN', 'seed-host-kin-river', 'APARTMENT', 'WHOLE_UNIT', 'Two-bedroom apartment', 'Appartement deux chambres', 'Furnished flat in Gombe.', 'Appartement meublé à Gombe.', 4, 1, 2, 2, 1, '[]', 250000, 'ACTIVE'),
+    ('seed-template-kin-old-studio', 'KIN', 'seed-host-kin-river', 'STUDIO', 'WHOLE_UNIT', 'Courtyard studio (retired)', 'Studio cour (retiré)', 'No longer offered.', 'Plus proposé.', 2, 0, 1, 1, 1, '[]', 90000, 'ARCHIVED')
+ON CONFLICT (id) DO NOTHING;

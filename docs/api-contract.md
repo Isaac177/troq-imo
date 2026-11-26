@@ -10,6 +10,6 @@ The target contract is audience routes under `/api/public`, `/api/guest`, `/api/
 
 Remaining work: generate and commit the TypeScript client and OpenAPI document, assemble module routers and specifications, implement consistent success and error schemas, verify CORS, add compression and tracing, and verify the contract against actual module handlers. The authenticated directory must be replaced by B1. Rate limiting requires a Redis integration. Rust has been read-checked only; the owner runs cargo.
 
-The generator and its output must also respect the repository rule prohibiting code comments. The generator has not been selected or run, and no generated artifacts should be treated as available until the owner can compile the API and the complete pipeline is verified.
+The owner builds the current API with cargo watch, then runs `bun run generate` in `packages/api` to emit `openapi.json`, `generated.ts`, and the typed `createApiClient` export. The generator rejects a binary older than backend source, removes generated comments, and never runs cargo. A stale binary was used only in a temporary location to validate the TypeScript printer; the current contract and generated package remain unavailable until the owner rebuilds and runs generation.
 
 Browser origins come from comma-separated `CORS_ALLOWED_ORIGINS`; invalid entries prevent startup. CORS permits the methods and authentication, content, city and request ID headers used by the API. An empty list permits no cross-origin browser access. Owner compile and browser verification remain open.

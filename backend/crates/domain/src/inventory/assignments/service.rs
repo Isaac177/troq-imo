@@ -92,7 +92,7 @@ pub async fn assign(pool: &PgPool, actor: &Actor, input: AssignUnitInput) -> Res
         actor.user_id().as_str(),
     )
     .await?;
-    queries::set_item_unit(&mut tx, &item.item_id, &input.physical_unit_id).await?;
+    crate::reservations::assign_physical_unit(&mut tx, &item.item_id, &input.physical_unit_id).await?;
     audit::record(
         &mut tx,
         &actor.audit(),
@@ -172,7 +172,7 @@ pub async fn move_unit(
     )
     .await?;
     if input.from_date == current.start_date && current.start_date == item.check_in {
-        queries::set_item_unit(&mut tx, &item.item_id, &input.physical_unit_id).await?;
+        crate::reservations::assign_physical_unit(&mut tx, &item.item_id, &input.physical_unit_id).await?;
     }
     audit::record(
         &mut tx,

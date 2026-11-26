@@ -4,6 +4,7 @@ pub mod cancellation;
 pub mod decision;
 pub mod decision_queries;
 pub mod mine;
+mod item_assignment;
 pub mod no_show;
 pub mod operator_cancel;
 pub mod operator_list;
@@ -25,3 +26,5 @@ mod cancel_tests;
 mod guest_tests;
 #[cfg(test)]
 mod room_tests;
+
+pub use item_assignment::assign_physical_unit;

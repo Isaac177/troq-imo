@@ -13,6 +13,7 @@ use axum::Router;
 use kernel::KernelState;
 
 pub use messages::*;
+pub use scope::ensure_host as ensure_host_in_city;
 
 pub fn public_routes<S>() -> Router<S>
 where

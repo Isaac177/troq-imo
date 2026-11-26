@@ -39,27 +39,27 @@ pub struct Amenity {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, utoipa::ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct GroupWrite {
-    pub locale: String,
-    pub name: String,
+    pub name_en: String,
+    pub name_fr: String,
     pub sort_order: Option<i32>,
     pub active: Option<bool>,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, utoipa::ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct AmenityWrite {
-    pub locale: String,
-    pub name: String,
+    pub name_en: String,
+    pub name_fr: String,
     pub group_code: String,
     pub icon: String,
     pub sort_order: Option<i32>,
     pub active: Option<bool>,
 }
 
-#[derive(Debug, serde::Serialize)]
+#[derive(Debug, serde::Serialize, utoipa::ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct SavedCatalogItem {
     pub code: String,

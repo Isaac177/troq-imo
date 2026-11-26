@@ -1,3 +1,4 @@
+pub mod handler;
 mod amenity_writes;
 mod catalog;
 mod group_writes;

@@ -35,3 +35,13 @@ SELECT v.amenity_id, v.locale, v.name FROM (VALUES
     ('seed-amenity-retired-active-group', 'en', 'Television'), ('seed-amenity-retired-active-group', 'fr', 'Télévision')
 ) AS v(amenity_id, locale, name) JOIN property_amenities a ON a.id = v.amenity_id
 ON CONFLICT DO NOTHING;
+
+UPDATE property_amenity_groups g SET
+    "nameEn" = CASE WHEN g."nameEn" = '' THEN COALESCE((SELECT c.name FROM property_amenity_group_content c WHERE c.group_id = g.id AND c.locale = 'en'), '') ELSE g."nameEn" END,
+    "nameFr" = CASE WHEN g."nameFr" = '' THEN COALESCE((SELECT c.name FROM property_amenity_group_content c WHERE c.group_id = g.id AND c.locale = 'fr'), '') ELSE g."nameFr" END
+WHERE g.id LIKE 'seed-%';
+
+UPDATE property_amenities a SET
+    "nameEn" = CASE WHEN a."nameEn" = '' THEN COALESCE((SELECT c.name FROM property_amenity_content c WHERE c.amenity_id = a.id AND c.locale = 'en'), '') ELSE a."nameEn" END,
+    "nameFr" = CASE WHEN a."nameFr" = '' THEN COALESCE((SELECT c.name FROM property_amenity_content c WHERE c.amenity_id = a.id AND c.locale = 'fr'), '') ELSE a."nameFr" END
+WHERE a.id LIKE 'seed-%';

@@ -45,10 +45,10 @@ HTTP shape changes: NATS subject plus gateway route became one axum handler. Hos
 
 | Legacy call | Needed from | Status |
 |---|---|---|
-| `restrictions::check::enforce` (min stay, closed days, lead time) | `inventory::restrictions::check::enforce(pool, property_id, &StayRequest)` exists in the B3 folder but is not exported | open (B3 export, then api implements `enforce_restrictions`) |
-| `commission::rate::snapshot_for` | `billing::commission::rate::snapshot_for(pool, city, host_id, Money)` exists, not exported. Its `CommissionSnapshot` (rate_bps, amount, net) has the same wire shape as `quotes::CommissionQuote` | open (B8 export) |
-| `credits::gate::ensure_can_book` | `billing::credits::gate::ensure_can_book(pool, host_id, commission_minor)` exists, not exported | open (B8 export) |
-| `template_media::read::cover_for_unit_type` | properties template media (B2) | open (B2 export) |
+| `restrictions::check::enforce` (min stay, closed days, lead time) | `inventory::restrictions::check::enforce(pool, property_id, &StayRequest)` exists in the B3 folder but is not exported | implemented in `inventory::restrictions::enforce_for_city` and API `DomainQuoteChecks`; owner compile and integration verification open |
+| `commission::rate::snapshot_for` | `billing::commission::rate::snapshot_for(pool, city, host_id, Money)` exists, not exported. Its `CommissionSnapshot` (rate_bps, amount, net) has the same wire shape as `quotes::CommissionQuote` | implemented in API `DomainQuoteChecks` with host-city check; owner compile and integration verification open |
+| `credits::gate::ensure_can_book` | `billing::credits::gate::ensure_can_book(pool, host_id, commission_minor)` exists, not exported | implemented in API `DomainQuoteChecks` with host-city check; owner compile and integration verification open |
+| `template_media::read::cover_for_unit_type` | properties template media (B2) | implemented in `properties::media::cover_for_unit_type` and API `DomainQuoteChecks`; owner compile and integration verification open |
 
 ## Behaviour notes
 
@@ -96,3 +96,7 @@ Migration `00019_pricing.sql`. Legacy table and column names (camelCase quoted) 
 | `stay_quotes` | legacy `city` column is `city_id`; foreign key to properties dropped |
 
 Tables and functions read but owned elsewhere: `stay_properties` (`id`, `city_id`, `"operatorId"`, `timezone`, `status`), `hosts` (`id`, `status`), `stay_unit_types` (`id`, `"propertyId"`, `city_id`, `status`, `"maxAdults"`, `"maxChildren"`), `stay_reservations` (`"contractSnapshot"`, `state`), `stay_inventory_pools`, `stay_night_inventory`, SQL functions `stay_room_available`, `stay_unallocated_physical_blocks`. B2 and B3 migrations must keep these names. Translatable content: the pricing tables hold no translatable text (policy content is structured JSON), so no per-locale tables are needed; the Mungini shape does not differ.
+
+`DomainQuoteChecks` is attached to the API router. Its implementation verifies the property and unit city before restriction checks, checks host city before billing checks, and resolves ready template media from the property-owned storage module. Rust is read-checked only. A ready media key outside the property city scope is not signed. As in legacy, an unavailable cover is omitted without failing the quote. Database, signed URL, permission and API integration tests remain open. The API identity directory remains fail-closed.
+
+Unit-type archive now calls `pricing::archive_for_unit_type` in its existing transaction. This keeps rate-plan writes in the pricing module without changing the legacy archive update. Owner compilation and database verification remain open.

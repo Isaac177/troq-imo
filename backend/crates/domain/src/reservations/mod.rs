@@ -22,6 +22,7 @@ use kernel::KernelState;
 pub use codes::*;
 pub use contract::{DiscountView, NightLine};
 pub use lifecycle::state::{can_move, RESERVATION_STATES};
+pub use lifecycle::assign_physical_unit;
 pub use lifecycle::types::{ReservationView, OperatorReservationView, HoldRequest, GuestInput};
 pub use lifecycle::decision::apply_decision;
 pub use lifecycle::platform_cancel::{platform_cancel, preview as platform_cancel_preview};

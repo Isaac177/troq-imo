@@ -67,7 +67,7 @@ Defaults followed: D1 own identity (platform team resolved from `identity_grants
 | `notify/prefs.rs` precedence event, category, `*`, URGENT forces in-app and email | `prefs.rs` | done |
 | `notify/render.rs` `fill`, `pick` | `render.rs` | done |
 | `notify/links.rs` Stay deep links | `links.rs` (guest `/trips`, host `/reservations`, `/properties`, `/cases`, `/tasks`, admin `/audit`) | done (paths follow the legacy shapes without the `/stays` prefix, owner to confirm against app route tables) |
-| `notify/recipients.rs` users by role, profiles by NATS call | `recipients.rs` platform team from `identity_grants`; contacts through `ContactDirectory` | open: `ContactDirectory` has no implementation until the identity module stores email, phone and language |
+| `notify/recipients.rs` users by role, profiles by NATS call | `recipients.rs` platform team from `identity_grants`; contacts through `ContactDirectory` | open: identity contact lookup is wired, but user contact migration and end-to-end delivery verification remain |
 | `notify/email_channel.rs` bilingual email | `channels/email.rs`, `email_html.rs` (provider client copied, HTML built in code, no TROQ template) | done |
 | `notify/whatsapp_channel.rs`, `whatsapp.rs` | `channels/whatsapp.rs` (provider endpoint kept, placeholder email domain `@mungini.local`) | done |
 | `AUTH_OTP_CHANNEL` switch | kernel `Config::otp_channel`, WhatsApp code kept in `channels/whatsapp.rs` | done |
@@ -104,7 +104,7 @@ Ported or added beside the code: catalog, copy parity, render, links, notice bui
 
 ## Open items
 
-1. `ContactDirectory` implementation (email, phone, language of a user) belongs to identity (B1). Until then `deliver_pending(kernel, config, None, limit)` handles push and documents only and email deliveries stay pending.
+1. Identity owns the `ContactDirectory`. The job uses it for email and WhatsApp fallback; absent contacts defer the email delivery for one hour without consuming its failure-attempt budget. Contacts still need migration and end-to-end verification.
 2. `jobs` registration (B11): a `TransactionalSubscriber` named `notifications` whose `accepts` is `domain::notifications::accepts` and whose `handle` calls `handle_event`, plus a periodic task calling `deliver_pending`.
 
 ## Schema contract
@@ -122,3 +122,9 @@ Migration `backend/migrations/00009_notifications.sql`. Legacy names kept, colum
 | `messaging_document_event` | id, document_id, event_type, actor_id, created_at | immutable |
 
 Reads: `identity_grants`, `identity_users` (platform team). Global templates are code and files, there is no `city_id` template table.
+
+Identity now provides `IdentityContacts` and contact columns in migration 00024. Notification delivery remains disconnected from that directory: preexisting accounts without migrated contact values would otherwise have deliveries permanently skipped. Account migration or a non-destructive missing-contact policy is required before wiring.
+
+Email deliveries with no identity contact remain pending and retry hourly instead of being skipped; this intentionally differs from the legacy best-effort flow to avoid discarding notifications before account migration. Missing users or suspended accounts also stay pending until contact data becomes available or an operator resolves them. The job only runs when `JOBS_ENABLED` is true. Existing `FAILED` or `SKIPPED` deliveries are not automatically replayed.
+
+Document delivery remains open: document issuance happens before email or WhatsApp delivery, and a later retry can encounter an already-issued document without re-sending it. This requires a separate durable issuance/delivery reconciliation before declaring document delivery complete.

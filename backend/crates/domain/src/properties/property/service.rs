@@ -1,7 +1,7 @@
 use kernel::audit::{self, AuditEntry};
 use kernel::auth::Actor;
 use kernel::city::City;
-use kernel::error::{codes::NOT_FOUND, Error, Result};
+use kernel::error::{Error, Result};
 use kernel::idempotency;
 use kernel::ids::new_id;
 use kernel::outbox;
@@ -47,11 +47,11 @@ pub async fn create(pool: &PgPool, actor: &Actor, input: CreatePropertyInput) ->
     if !actor.access.is_member_of(&validated.host_id) {
         return Err(Error::forbidden(HOST_NOT_MEMBER));
     }
-    actor.require_scoped(PROPERTIES_WRITE, Some(&validated.host_id), None)?;
+    actor.require_scoped(PROPERTIES_WRITE, Some(validated.host_id.as_str()), None)?;
     create_validated(pool, actor, actor.city, validated).await
 }
 
-pub async fn create_validated(
+async fn create_validated(
     pool: &PgPool,
     actor: &Actor,
     city: City,
@@ -65,9 +65,11 @@ pub async fn create_validated(
     let key = validated.idempotency_key.as_deref();
     if let Some(key) = key {
         if let Some(existing) = idempotency::resource_for(pool, city, IDEMPOTENCY_SCOPE, key).await? {
-            return queries::find(pool, &existing)
-                .await?
-                .ok_or_else(|| Error::internal("idempotent property not readable"));
+            let property = crate::properties::scope::property_for(pool, actor, &existing, PROPERTIES_WRITE).await?;
+            if property.operator_id != validated.host_id {
+                return Err(Error::conflict(REQUEST_IN_PROGRESS));
+            }
+            return Ok(property);
         }
     }
     let property_id = new_id("prop");
@@ -99,8 +101,4 @@ pub async fn create_validated(
     queries::find(pool, &property_id)
         .await?
         .ok_or_else(|| Error::not_found(PROPERTY_NOT_FOUND))
-}
-
-pub fn not_found() -> Error {
-    Error::not_found(NOT_FOUND)
 }

@@ -149,3 +149,5 @@ Files in `backend/seeds/reservations/`, listed in `00-order.txt` after the inven
 | `05-tasks-goma.sql` | Goma tasks in every state, type and priority |
 
 Inventory seeds (B3) already hold the allocations and assignments for `seed-res-goma-confirmed`, `-requested`, `-expired`, `-cancelled` and `seed-res-kin-confirmed`. Their assignment seed only inserts when the item exists, so `inventory/05-assignments-feeds.sql` is listed a second time at the end of `00-order.txt`; it is idempotent.
+
+Inventory assignment now calls `reservations::assign_physical_unit` in its existing transaction. The owning reservation module performs the item update; compilation and database verification remain open.

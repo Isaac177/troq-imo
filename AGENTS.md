@@ -99,8 +99,8 @@ Mungini is not allowed to grow new services, apps or databases for a new capabil
 
 - Mungini is bilingual (English and French) and extendable. English is the base language and is always active.
 - Static UI strings live in the locale files of `packages/i18n`.
-- Translatable entity content (property and room names, descriptions, highlights, policy text, SEO fields) lives in a per-entity content table with one row per locale, plus a `source_locale` on the entity. Never add `name_en` or `name_fr` style columns. Before porting a Stay entity, confirm how `stay-service` stores its translatable content today (rule 16) and say in the parity ledger if the Mungini shape differs.
-- Every form submits content in one language, the active locale, and sends `source_locale`. Other languages are filled through a translation queue in the admin app. No EN/FR toggle inside a form.
+- Per owner decision D13, ported Stay entities retain their existing bilingual columns, such as `"nameEn"` and `"nameFr"`, until a later migration. Reads select the requested language and fall back to the other when empty. Confirm the original entity shape before porting it and record differences in its parity ledger. For new entities outside the Stay port, use per-entity locale content tables and `source_locale`.
+- Forms for ported Stay entities follow their bilingual API contract under D13. New entities using locale content tables submit one active language with `source_locale`; other languages are filled through the admin translation queue. No EN/FR toggle inside a form.
 - Never hardcode a language list in a UI. Fetch active languages from the API.
 - Locale file format: see decision D12 in the migration plan. Default is one file per feature per language, where `en/<feature>.ts` defines the object (without `as const`) and exports its type, and `fr/<feature>.ts` satisfies that type, so a missing key is a compile error. Adding a feature means two locale files plus one import line in each index.
 - Rich text fields use one rich text editor component. Names, short descriptions, SEO fields and tag lists are plain inputs.

@@ -9,3 +9,4 @@ pub mod notifications;
 pub mod billing;
 pub mod inventory;
 pub mod reservations;
+pub mod admin;

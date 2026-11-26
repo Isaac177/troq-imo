@@ -1,3 +1,4 @@
+mod city_check;
 pub mod amendment_check;
 mod batch;
 mod bulk;
@@ -22,3 +23,5 @@ pub use types::{
     BulkRestrictionInput, BulkRestrictionResult, RestrictionListQuery, RestrictionOperation,
     RestrictionView,
 };
+
+pub use city_check::enforce_for_city;

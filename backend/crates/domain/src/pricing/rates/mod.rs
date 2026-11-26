@@ -1,3 +1,4 @@
+mod archive;
 pub mod engine;
 pub mod explain;
 pub mod plans;
@@ -11,3 +12,5 @@ pub mod validation;
 
 pub use engine::{nightly_minor, Adjustment, RateRule};
 pub use rule_queries::{load_rules, rules_for_plans};
+
+pub use archive::archive_for_unit_type;

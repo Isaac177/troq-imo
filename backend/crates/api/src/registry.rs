@@ -34,4 +34,6 @@ register! {
     billing,
     inventory,
     reservations,
+    properties,
+    admin,
 }

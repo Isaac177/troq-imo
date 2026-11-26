@@ -90,6 +90,28 @@ pub async fn run_email(
 mod tests {
     use super::*;
 
+    struct EmptyDirectory;
+
+    impl ContactDirectory for EmptyDirectory {
+        fn contacts<'a>(&'a self, _user_ids: &'a [String]) -> futures::future::BoxFuture<'a, Result<Vec<Contact>>> {
+            Box::pin(async { Ok(Vec::new()) })
+        }
+    }
+
+    #[tokio::test]
+    async fn missing_identity_contact_is_reported_for_retry() {
+        let delivery = Delivery {
+            id: "seed-delivery".into(),
+            city: "GOMA".into(),
+            channel: "EMAIL".into(),
+            user_id: Some("seed-user".into()),
+            notification_id: None,
+            payload: serde_json::json!({}),
+            attempts: 0,
+        };
+        assert_eq!(run_email(&NotificationsConfig::from_env(), &delivery, &EmptyDirectory).await.unwrap(), "no contact");
+    }
+
     #[test]
     fn action_url_prefixes_the_language_and_trims_the_base() {
         let mut config = NotificationsConfig::from_env();

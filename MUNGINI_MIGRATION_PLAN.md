@@ -18,10 +18,11 @@ Stay today is a separate microservice (`stay-service`) wired into the marketplac
 
 ## Current state
 
-Updated 25/11/2026 after inspecting the working tree. Mungini is a Git repository; its foundation and current migration work are largely untracked. Preserve those files. The claims and parity ledgers record the current state of individual slices.
+Updated 26/11/2026 after inspecting the working tree and the current handoff. Mungini is a Git repository; preserve the existing implementation and uncommitted work. The claims and parity ledgers track individual slices.
 
-- The kernel, development infrastructure, client skeletons and web UI primitives exist. API contract generation, jobs and the baseline migration are partial.
-- Stay domain modules, feature screens, demo seeds and the data-copy rehearsal remain open. A shell or partial ledger does not establish feature parity.
+- Backend modules for identity, hosts, properties, inventory, pricing, reservations, guest discovery, reviews, billing, notifications and admin exist at varying levels of completeness. Several routes are registered, but authenticated access remains fail-closed while identity is incomplete. Rust and SQL changes have not been compiled or executed by the agent.
+- The four client apps are still shells. Generated client output is blocked until the owner compiles a current API binary. Feature screens, complete parity and data-copy rehearsal remain open.
+- Demo seeds exist for multiple modules and are ordered by their current dependencies; the order still requires a database rehearsal.
 - TROQ removal is gated by completed parity ledgers and owner review. Do not delete legacy code before that gate.
 
 ## Decisions made

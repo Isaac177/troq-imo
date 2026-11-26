@@ -1,6 +1,6 @@
 use kernel::audit::{self, AuditEntry};
 use kernel::auth::Actor;
-use kernel::error::{codes, Error, ErrorCode, Result};
+use kernel::error::{codes, Error, Result};
 use kernel::ids::new_id;
 use kernel::outbox;
 use kernel::permissions::names::{self, HOSTS_TEAM};
@@ -10,7 +10,7 @@ use sqlx::PgPool;
 
 use super::overrides::OverrideEffect;
 
-const PERMISSION_INVALID: ErrorCode = ErrorCode::new("IDENTITY_PERMISSION_INVALID");
+use super::messages::PERMISSION_INVALID;
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]

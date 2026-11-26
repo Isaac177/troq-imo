@@ -16,6 +16,7 @@ const NOTIFICATION_BATCH: usize = 50;
 const HOLD_EXPIRY_BATCH: usize = 100;
 const GUEST_RETENTION_BATCH: usize = 100;
 const SEARCH_EVENT_PURGE_BATCH: usize = 1000;
+const REGISTRATION_OTP_PURGE_BATCH: usize = 1000;
 
 pub fn spawn(tasks: &mut JoinSet<()>, kernel: &Kernel, stop: &Stop) {
     tasks.spawn(every(
@@ -52,6 +53,18 @@ pub fn spawn(tasks: &mut JoinSet<()>, kernel: &Kernel, stop: &Stop) {
         stop.clone(),
         |kernel| async move {
             adapters::purge_search_events(&kernel, SEARCH_EVENT_PURGE_BATCH as i64).await
+        },
+    ));
+    tasks.spawn(every(
+        "registration_otp_purge",
+        SWEEP_INTERVAL,
+        REGISTRATION_OTP_PURGE_BATCH,
+        kernel.clone(),
+        stop.clone(),
+        |kernel| async move {
+            domain::identity::purge_expired_registration_challenges(
+                kernel.db.pool(), REGISTRATION_OTP_PURGE_BATCH as i64,
+            ).await.map(|count| count as usize)
         },
     ));
     let config = Arc::new(NotificationsConfig::from_env());

@@ -99,6 +99,14 @@ pub async fn mark_done(tx: &mut Transaction<'_, Postgres>, id: &str) -> Result<(
     Ok(())
 }
 
+pub async fn defer_contact(tx: &mut Transaction<'_, Postgres>, id: &str) -> Result<()> {
+    sqlx::query("UPDATE notification_deliveries SET last_error = 'CONTACT_UNAVAILABLE', next_attempt_at = now() + interval '1 hour' WHERE id = $1 AND state = 'PENDING'")
+        .bind(id)
+        .execute(&mut **tx)
+        .await?;
+    Ok(())
+}
+
 pub async fn mark_skipped(tx: &mut Transaction<'_, Postgres>, id: &str, reason: &str) -> Result<()> {
     sqlx::query("UPDATE notification_deliveries SET state = 'SKIPPED', done_at = now(), last_error = $2 WHERE id = $1")
         .bind(id)
@@ -132,6 +140,30 @@ pub async fn mark_failed(tx: &mut Transaction<'_, Postgres>, delivery: &Delivery
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    static MIGRATOR: sqlx::migrate::Migrator = sqlx::migrate!("../../migrations");
+
+    #[sqlx::test(migrator = "MIGRATOR")]
+    async fn missing_contact_is_deferred_without_exhausting_attempts(pool: sqlx::PgPool) {
+        sqlx::query("INSERT INTO notification_deliveries (id, city_id, dedupe_key, channel, user_id, payload, attempts) VALUES ('seed-delivery-contact', 'GOMA', 'seed-contact-key', 'EMAIL', 'seed-user', '{}'::jsonb, 4)")
+            .execute(&pool).await.unwrap();
+        let mut tx = pool.begin().await.unwrap();
+        let delivery = claim_next(&mut tx, &["EMAIL"]).await.unwrap().unwrap();
+        defer_contact(&mut tx, &delivery.id).await.unwrap();
+        tx.commit().await.unwrap();
+        let (state, attempts, error, due): (String, i32, Option<String>, bool) = sqlx::query_as(
+            "SELECT state, attempts, last_error, next_attempt_at <= now() FROM notification_deliveries WHERE id = 'seed-delivery-contact'",
+        ).fetch_one(&pool).await.unwrap();
+        assert_eq!(state, "PENDING");
+        assert_eq!(attempts, 4);
+        assert_eq!(error.as_deref(), Some("CONTACT_UNAVAILABLE"));
+        assert!(!due);
+        sqlx::query("UPDATE notification_deliveries SET next_attempt_at = now() WHERE id = 'seed-delivery-contact'")
+            .execute(&pool).await.unwrap();
+        let mut tx = pool.begin().await.unwrap();
+        assert!(claim_next(&mut tx, &["EMAIL"]).await.unwrap().is_some());
+        tx.rollback().await.unwrap();
+    }
 
     #[test]
     fn channel_names_round_trip() {

@@ -18,5 +18,6 @@ pub async fn deliver_notifications(
     config: &NotificationsConfig,
     limit: usize,
 ) -> Result<usize> {
-    notifications::deliver_pending(kernel, config, None, limit).await
+    let contacts = domain::identity::IdentityContacts::new(kernel.db.pool().clone());
+    notifications::deliver_pending(kernel, config, Some(&contacts), limit).await
 }

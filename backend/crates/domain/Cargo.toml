@@ -21,6 +21,10 @@ handlebars = "6"
 lopdf = "0.34"
 chromiumoxide = { version = "0.7", default-features = false, features = ["tokio-runtime"] }
 jsonwebtoken = "9"
+argon2 = { version = "0.5", features = ["std"] }
+bcrypt = "0.16"
+hmac = "0.12"
+rand = "0.8"
 base64 = "0.22"
 anyhow = "1"
 

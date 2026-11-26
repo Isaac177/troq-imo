@@ -17,10 +17,12 @@ Local development, from the Mungini root:
 
 When editing `infra/.env.dev`, keep the PostgreSQL password in `DATABASE_URL` in sync with `POSTGRES_PASSWORD`, the Redis password in `REDIS_URL` in sync with `REDIS_PASSWORD`, and the MinIO root credentials in sync with the storage access keys.
 
-The API does not apply migrations or load seeds at startup. The owner handles local database migrations and seed runs after the required backup.
+The API does not apply migrations or load seeds at startup. `JOBS_ENABLED` defaults to `false`; set it to `true` only after the required schema, notification configuration and contact migration are ready. The owner handles local database migrations and seed runs after the required backup.
 
 Production configuration:
 
 - `infra/.env` is the production environment file and is ignored by Git. Create it from `infra/.env.prod.example` if needed and fill in the real database, Redis, Cloudflare R2 and JWT values on the production host. Blank values are not usable production credentials.
 - Production Postgres and Redis are external to the production compose file. Production object storage is Cloudflare R2.
 - The owner handles production builds and deployments. `backend/Cargo.lock` must be committed once Cargo generates it. Compose needs BuildKit (Docker 23 or later).
+
+Registration OTP integration requires `OTP_SIGNING_KEY` with at least 32 bytes. The development example is for local use; the production file requires an independently supplied value. Provider credentials are required before registration delivery can be enabled.

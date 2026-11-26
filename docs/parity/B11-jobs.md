@@ -13,10 +13,10 @@ Design: no NATS. Modules write `kernel_outbox` rows in the same transaction as t
 | Idempotent consumer inbox | `sync/apply.rs` `stay_inbox` | `kernel_inbox` written in the delivery transaction | done |
 | Subscriber registry, one line per module | none (new) | `jobs/src/registry.rs`, `subscribers.rs`, `pattern.rs` | done |
 | Notification fan-out from events (legacy consumers in messaging-service and troq-notify) | messaging-service Stay files | `jobs/src/notifications.rs` subscriber `notifications` calling `domain::notifications::{accepts, handle_event}` | done |
-| Email, push and document delivery of queued notifications | messaging-service workers | `jobs/src/tasks` `notification_delivery` every 5 s, batch 50, `domain::notifications::deliver_pending(kernel, &NotificationsConfig::from_env(), None, 50)` | open: contact directory is `None` until identity implements `ContactDirectory`, so email deliveries are not claimed |
+| Email, push and document delivery of queued notifications | messaging-service workers | `jobs/src/tasks` `notification_delivery` every 5 s, batch 50, `domain::notifications::deliver_pending` with `IdentityContacts` | open: missing email contacts remain pending with hourly retry; owner compilation, contact migration and delivery verification required |
 | Billing and search-index subscribers | none (new) | registered by B8 and B6 in `subscribers.rs` | open |
 | Events no subscriber accepts (for example `operations.task.*`, `claim.decided`, `property.block_created`) | published to the stream with no consumer | `deliver_one` marks them `PUBLISHED` with no inbox row; failures of an accepting subscriber still roll back and retry | done by lead decision |
-| Hold expiry and reconciliation, 30 s sweep, batch 100 | `reservations/expiry.rs` `run`, `sweep` | `jobs/src/tasks` `hold_expiry` calling `domain::reservations::expire_due_holds(kernel, batch)`; implemented in `domain/src/reservations/holds/expiry.rs` | open: `reservations` is not declared in `domain/src/lib.rs` and has no `mod.rs` re-exporting `expire_due_holds` |
+| Hold expiry and reconciliation, 30 s sweep, batch 100 | `reservations/expiry.rs` `run`, `sweep` | `jobs/src/tasks` `hold_expiry` calling `domain::reservations::expire_due_holds(kernel, batch)`; implemented in `domain/src/reservations/holds/expiry.rs` | open: reservations now exports `expire_due_holds`; opt-in jobs startup is wired; runtime verification remains |
 | Guest anonymization after `retainUntil`, only when retention days is set | `reservations/retention.rs` `anonymize_expired`, `main.rs` | `jobs/src/tasks` `guest_retention` calling `domain::guests::anonymize_expired_guests(kernel, 100)`, started only when `GUEST_RETENTION_DAYS` is set, warning otherwise | done (logic lives in guests; jobs does not duplicate it) |
 | Retention date at write time (`configure`, `retain_until`) | `reservations/retention.rs` | `domain::guests::retain_until` | done (guests) |
 | Search-event purge older than 6 months, 1000 rows per run | `search_engine/events.rs` `purge_expired`, called from `expiry.rs` | `jobs/src/tasks` `search_event_purge` calling `domain::guests::purge_search_events(kernel, 1000)` | done |
@@ -34,6 +34,8 @@ No new columns. Uses `kernel_outbox` including `next_attempt_at` (migration 0000
 ## Open dependencies
 
 - `domain::reservations` must be declared in `domain/src/lib.rs` and export `expire_due_holds(&Kernel, i64) -> kernel::Result<usize>`.
-- `ContactDirectory` implementation from identity, then pass it to `deliver_pending` in `tasks/adapters.rs`.
+- Identity contact lookup is passed to the delivery task; contacts and end-to-end delivery still require migration and verification.
 
 The worker still refuses to start with no registered subscriber, and `run` then leaves events pending: with nothing registered every event would otherwise be marked delivered and lost.
+
+The API starts jobs only when `JOBS_ENABLED=true`; the default is false. Shutdown requests stop the HTTP server and workers. Do not enable delivery until account contacts, notification behavior and the required migrations are ready. Rust is read-checked only.

@@ -14,6 +14,7 @@ use axum::Router;
 use kernel::KernelState;
 
 pub use messages::*;
+pub use rates::archive_for_unit_type;
 
 pub fn public_routes<S>() -> Router<S>
 where

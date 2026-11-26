@@ -193,3 +193,11 @@ mod tests {
         text.split('{').skip(1).filter_map(|rest| rest.split('}').next()).map(str::to_string).collect()
     }
 }
+
+pub static REGISTRATION_OTP: Template = tpl(
+    "identity.registration_otp",
+    "Mungini verification code",
+    "Your registration code is {code}.",
+    "Code de vérification Mungini",
+    "Votre code d'inscription est {code}.",
+);

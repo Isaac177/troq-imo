@@ -44,6 +44,9 @@ pub async fn deliver_pending(
             break;
         };
         match process(kernel, config, contacts, &delivery).await {
+            Ok(Some("no contact" | "no user" | "no contact directory")) if delivery.channel == Channel::Email.as_str() => {
+                deliveries::defer_contact(&mut tx, &delivery.id).await?
+            }
             Ok(Some(note)) if note.starts_with("no ") || note.starts_with("unsupported") => {
                 deliveries::mark_skipped(&mut tx, &delivery.id, note).await?
             }

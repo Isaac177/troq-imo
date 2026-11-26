@@ -191,19 +191,6 @@ pub async fn release_for_reservation(
     Ok(())
 }
 
-pub async fn set_item_unit(
-    tx: &mut Transaction<'_, Postgres>,
-    item_id: &str,
-    unit_id: &str,
-) -> Result<()> {
-    sqlx::query(r#"UPDATE stay_reservation_items SET "physicalUnitId" = $2 WHERE id = $1"#)
-        .bind(item_id)
-        .bind(unit_id)
-        .execute(&mut **tx)
-        .await?;
-    Ok(())
-}
-
 pub async fn free_units(
     pool: &PgPool,
     unit_type_id: &str,

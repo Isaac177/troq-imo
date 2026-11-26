@@ -7,7 +7,7 @@ Rust is read-checked only. No cargo command has been run.
 | API process and database health endpoint | `backend/crates/api/src/main.rs`, `health.rs` | implemented, owner compile and runtime verification open |
 | OpenAPI from handler and offline output | `backend/crates/api/src/spec.rs`, `health.rs` | implemented, owner compile and generation verification open |
 | Module routes and specification registry | `backend/crates/api` | open; domain modules not yet available |
-| Generated OpenAPI document and TypeScript client | `packages/api` | open; generation requires owner cargo execution and dependencies; generated output must meet the no-comments rule |
+| Generated OpenAPI document and TypeScript client | `packages/api/scripts/generate.mjs` | open: generation pipeline added; stale binary correctly rejected, current API must compile before generating; old binary used only for temporary printer/type check |
 | Request and response ID headers in health OpenAPI | `backend/crates/api/src/health.rs` | implemented; owner compile and generated-spec verification open |
 | Request ID response propagation | `backend/crates/api/src/request_id.rs` | implemented; tests written but not run, owner compile and runtime verification open |
 | Shared error schemas | `backend/crates/api` | open |

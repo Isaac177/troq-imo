@@ -7,20 +7,14 @@ use super::types::{Amenity, AmenityFilters, AmenityGroup, GroupFilters};
 const GROUP_FROM: &str = "FROM property_amenity_groups g";
 const GROUP_FILTER: &str = r#"
     WHERE ($1::boolean IS NULL OR g.active = $1)
-      AND ($2::text IS NULL OR EXISTS (
-          SELECT 1 FROM property_amenity_group_content search_content
-          WHERE search_content.group_id = g.id AND search_content.name ILIKE $2 ESCAPE '\'
-      ))
+      AND ($2::text IS NULL OR g."nameEn" ILIKE $2 ESCAPE '\' OR g."nameFr" ILIKE $2 ESCAPE '\')
 "#;
 
 const AMENITY_FROM: &str = "FROM property_amenities a JOIN property_amenity_groups g ON g.id = a.group_id";
 const AMENITY_FILTER: &str = r#"
     WHERE ($1::boolean IS NULL OR a.active = $1)
       AND ($2::text IS NULL OR g.code = $2)
-      AND ($3::text IS NULL OR a.code ILIKE $3 ESCAPE '\' OR EXISTS (
-          SELECT 1 FROM property_amenity_content search_content
-          WHERE search_content.amenity_id = a.id AND search_content.name ILIKE $3 ESCAPE '\'
-      ))
+      AND ($3::text IS NULL OR a.code ILIKE $3 ESCAPE '\' OR a."nameEn" ILIKE $3 ESCAPE '\' OR a."nameFr" ILIKE $3 ESCAPE '\')
 "#;
 
 fn search_pattern(value: Option<&str>) -> Option<String> {
@@ -40,12 +34,10 @@ pub async fn list_groups(
     let total = sqlx::query_scalar::<_, i64>(&format!("SELECT COUNT(*) {GROUP_FROM} {GROUP_FILTER}"))
         .bind(filters.active).bind(&search).fetch_one(pool).await?;
     let query = format!(r#"
-        SELECT g.code, COALESCE(translated.name, original.name, '') AS name,
+        SELECT g.code, CASE WHEN lower($3) LIKE 'fr%' THEN COALESCE(NULLIF(g."nameFr", ''), g."nameEn") ELSE COALESCE(NULLIF(g."nameEn", ''), g."nameFr") END AS name,
                g.sort_order, g.active, g.revision, g.updated_at,
                (SELECT COUNT(*) FROM property_amenities a WHERE a.group_id = g.id) AS amenity_count
         {GROUP_FROM}
-        LEFT JOIN LATERAL (SELECT name FROM property_amenity_group_content WHERE group_id = g.id AND locale = $3) translated ON true
-        LEFT JOIN LATERAL (SELECT name FROM property_amenity_group_content WHERE group_id = g.id AND locale = g.source_locale) original ON true
         {GROUP_FILTER}
         ORDER BY g.sort_order, g.code LIMIT $4 OFFSET $5
     "#);
@@ -67,11 +59,9 @@ pub async fn list_amenities(
     let total = sqlx::query_scalar::<_, i64>(&format!("SELECT COUNT(*) {AMENITY_FROM} {AMENITY_FILTER}"))
         .bind(filters.active).bind(group).bind(&search).fetch_one(pool).await?;
     let query = format!(r#"
-        SELECT a.code, g.code AS group_code, COALESCE(translated.name, original.name, '') AS name,
+        SELECT a.code, g.code AS group_code, CASE WHEN lower($4) LIKE 'fr%' THEN COALESCE(NULLIF(a."nameFr", ''), a."nameEn") ELSE COALESCE(NULLIF(a."nameEn", ''), a."nameFr") END AS name,
                a.icon, a.sort_order, a.active, a.revision, a.updated_at
         {AMENITY_FROM}
-        LEFT JOIN LATERAL (SELECT name FROM property_amenity_content WHERE amenity_id = a.id AND locale = $4) translated ON true
-        LEFT JOIN LATERAL (SELECT name FROM property_amenity_content WHERE amenity_id = a.id AND locale = a.source_locale) original ON true
         {AMENITY_FILTER}
         ORDER BY g.code, a.sort_order, a.code LIMIT $5 OFFSET $6
     "#);

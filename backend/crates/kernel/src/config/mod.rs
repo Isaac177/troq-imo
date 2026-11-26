@@ -32,6 +32,7 @@ impl FromStr for OtpChannel {
 pub struct Config {
     pub production: bool,
     pub api_port: u16,
+    pub jobs_enabled: bool,
     pub database_url: String,
     pub redis_url: String,
     pub cors_allowed_origins: Vec<String>,
@@ -59,6 +60,7 @@ impl Config {
         Ok(Self {
             production,
             api_port: parsed_or("API_PORT", 8080)?,
+            jobs_enabled: parsed_or("JOBS_ENABLED", false)?,
             database_url: required("DATABASE_URL")?,
             redis_url: required("REDIS_URL")?,
             cors_allowed_origins: optional("CORS_ALLOWED_ORIGINS")

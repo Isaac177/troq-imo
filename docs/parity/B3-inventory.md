@@ -60,7 +60,7 @@ Host routes sit under `/api/host`, admin under `/api/admin`, public under `/api/
 | `calendar::handler`: 93 day cap, units page with totals, nights, nightly prices, reservations with guest names only with guest detail permission, blocks, restrictions, local today for the active unit | `calendar/{view,service,queries,types}.rs` | done |
 | calendar nightly price (`quotes::pricing::nightly_minor`, lowest over ACTIVE plans, skip plans without a base rate) | `calendar/prices.rs` calls `pricing::rates::{load_rules, nightly_minor}` and formats with kernel `Money` | done |
 | calendar unit cover url (`template_media::read::covers_for_unit_types`, signed) | `calendar/view.rs` reads `stay_template_media` cover key and signs it with `properties::media::image_url`; media without a storage key (legacy inline bytes) are skipped | done |
-| calendar names `nameEn`, `nameFr` | kept as `nameEn` and `nameFr` (pricing, guests and reviews read the same columns); per-locale content tables are not applied, see Translatable content | done, decision for the owner |
+| calendar names `nameEn`, `nameFr` | kept as `nameEn` and `nameFr` (pricing, guests and reviews read the same columns); per-locale content tables are not applied, see Translatable content | done, owner decision D13 |
 | `calendar::feed_tokens`: token `ftk-<id>.<64 hex>`, only the SHA-256 hash is stored, revoke, list, create, public feed by token | `calendar/feed_tokens.rs` with 4 unit tests | done |
 | `calendar::ics`: iCalendar text, `PRODID` and UID domain `troqzone` | `calendar/ics.rs`, `PRODID -//Mungini//Stays//EN` and UID domain `stays.mungini`; event UIDs differ from legacy so external calendars re-import | done (adapted, product name) |
 | `calendar::inventory_defaults` | `calendar/defaults.rs` | done |
@@ -115,11 +115,11 @@ Owned, written:
 | `stay_calendar_feed_tokens` | `id`, `city_id`, `"propertyId"`, `"secretHash"`, `"createdByUserId"`, `"createdAt"`, `"revokedAt"` | |
 | SQL functions | `stay_unallocated_physical_blocks(pool_id text, night date)`, `stay_room_available(unit_type text, from_date date, to_date date, exclude_reservation text)` (turnover buffer version of 00035) | names kept for pricing, guests, reviews |
 
-Written outside the module (kept, to be moved behind owner functions): `stay_reservation_items."physicalUnitId"` (assignments `set_item_unit`), `stay_rate_plans.status` (unit type archive).
+Cross-module writes use the owning modules: assignments call `reservations::assign_physical_unit` for `stay_reservation_items."physicalUnitId"`, and unit type archive calls `pricing::archive_for_unit_type` for `stay_rate_plans.status`. Both use the original transaction; verification remains open.
 
 Read, owned elsewhere: `stay_properties` (`id`, `"operatorId"`, `city_id`, `timezone`) from B2; `stay_accommodation_categories` (`code`, `active`), `stay_accommodation_templates` (`id`, `"operatorId"`), `stay_template_media` (`id`, `"templateId"`, `status`, `"storageKey"`, `"isCover"`, `"sortOrder"`, `"createdAt"`, `"altEn"`, `"altFr"`) from B2; `stay_rate_plans` (`id`, `city_id`, `"unitTypeId"`, `status`), `stay_rate_rules` from B4; `stay_reservations`, `stay_reservation_items`, `stay_reservation_guests`, `stay_amendments` from B5. Kernel tables through kernel functions only (`kernel_audit_records`, `kernel_outbox`, `kernel_idempotency_keys`). The legacy `stay_audit_records`, `stay_outbox`, `stay_idempotency_keys`, `stay_inbox` are not used.
 
-Translatable content: stay-service stores unit type names and descriptions as `nameEn`, `nameFr`, `descriptionEn`, `descriptionFr` columns, and rule 6 asks for per-locale content tables. Pricing, guests and reviews already read the legacy columns, so the Mungini shape differs from the rule and was not changed here. Decision for the owner: keep the four columns, or add `stay_unit_type_content` and `"sourceLocale"` together with B2, B4, B6 and B7 in one pass.
+Translatable content: under owner decision D13, unit types retain the legacy `nameEn`, `nameFr`, `descriptionEn` and `descriptionFr` columns for this port. A future migration may move content into per-locale tables.
 
 ## Public surface (for dependents)
 
@@ -130,6 +130,6 @@ Translatable content: stay-service stores unit type names and descriptions as `n
 | Item | Status |
 |---|---|
 | Foreign keys from inventory tables to `stay_properties`, categories and templates | open until the B2 migration exists |
-| Per-locale unit type content (rule 6) | open, owner decision above |
-| Move the two writes outside the module (`stay_reservation_items."physicalUnitId"`, `stay_rate_plans.status`) behind functions of reservations and pricing | open, small follow up |
+| Per-locale unit type content | closed by owner decision D13; legacy bilingual columns retained |
+| Move the two writes outside the module (`stay_reservation_items."physicalUnitId"`, `stay_rate_plans.status`) behind functions of reservations and pricing | implemented with original transactions; owner compilation and database verification remain open |
 | Compile, tests and seed load not run (read-checked only) | open for the owner |

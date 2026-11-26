@@ -24,6 +24,7 @@ mod notice;
 mod prefs;
 mod property_events;
 mod recipients;
+mod registration_otp;
 mod render;
 mod reservation_events;
 mod types;
@@ -38,6 +39,7 @@ pub use codes::{
     PUSH_TOKEN_INVALID,
 };
 pub use config::NotificationsConfig;
+pub use registration_otp::{send_registration_otp, RegistrationChannel};
 pub use contacts::{Contact, ContactDirectory};
 pub use copy::{find as find_copy, Template};
 pub use deliver::deliver_pending;

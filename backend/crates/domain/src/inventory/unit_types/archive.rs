@@ -28,10 +28,7 @@ pub async fn archive(
     if has_reservations(&mut tx, &current.id).await? {
         return Err(Error::conflict(UNIT_TYPE_HAS_RESERVATIONS));
     }
-    sqlx::query(r#"UPDATE stay_rate_plans SET status = 'ARCHIVED' WHERE "unitTypeId" = $1"#)
-        .bind(&current.id)
-        .execute(&mut *tx)
-        .await?;
+    crate::pricing::archive_for_unit_type(&mut tx, &current.id).await?;
     retire_units(&mut tx, &current.id).await?;
     sqlx::query(
         r#"UPDATE stay_unit_types SET status = 'ARCHIVED', version = version + 1, "updatedAt" = now()
