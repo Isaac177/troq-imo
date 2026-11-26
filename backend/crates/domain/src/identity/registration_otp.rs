@@ -16,7 +16,15 @@ fn channel_name(channel: RegistrationChannel) -> &'static str {
     match channel { RegistrationChannel::Email => "email", RegistrationChannel::Whatsapp => "whatsapp" }
 }
 
-fn destination(channel: RegistrationChannel, value: &str) -> Result<String> {
+pub fn parse_channel(value: &str) -> Option<RegistrationChannel> {
+    match value.trim().to_ascii_lowercase().as_str() {
+        "email" => Some(RegistrationChannel::Email),
+        "whatsapp" => Some(RegistrationChannel::Whatsapp),
+        _ => None,
+    }
+}
+
+pub(super) fn destination(channel: RegistrationChannel, value: &str) -> Result<String> {
     let value = value.trim();
     match channel {
         RegistrationChannel::Email => {

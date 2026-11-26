@@ -17,6 +17,7 @@ const HOLD_EXPIRY_BATCH: usize = 100;
 const GUEST_RETENTION_BATCH: usize = 100;
 const SEARCH_EVENT_PURGE_BATCH: usize = 1000;
 const REGISTRATION_OTP_PURGE_BATCH: usize = 1000;
+const INVITATION_EXPIRY_BATCH: usize = 100;
 
 pub fn spawn(tasks: &mut JoinSet<()>, kernel: &Kernel, stop: &Stop) {
     tasks.spawn(every(
@@ -64,6 +65,18 @@ pub fn spawn(tasks: &mut JoinSet<()>, kernel: &Kernel, stop: &Stop) {
         |kernel| async move {
             domain::identity::purge_expired_registration_challenges(
                 kernel.db.pool(), REGISTRATION_OTP_PURGE_BATCH as i64,
+            ).await.map(|count| count as usize)
+        },
+    ));
+    tasks.spawn(every(
+        "invitation_expiry",
+        SWEEP_INTERVAL,
+        INVITATION_EXPIRY_BATCH,
+        kernel.clone(),
+        stop.clone(),
+        |kernel| async move {
+            domain::identity::expire_invitations(
+                kernel.db.pool(), INVITATION_EXPIRY_BATCH as i64,
             ).await.map(|count| count as usize)
         },
     ));

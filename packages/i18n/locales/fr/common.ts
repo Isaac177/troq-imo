@@ -1,7 +1,31 @@
-import type { CommonLocale } from '../en/common';
-
 export const common = {
   appName: 'Mungini',
-  switchToLight: 'Activer le thème clair',
-  switchToDark: 'Activer le thème sombre',
-} satisfies CommonLocale;
+  switchToLight: 'Passer au th\u00e8me clair',
+  switchToDark: 'Passer au th\u00e8me sombre',
+  language: 'Langue',
+  city: 'Ville',
+  english: 'English',
+  french: 'Fran\u00e7ais',
+  openMenu: 'Ouvrir le menu',
+  closeMenu: 'Fermer le menu',
+  menu: 'Menu',
+  loading: 'Chargement',
+  retry: 'R\u00e9essayer',
+  back: 'Retour',
+  close: 'Fermer',
+  save: 'Enregistrer',
+  cancel: 'Annuler',
+  confirm: 'Confirmer',
+  previous: 'Pr\u00e9c\u00e9dent',
+  next: 'Suivant',
+  page: 'Page',
+  total: 'Total',
+  refresh: 'Actualiser',
+  dateRange: 'P\u00e9riode',
+  from: 'Du',
+  to: 'Au',
+  perPage: 'par page',
+  signedInAs: 'Connect\u00e9 en tant que',
+};
+
+export type CommonLocale = typeof common;

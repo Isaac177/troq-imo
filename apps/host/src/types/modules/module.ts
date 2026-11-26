@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 export type Permission = `${string}.${string}`;
 
@@ -14,6 +15,7 @@ export type ModuleDefinition = {
   id: string;
   labelKey: string;
   section: SidebarSection;
-  routes: ModuleRoute[];
-  permission: Permission;
+  route: string;
+  icon: LucideIcon;
+  permission?: Permission;
 };

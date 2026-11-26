@@ -51,7 +51,7 @@ pub async fn create(pool: &PgPool, actor: &Actor, input: CreatePropertyInput) ->
     create_validated(pool, actor, actor.city, validated).await
 }
 
-async fn create_validated(
+pub(crate) async fn create_validated(
     pool: &PgPool,
     actor: &Actor,
     city: City,

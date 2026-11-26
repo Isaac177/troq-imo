@@ -1,15 +1,11 @@
 # API contract
 
-P0-4 is in progress. The API currently serves `GET /api/public/health`, `GET /api/public/amenity-groups`, `GET /api/public/amenities` and `GET /api/openapi.json`. The health route checks the database and returns the kernel success envelope with a request ID, using status 503 when the database is unavailable. The OpenAPI document is derived from the health handler with utoipa and includes its request and response ID headers. `mungini-api openapi` prints the same document without requiring configuration or a database.
+The API serves `GET /api/openapi.json` and the audience routes under `/api/public`, `/api/guest`, `/api/host` and `/api/admin`. The current document has 238 paths across guests, reviews, notifications, pricing, billing, inventory, reservations, properties, admin, identity and hosts.
 
-A request ID middleware preserves a supplied `x-request-id` or generates one, places it on the request for extractors, and returns it on the response. The health envelope carries that same ID.
+`mungini-api openapi` prints the same document without configuration or a database. `bun run generate` in `packages/api` writes `openapi.json`, `generated.ts` and the typed `createApiClient` export; it refuses a binary older than backend source and never runs cargo.
 
-The API uses the kernel configuration and connects to its database and storage. Until B1 supplies the identity directory, authenticated access fails closed. The two amenity catalog routes return only active records with `page` and `pageSize`; the amenity route also accepts `groupCode`, and both accept `locale` (default `en`). Admin writes remain unmounted.
+Identity is wired: `GET /api/guest/session` resolves the caller from the signed access token through `IdentityDirectory`, and every authenticated route fails closed with `AUTH_REQUIRED` or `PERMISSION_MISSING`. Public authentication routes are `otp-channel`, `register/otp`, `register/verify`, `register`, `login` and `refresh`; cities, the permission catalog and host onboarding reference data are public reads.
 
-The target contract is audience routes under `/api/public`, `/api/guest`, `/api/host`, and `/api/admin`, with a generated TypeScript client in `packages/api`. Each domain module must expose routes and its OpenAPI descriptions through a public surface. The router and specification must be assembled from those modules when they are available. Do not describe domain endpoints until their handlers exist.
+Every response carries a request ID. The error body is `{ success: false, error: { code, params? } }`; clients translate codes through their locale files. A tracing subscriber reads `RUST_LOG` and defaults to `info`.
 
-Remaining work: generate and commit the TypeScript client and OpenAPI document, assemble module routers and specifications, implement consistent success and error schemas, verify CORS, add compression and tracing, and verify the contract against actual module handlers. The authenticated directory must be replaced by B1. Rate limiting requires a Redis integration. Rust has been read-checked only; the owner runs cargo.
-
-The owner builds the current API with cargo watch, then runs `bun run generate` in `packages/api` to emit `openapi.json`, `generated.ts`, and the typed `createApiClient` export. The generator rejects a binary older than backend source, removes generated comments, and never runs cargo. A stale binary was used only in a temporary location to validate the TypeScript printer; the current contract and generated package remain unavailable until the owner rebuilds and runs generation.
-
-Browser origins come from comma-separated `CORS_ALLOWED_ORIGINS`; invalid entries prevent startup. CORS permits the methods and authentication, content, city and request ID headers used by the API. An empty list permits no cross-origin browser access. Owner compile and browser verification remain open.
+CORS origins come from `CORS_ALLOWED_ORIGINS` and an invalid entry prevents startup. Compression and Redis rate limiting are not implemented.

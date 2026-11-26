@@ -11,6 +11,17 @@ pub struct DashboardQuery {
     pub host_id: Option<String>,
 }
 
+#[derive(Debug, Default, Deserialize, IntoParams)]
+#[serde(rename_all = "camelCase", default)]
+#[into_params(parameter_in = Query)]
+pub struct DashboardHostQuery {
+    pub from: Option<NaiveDate>,
+    pub to: Option<NaiveDate>,
+    pub host_id: Option<String>,
+    pub page: Option<u32>,
+    pub page_size: Option<u32>,
+}
+
 #[derive(Debug, Serialize, sqlx::FromRow, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct DashboardFigures {

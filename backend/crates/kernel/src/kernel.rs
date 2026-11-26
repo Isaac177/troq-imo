@@ -29,6 +29,11 @@ impl Kernel {
             directory,
         })
     }
+
+    pub fn with_directory(mut self, directory: Arc<dyn AccessDirectory>) -> Self {
+        self.directory = directory;
+        self
+    }
 }
 
 pub trait KernelState {

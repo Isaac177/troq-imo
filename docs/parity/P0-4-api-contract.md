@@ -1,17 +1,15 @@
 # P0-4 API contract
 
-Rust is read-checked only. No cargo command has been run.
-
 | Requirement | Mungini location | Status |
 |---|---|---|
-| API process and database health endpoint | `backend/crates/api/src/main.rs`, `health.rs` | implemented, owner compile and runtime verification open |
-| OpenAPI from handler and offline output | `backend/crates/api/src/spec.rs`, `health.rs` | implemented, owner compile and generation verification open |
-| Module routes and specification registry | `backend/crates/api` | open; domain modules not yet available |
-| Generated OpenAPI document and TypeScript client | `packages/api/scripts/generate.mjs` | open: generation pipeline added; stale binary correctly rejected, current API must compile before generating; old binary used only for temporary printer/type check |
-| Request and response ID headers in health OpenAPI | `backend/crates/api/src/health.rs` | implemented; owner compile and generated-spec verification open |
-| Request ID response propagation | `backend/crates/api/src/request_id.rs` | implemented; tests written but not run, owner compile and runtime verification open |
-| Shared error schemas | `backend/crates/api` | open |
-| CORS, compression, tracing and rate limiting | `backend/crates/api/src/cors.rs` | open: configured CORS wired; owner compile and browser verification, compression, tracing and rate limiting remain |
-| Identity directory | `backend/crates/api/src/directory.rs` | open; B1 replaces the fail-closed directory |
+| API process and database health endpoint | `backend/crates/api/src/main.rs`, `health.rs` | done: live request verified |
+| OpenAPI from handlers and offline output | `backend/crates/api/src/spec.rs`, `health.rs` | done |
+| Module routes and specification registry | `backend/crates/api/src/registry.rs` | done: all domain modules, identity and hosts merged; 238 paths generated |
+| Generated OpenAPI document and TypeScript client | `packages/api/openapi.json`, `generated.ts`, `index.ts` | done: `bun run generate` against the rebuilt binary |
+| Request and response ID headers | `backend/crates/api/src/request_id.rs` | done: middleware wired, headers present on live responses |
+| Shared error schemas | `kernel/src/error/mod.rs` | done: one typed error body and one code mapping |
+| CORS, compression, tracing and rate limiting | `cors.rs`, `main.rs` | partial: CORS configured, tracing subscriber added; compression and Redis rate limiting remain open |
+| Identity directory | `backend/crates/api/src/directory.rs` replaced by `domain::identity::IdentityDirectory` at startup | done: authenticated routes resolve real grants |
+| Route verification | live requests on `:8091` | done: public, guest, host and admin routes exercised with and without tokens |
 
-No application features or seeds were added in this foundation slice.
+The generated client is committed. Regenerate it after every API change with `bun run generate` in `packages/api`; the script rejects a binary older than backend source. CORS origins come from `CORS_ALLOWED_ORIGINS` and an invalid entry prevents startup.

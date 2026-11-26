@@ -10,11 +10,18 @@
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit"
   },
   "dependencies": {
+    "@mungini/api": "workspace:*",
     "@mungini/i18n": "workspace:*",
+    "@mungini/session": "workspace:*",
+    "@mungini/theme": "workspace:*",
+    "@mungini/ui-web": "workspace:*",
+    "@mungini/utils": "workspace:*",
+    "@tailwindcss/vite": "^4.3.5",
+    "lucide-react": "^0.475.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "@mungini/ui-web": "workspace:*",
-    "@mungini/theme": "workspace:*"
+    "react-router-dom": "^7.18.7",
+    "tailwindcss": "^4.3.5"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",

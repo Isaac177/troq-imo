@@ -1,12 +1,11 @@
-import '@mungini/theme/tokens.css';
-import '@mungini/ui-web/theme-toggle.css';
-import '@mungini/ui-web/shell.css';
-import './shell.css';
+import './index.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { I18nextProvider } from '@mungini/i18n';
 import { i18n } from '@/i18n/instance';
 import App from '@/App';
+
+document.documentElement.lang = i18n.language;
 
 const container = document.getElementById('root');
 

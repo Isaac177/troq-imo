@@ -28,15 +28,13 @@ impl AccessDirectory for IdentityDirectory {
             .fetch_optional(&self.pool)
             .await?;
             let auth_city = home_city.ok_or_else(|| Error::unauthorized(codes::AUTH_REQUIRED))?;
-            let host_ids = sqlx::query_scalar::<_, String>(
-                "SELECT m.host_id FROM host_members m JOIN hosts h ON h.id = m.host_id WHERE m.user_id = $1 AND m.status = 'ACTIVE' AND h.status = 'ACTIVE' ORDER BY m.host_id",
+            let memberships = sqlx::query_as::<_, (String, bool)>(
+                "SELECT m.host_id, m.is_owner FROM host_members m JOIN hosts h ON h.id = m.host_id WHERE m.user_id = $1 AND m.status = 'ACTIVE' AND h.status = 'ACTIVE' ORDER BY m.host_id",
             )
             .bind(user_id.as_str())
             .fetch_all(&self.pool)
-            .await?
-            .into_iter()
-            .map(HostId::new)
-            .collect();
+            .await?;
+            let host_ids: Vec<HostId> = memberships.iter().map(|(host_id, _)| HostId::new(host_id)).collect();
             let rows = sqlx::query_as::<_, (String, String, Option<String>)>(
                 "SELECT g.permission, g.scope_type, g.scope_id FROM identity_grants g WHERE g.user_id = $1 AND g.scope_type <> 'PROPERTY' AND (g.expires_at IS NULL OR g.expires_at > now()) AND (g.scope_type = 'PLATFORM' OR EXISTS (SELECT 1 FROM host_members m JOIN hosts h ON h.id = m.host_id WHERE m.user_id = g.user_id AND m.host_id = g.host_id AND m.status = 'ACTIVE' AND h.status = 'ACTIVE')) ORDER BY g.id",
             )
@@ -52,6 +50,16 @@ impl AccessDirectory for IdentityDirectory {
                     Grant::from_row(GrantRow { permission, scope_type, scope_id })
                 })
                 .collect();
+            for (host_id, is_owner) in &memberships {
+                if *is_owner {
+                    for permission in super::presets::DELEGABLE {
+                        let grant = Grant::host(permission, host_id);
+                        if !grants.contains(&grant) {
+                            grants.push(grant);
+                        }
+                    }
+                }
+            }
             let rows = sqlx::query_as::<_, (String, String, Option<String>, String)>(
                 "SELECT o.permission, o.scope_type, o.scope_id, o.effect FROM identity_member_overrides o WHERE o.user_id = $1 AND o.scope_type <> 'PROPERTY' AND (o.scope_type = 'PLATFORM' OR EXISTS (SELECT 1 FROM host_members m JOIN hosts h ON h.id = m.host_id WHERE m.user_id = o.user_id AND m.host_id = o.host_id AND m.status = 'ACTIVE' AND h.status = 'ACTIVE')) ORDER BY o.created_at, o.id",
             )

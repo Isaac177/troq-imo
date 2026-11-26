@@ -8,7 +8,8 @@ use sqlx::PgConnection;
 pub use crate::inventory::nights::remaining_by_night;
 pub use crate::inventory::restrictions::{violations_batch, StayRequest};
 pub use crate::pricing::promotions::Promotion;
-pub use crate::pricing::quotes::{guest_factor, StayTerms, MAX_STAY_NIGHTS};
+pub use crate::pricing::quotes::{guest_factor, MAX_STAY_NIGHTS};
+pub use crate::reservations::links::pricing::StayTerms;
 pub use crate::pricing::rates::RateRule;
 
 pub fn nightly_amount_minor(date: NaiveDate, rules: &[RateRule]) -> Option<i64> {

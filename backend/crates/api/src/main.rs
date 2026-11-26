@@ -17,6 +17,8 @@ use kernel::kernel::Kernel;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    let filter = std::env::var("RUST_LOG").unwrap_or_else(|_| "info".to_string());
+    tracing_subscriber::fmt().with_env_filter(filter).init();
     if std::env::args().nth(1).as_deref() == Some("openapi") {
         println!("{}", serde_json::to_string_pretty(&spec::document()?)?);
         return Ok(());
@@ -26,6 +28,8 @@ async fn main() -> anyhow::Result<()> {
     let address = config.bind_addr();
     let cors = cors::layer(&config.cors_allowed_origins)?;
     let kernel = Kernel::connect(config, Arc::new(directory::ClosedDirectory)).await?;
+    let directory = Arc::new(domain::identity::IdentityDirectory::new(kernel.db.pool().clone()));
+    let kernel = kernel.with_directory(directory);
     let listener = tokio::net::TcpListener::bind(address).await?;
     let (stop, mut stopped) = tokio::sync::watch::channel(false);
     let worker = if kernel.config.jobs_enabled {

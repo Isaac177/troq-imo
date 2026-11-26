@@ -6,17 +6,18 @@ use kernel::permissions::names::PROPERTIES_WRITE;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use sqlx::PgPool;
+use utoipa::ToSchema;
 
 use super::contact_validation;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateHostContact {
     pub guest_contact_phone: String,
     pub guest_contact_email: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct HostContact {
     pub host_id: String,

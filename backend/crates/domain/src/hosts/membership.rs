@@ -4,8 +4,9 @@ use kernel::error::Result;
 use kernel::paging::{Page, PageRequest};
 use serde::Serialize;
 use sqlx::PgPool;
+use utoipa::ToSchema;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct HostMembership {
     pub host_id: String,

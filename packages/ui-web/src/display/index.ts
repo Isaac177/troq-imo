@@ -5,4 +5,5 @@ export { Skeleton } from './Skeleton';
 export { Avatar } from './Avatar';
 export { initialsOf } from './useInitials';
 export { EmptyState } from './EmptyState';
+export { StatCard } from './StatCard';
 export { FadeIn } from './FadeIn';

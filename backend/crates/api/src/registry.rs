@@ -36,4 +36,6 @@ register! {
     reservations,
     properties,
     admin,
+    identity,
+    hosts,
 }

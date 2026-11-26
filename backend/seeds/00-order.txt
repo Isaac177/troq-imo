@@ -5,6 +5,8 @@ identity/04-user-contacts.sql
 identity/05-session-roles.sql
 identity/06-password-login.sql
 identity/07-registration-otp.sql
+identity/08-team.sql
+identity/09-host-onboarding.sql
 properties/01-amenities.sql
 billing/01-hosts-rates.sql
 properties/02-properties.sql

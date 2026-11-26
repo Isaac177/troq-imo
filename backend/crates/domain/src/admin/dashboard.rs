@@ -5,7 +5,24 @@ use kernel::permissions::names::PROPERTIES_MODERATE;
 use kernel::Kernel;
 
 use super::dashboard_queries;
-use super::dashboard_types::{CityFigures, DashboardQuery, DashboardSummary};
+use super::dashboard_types::{CityFigures, DashboardQuery, DashboardSummary, DashboardFigures};
+use kernel::permissions::names::ANALYTICS_READ;
+
+pub async fn host_summary(
+    kernel: &Kernel,
+    actor: &Actor,
+    host_id: &str,
+    query: DashboardQuery,
+) -> Result<DashboardFigures> {
+    let host_id = host_id.trim();
+    if host_id.is_empty() || !actor.access.is_member_of(host_id) {
+        return Err(Error::not_found(codes::NOT_FOUND));
+    }
+    actor.require_scoped(ANALYTICS_READ, Some(host_id), None)?;
+    let (from, to) = window(&query, Utc::now().date_naive())?;
+    let cities = [actor.city.code()];
+    dashboard_queries::figures(kernel.db.pool(), from, to, Some(host_id), &cities, Some(actor.city.code())).await
+}
 
 fn window(query: &DashboardQuery, today: NaiveDate) -> Result<(NaiveDate, NaiveDate)> {
     let to = query.to.unwrap_or(today);

@@ -7,19 +7,20 @@ use kernel::permissions::names::{self, HOSTS_TEAM};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use sqlx::PgPool;
+use utoipa::ToSchema;
 
 use super::overrides::OverrideEffect;
 
 use super::messages::PERMISSION_INVALID;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct SetHostOverride {
     pub permission: String,
     pub effect: OverrideEffect,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct HostOverride {
     pub id: String,

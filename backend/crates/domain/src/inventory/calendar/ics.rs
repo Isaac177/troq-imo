@@ -64,7 +64,7 @@ fn event(uid: &str, stamp: &str, start: String, end: String, summary: &str, stat
 fn escape(value: &str) -> String {
     value
         .replace('\\', "\\\\")
-        .replace(';', "\;")
+        .replace(';', "\\;")
         .replace(',', "\\,")
         .replace('\n', "\\n")
 }
@@ -76,7 +76,7 @@ mod tests {
 
     #[test]
     fn escapes_ics_text() {
-        assert_eq!(escape("a,b;c\\d"), "a\\,b\;c\\\\d");
+        assert_eq!(escape("a,b;c\\d"), "a\\,b\\;c\\\\d");
     }
 
     #[test]

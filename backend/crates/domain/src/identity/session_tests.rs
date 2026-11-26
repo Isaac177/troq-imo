@@ -23,6 +23,7 @@ fn config() -> Config {
         default_city: City::GOMA,
         jwt_secret: "access-secret".into(),
         jwt_refresh_secret: "refresh-secret".into(),
+        otp_signing_key: "test-otp-key-32-bytes-at-least-long".into(),
         otp_channel: OtpChannel::Email,
         guest_retention_days: None,
         storage: StorageConfig {
