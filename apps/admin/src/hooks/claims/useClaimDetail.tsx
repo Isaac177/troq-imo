@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from '@mungini/i18n';
 import { useSession } from '@mungini/session';
 import { formatCdf, formatDateTime } from '@mungini/utils';
-import { decideClaim, getClaim, recordPayout } from '@/services/claims/claims.api';
+import { addStatement, decideClaim, getClaim, recordPayout } from '@/services/claims/claims.api';
 import type { ClaimDetail } from '@/types/claims/claims';
 
 const KNOWN_ERRORS = ['CLAIM_NOT_FOUND', 'CLAIM_STATUS_UNKNOWN', 'CLAIM_REASON_UNKNOWN', 'CLAIM_PARTIAL_AMOUNT_INVALID', 'CLAIM_ALREADY_DECIDED', 'CLAIM_VERSION_CONFLICT', 'CLAIM_DECISION_NOT_FOUND', 'PAYOUT_STATE_UNKNOWN', 'PAYOUT_REF_REQUIRED', 'PAYOUT_REF_TOO_LONG', 'PAYOUT_NOT_DUE', 'PAYOUT_ALREADY_PAID', 'FORBIDDEN'];
@@ -27,6 +27,9 @@ export const useClaimDetail = (caseId: string | null, onChanged: () => void) => 
   const [payoutOpen, setPayoutOpen] = useState(false);
   const [payoutState, setPayoutState] = useState('PENDING');
   const [payoutRef, setPayoutRef] = useState('');
+  const [statementOpen, setStatementOpen] = useState(false);
+  const [party, setParty] = useState('HOST');
+  const [statementBody, setStatementBody] = useState('');
   const [busy, setBusy] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [timezone, setTimezone] = useState('UTC');
@@ -105,7 +108,30 @@ export const useClaimDetail = (caseId: string | null, onChanged: () => void) => 
     setPayoutRef('');
     setFormError(null);
     setPayoutOpen(true);
+  };  const openStatement = () => {
+    setParty('HOST');
+    setStatementBody('');
+    setFormError(null);
+    setStatementOpen(true);
   };
+  const submitStatement = async () => {
+    if (!detail) return;
+    setBusy(true);
+    setFormError(null);
+    const result = await addStatement(client, detail.caseId, party, statementBody);
+    if (result.error) {
+      setBusy(false);
+      setFormError(message(result.error));
+      return;
+    }
+    const refreshed = await getClaim(client, detail.caseId);
+    setBusy(false);
+    if (refreshed.data) setDetail(refreshed.data);
+    setStatementOpen(false);
+    setNotice(translate('statementSaved'));
+    onChanged();
+  };
+
   const submitPayout = async () => {
     if (!detail) return;
     setBusy(true);
@@ -127,6 +153,7 @@ export const useClaimDetail = (caseId: string | null, onChanged: () => void) => 
   return {
     detail, loading, error, notice, decisionOpen, setDecisionOpen, decision, changeDecision, reasonCode, setReasonCode, approvedAmount, setApprovedAmount,
     payoutOpen, setPayoutOpen, payoutState, setPayoutState, payoutRef, setPayoutRef, busy, formError, openDecision, submitDecision, openPayout, submitPayout,
+    statementOpen, setStatementOpen, party, setParty, statementBody, setStatementBody, openStatement, submitStatement,
     canDecide: Boolean(detail && !detail.decision),
     canPayout: Boolean(detail?.decision && detail.decision.payoutState !== 'PAID' && Number(detail.decision.approvedAmount) > 0),
     money: (value: string | null | undefined) => (value ? formatCdf(value, i18n.language) : '—'),
@@ -139,14 +166,18 @@ export const useClaimDetail = (caseId: string | null, onChanged: () => void) => 
       return label === key ? value : label;
     },
     payoutLabel: (value: string) => translate(`payoutStates.${value}`),
+    partyLabel: (value: string) => translate(`parties.${value}`),
     decisionOptions: ['APPROVED', 'PARTIAL', 'REJECTED'].map((value) => ({ value, label: translate(`decisions.${value}`) })),
     reasonOptions: (REASONS[decision] ?? []).map((value) => ({ value, label: translate(`reasonCodes.${value}`) })),
     payoutOptions: ['PENDING', 'PAID', 'FAILED'].map((value) => ({ value, label: translate(`payoutStates.${value}`) })),
+    partyOptions: ['HOST', 'GUEST'].map((value) => ({ value, label: translate(`parties.${value}`) })),
     labels: {
       property: translate('property'), host: translate('host'), guest: translate('guest'), reference: translate('reference'),
       claimAmount: translate('claimAmount'), approvedAmount: translate('approvedAmount'), decision: translate('decision'), payout: translate('payout'),
       deadline: translate('deadline'), stayTotal: translate('stayTotal'), checkIn: translate('checkIn'), checkOut: translate('checkOut'),
       openedAt: translate('openedAt'), reason: translate('reason'), evidence: translate('evidence'), noEvidence: translate('noEvidence'),
+      statements: translate('statements'), noStatements: translate('noStatements'), addStatement: translate('addStatement'), statementParty: translate('statementParty'),
+      statementBody: translate('statementBody'), statementPlaceholder: translate('statementPlaceholder'),
       decide: translate('decide'), decisionTitle: translate('decisionTitle'), decisionBody: translate('decisionBody'), partialAmount: translate('partialAmount'),
       reasons: translate('reasons'), chooseReason: translate('chooseReason'), payoutTitle: translate('payoutTitle'), payoutBody: translate('payoutBody'),
       payoutState: translate('payoutState'), payoutRef: translate('payoutRef'), payoutRefHint: translate('payoutRefHint'), save: translate('save'),

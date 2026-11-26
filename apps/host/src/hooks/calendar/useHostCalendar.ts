@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from '@mungini/i18n';
 import { useSession } from '@mungini/session';
-import { addDays, formatCdf, formatIsoDay } from '@mungini/utils';
+import { addDays, formatCdf, formatIsoDay, parseIsoDay, toIsoDay } from '@mungini/utils';
 import { hostApi } from '@/services/host/host.api';
 import { getCalendar } from '@/services/calendar/calendar.api';
 import type { CalendarData, PropertyOption } from '@/types/calendar/calendar';
+import { useCalendarViewMode } from '@/hooks/calendar/useCalendarViewMode';
 
 const PAGE_SIZE = 10;
 const SPAN_DAYS = 14;
-const RESTRICTION_KINDS = ['MIN_NIGHTS', 'MAX_NIGHTS', 'ADVANCE_NOTICE_DAYS', 'MAX_HORIZON_DAYS', 'TURNOVER_BUFFER_NIGHTS', 'CLOSED_TO_ARRIVAL', 'CLOSED_TO_DEPARTURE'];
+const MAX_NIGHTS = 93;
+export const RESTRICTION_KINDS = ['MIN_NIGHTS', 'MAX_NIGHTS', 'ADVANCE_NOTICE_DAYS', 'MAX_HORIZON_DAYS', 'TURNOVER_BUFFER_NIGHTS', 'CLOSED_TO_ARRIVAL', 'CLOSED_TO_DEPARTURE'];
 const today = () => new Date().toISOString().slice(0, 10);
 
 export const useHostCalendar = () => {
@@ -17,6 +19,7 @@ export const useHostCalendar = () => {
   const translate = t as unknown as (key: string) => string;
   const translateHost = th as unknown as (key: string) => string;
   const { session, client, can } = useSession();
+  const { mode, setMode } = useCalendarViewMode();
   const hosts = session?.hosts ?? [];
   const [hostId, setHostId] = useState(hosts[0]?.hostId ?? '');
   const [properties, setProperties] = useState<PropertyOption[]>([]);
@@ -30,7 +33,19 @@ export const useHostCalendar = () => {
   const [reloadToken, setReloadToken] = useState(0);
   const french = i18n.language.startsWith('fr');
   const span = range.start && range.end ? (Date.parse(range.end) - Date.parse(range.start)) / 86400000 : 0;
-  const validRange = span > 0 && span <= 93;
+  const validRange = span > 0 && span <= MAX_NIGHTS;
+
+  const shiftMonth = (offset: number) => {
+    if (!range.start) return;
+    const parts = parseIsoDay(range.start);
+    if (!parts) return;
+    const target = new Date(Date.UTC(parts.year, parts.month - 1 + offset, 1));
+    const lastDay = new Date(Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0)).getUTCDate();
+    const start = toIsoDay({ year: target.getUTCFullYear(), month: target.getUTCMonth() + 1, day: Math.min(parts.day, lastDay) });
+    const currentSpan = range.end ? Math.round((Date.parse(range.end) - Date.parse(range.start)) / 86400000) : SPAN_DAYS;
+    const nights = Number.isFinite(currentSpan) ? Math.min(Math.max(currentSpan, 1), MAX_NIGHTS) : SPAN_DAYS;
+    setRange({ start, end: addDays(start, nights) });
+  };
 
   useEffect(() => {
     if (!hosts.some((host) => host.hostId === hostId)) setHostId(hosts[0]?.hostId ?? '');
@@ -119,9 +134,19 @@ export const useHostCalendar = () => {
     setPropertyId,
     range,
     setRange,
+    mode,
+    setMode,
+    viewOptions: [
+      { value: 'strip', label: translate('viewStrip') },
+      { value: 'month', label: translate('viewMonth') },
+    ],
+    previousMonth: () => shiftMonth(-1),
+    nextMonth: () => shiftMonth(1),
     validRange,
     page,
     setPage,
+    previousPage: () => setPage((current) => Math.max(1, current - 1)),
+    nextPage: () => setPage((current) => current + 1),
     unitPages,
     calendar,
     loading,
@@ -142,6 +167,9 @@ export const useHostCalendar = () => {
       property: translate('property'),
       chooseProperty: translate('chooseProperty'),
       range: translate('range'),
+      view: translate('view'),
+      viewStrip: translate('viewStrip'),
+      viewMonth: translate('viewMonth'),
       invalidRange: translate('invalidRange'),
       previous: translate('previous'),
       next: translate('next'),

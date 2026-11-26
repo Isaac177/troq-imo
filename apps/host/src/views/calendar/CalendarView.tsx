@@ -1,14 +1,18 @@
 import { Link } from 'react-router-dom';
 import { Ban } from 'lucide-react';
-import { Button, DateRangePicker, EmptyState, Section, Select, Skeleton } from '@mungini/ui-web';
+import { Button, DateRangePicker, EmptyState, FadeIn, SegmentedControl, Section, Select, Skeleton } from '@mungini/ui-web';
 import BlockDatesDialog from '@/components/calendar/BlockDatesDialog';
 import CalendarBlockList from '@/components/calendar/CalendarBlockList';
+import CalendarDaySheet from '@/components/calendar/CalendarDaySheet';
+import CalendarMonthView from '@/components/calendar/CalendarMonthView';
 import CalendarReservationList from '@/components/calendar/CalendarReservationList';
 import CalendarRestrictionList from '@/components/calendar/CalendarRestrictionList';
+import CalendarUnitPager from '@/components/calendar/CalendarUnitPager';
 import RestrictionDialog from '@/components/calendar/RestrictionDialog';
 import UnitStrip from '@/components/calendar/UnitStrip';
 import ReservationDrawer from '@/components/reservations/ReservationDrawer';
 import { useCalendarBlocks } from '@/hooks/calendar/useCalendarBlocks';
+import { useCalendarMonth } from '@/hooks/calendar/useCalendarMonth';
 import { useCalendarRestrictions } from '@/hooks/calendar/useCalendarRestrictions';
 import { useHostCalendar } from '@/hooks/calendar/useHostCalendar';
 
@@ -16,6 +20,7 @@ export default function CalendarView() {
   const view = useHostCalendar();
   const blocks = useCalendarBlocks(view.propertyId, view.unitOptions, view.refresh);
   const restrictions = useCalendarRestrictions(view.propertyId, view.unitOptions, view.refresh);
+  const month = useCalendarMonth(view.calendar, view.range, view.setSelected);
 
   if (!view.hasHost) {
     return (
@@ -57,18 +62,33 @@ export default function CalendarView() {
         {!view.loading && view.propertyId ? (
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-title font-semibold text-foreground">{view.labels.units}</h2>
-                <p className="text-label text-muted-foreground">{view.labels.allocated} / {view.labels.capacity}</p>
+              <div className="flex min-w-0 justify-end">
+                <SegmentedControl items={view.viewOptions} value={view.mode} onChange={view.setMode} ariaLabel={view.labels.view} />
               </div>
-              {view.strips.length === 0 ? <p className="text-body text-muted-foreground">{view.labels.unitsEmpty}</p> : null}
-              {view.strips.map((strip) => <UnitStrip key={strip.unitTypeId} name={strip.name} days={strip.days} labels={{ open: view.labels.open, full: view.labels.full }} />)}
+              <FadeIn swapKey={view.mode} className="flex flex-col gap-3">
+                {view.mode === 'month' ? (
+                  <CalendarMonthView view={month} onPreviousMonth={view.previousMonth} onNextMonth={view.nextMonth} />
+                ) : (
+                  <>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h2 className="text-title font-semibold text-foreground">{view.labels.units}</h2>
+                      <p className="text-label text-muted-foreground">{view.labels.allocated} / {view.labels.capacity}</p>
+                    </div>
+                    {view.strips.length === 0 ? <p className="text-body text-muted-foreground">{view.labels.unitsEmpty}</p> : null}
+                    {view.strips.map((strip) => <UnitStrip key={strip.unitTypeId} name={strip.name} days={strip.days} labels={{ open: view.labels.open, full: view.labels.full }} />)}
+                  </>
+                )}
+              </FadeIn>
               {view.unitPages > 1 ? (
-                <div className="flex items-center gap-2 text-label text-muted-foreground">
-                  <Button variant="ghost" size="sm" disabled={view.page <= 1} onClick={() => view.setPage(view.page - 1)}>{view.labels.previous}</Button>
-                  <span>{view.page} / {view.unitPages}</span>
-                  <Button variant="ghost" size="sm" disabled={view.page >= view.unitPages} onClick={() => view.setPage(view.page + 1)}>{view.labels.next}</Button>
-                </div>
+                <CalendarUnitPager
+                  page={view.page}
+                  pages={view.unitPages}
+                  label={view.mode === 'month' ? view.labels.units : undefined}
+                  previousLabel={view.labels.previous}
+                  nextLabel={view.labels.next}
+                  onPrevious={view.previousPage}
+                  onNext={view.nextPage}
+                />
               ) : null}
             </div>
 
@@ -103,6 +123,7 @@ export default function CalendarView() {
 
       <BlockDatesDialog view={blocks} unitOptions={view.unitOptions} />
       <RestrictionDialog view={restrictions} />
+      <CalendarDaySheet view={month} />
       <ReservationDrawer reservationId={view.selected} onClose={() => view.setSelected(null)} onChanged={view.refresh} />
     </>
   );

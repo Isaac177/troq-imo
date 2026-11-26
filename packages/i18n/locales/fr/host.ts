@@ -6,6 +6,7 @@ export const host = {
   navCredits: 'Crédits',
   navRates: 'Tarifs',
   navReviews: 'Avis',
+  navNotifications: 'Notifications',
   navTeam: '\u00c9quipe',
   navOnboarding: 'Devenir h\u00f4te',
   navSettings: 'Param\u00e8tres',

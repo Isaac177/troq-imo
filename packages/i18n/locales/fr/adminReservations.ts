@@ -9,6 +9,8 @@ export const adminReservations = {
   noCases: 'Aucun dossier pour cette réservation.', noAmendments: 'Aucun changement de dates pour cette réservation.', noTimeline: 'Aucune activité.',
   caseDeadline: 'Échéance', amendmentExpires: 'Expire le', amendmentDelta: 'Différence', amendmentResponded: 'Réponse le',
   timelineEvent: 'Événement de réservation',
+  reference: 'Référence', checkIn: 'Arrivée', checkOut: 'Départ',
+  exportAction: 'Exporter', exported: '{count} réservations exportées.', exportError: 'Impossible d’exporter les réservations.',
   caseTypes: {
     GUEST_COMPLAINT: 'Réclamation client',
     OPERATOR_COMPLAINT: 'Réclamation hôte',

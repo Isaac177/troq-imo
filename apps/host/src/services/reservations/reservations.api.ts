@@ -22,20 +22,24 @@ export type ReservationQuery = {
 
 const fail = <T>(error: unknown): RequestResult<T> => ({ data: null, error: apiErrorCode(error) });
 
+const reservationQuery = (query: ReservationQuery) => ({
+  hostId: query.hostId,
+  page: query.page,
+  pageSize: query.pageSize,
+  locale: query.locale,
+  ...(query.propertyId ? { propertyId: query.propertyId } : {}),
+  ...(query.state ? { state: query.state } : {}),
+  ...(query.search.trim() ? { search: query.search.trim() } : {}),
+});
+
 export const listReservations = async (client: SessionClient, query: ReservationQuery): Promise<RequestResult<HostReservationPage>> => {
-  const response = await client.api.GET('/api/host/reservations', {
-    params: {
-      query: {
-        hostId: query.hostId,
-        page: query.page,
-        pageSize: query.pageSize,
-        locale: query.locale,
-        ...(query.propertyId ? { propertyId: query.propertyId } : {}),
-        ...(query.state ? { state: query.state } : {}),
-        ...(query.search.trim() ? { search: query.search.trim() } : {}),
-      },
-    },
-  });
+  const response = await client.api.GET('/api/host/reservations', { params: { query: reservationQuery(query) } });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};
+
+export const exportReservations = async (client: SessionClient, query: ReservationQuery): Promise<RequestResult<HostReservationPage>> => {
+  const response = await client.api.GET('/api/host/reservations/export', { params: { query: reservationQuery(query) } });
   if (response.error || !response.data) return fail(response.error);
   return { data: response.data.data, error: null };
 };

@@ -12,6 +12,7 @@ import CreditsView from '@/views/credits/CreditsView';
 import RatesView from '@/views/rates/RatesView';
 import ReviewsView from '@/views/reviews/ReviewsView';
 import SettingsView from '@/views/settings/SettingsView';
+import NotificationsView from '@/views/notifications/NotificationsView';
 import TeamView from '@/views/team/TeamView';
 import OnboardingView from '@/views/onboarding/OnboardingView';
 import { sessionClient } from '@/services/session/sessionClient';
@@ -33,6 +34,7 @@ export default function App() {
               <Route path="rates" element={<RatesView />} />
               <Route path="reviews" element={<ReviewsView />} />
               <Route path="settings" element={<SettingsView />} />
+              <Route path="notifications" element={<NotificationsView />} />
               <Route path="team" element={<TeamView />} />
               <Route path="onboarding" element={<OnboardingView />} />
             </Route>

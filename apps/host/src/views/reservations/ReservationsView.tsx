@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Download, Search } from 'lucide-react';
 import { Button, EmptyState, Input, PagedTable, Section, Select } from '@mungini/ui-web';
 import ReservationDrawer from '@/components/reservations/ReservationDrawer';
 import { useHostReservations } from '@/hooks/reservations/useHostReservations';
+import { useReservationsExport } from '@/hooks/reservations/useReservationsExport';
 
 export default function ReservationsView() {
   const view = useHostReservations();
+  const exporter = useReservationsExport({
+    hostId: view.hostId,
+    propertyId: view.propertyId,
+    state: view.state,
+    search: view.search,
+  });
 
   if (!view.hasHost) {
     return (
@@ -39,10 +46,27 @@ export default function ReservationsView() {
             <div className="w-full sm:w-[220px]">
               <Input type="search" value={view.search} onChange={(event) => view.setSearch(event.target.value)} placeholder={view.labels.search} aria-label={view.labels.search} leadingIcon={<Search />} />
             </div>
+            {exporter.canExport ? (
+              <Button
+                variant="outline"
+                size="sm"
+                icon={<Download />}
+                collapseLabel
+                aria-label={exporter.labels.export}
+                title={exporter.labels.export}
+                loading={exporter.exporting}
+                disabled={exporter.exporting}
+                onClick={exporter.run}
+              >
+                {exporter.exporting ? exporter.labels.exporting : exporter.labels.export}
+              </Button>
+            ) : null}
           </div>
         }
       >
         {view.error ? <p role="alert" className="text-label text-destructive">{view.error}</p> : null}
+        {exporter.error ? <p role="alert" className="text-label text-destructive">{exporter.error}</p> : null}
+        {exporter.notice ? <p role="status" className="text-label text-muted-foreground">{exporter.notice}</p> : null}
         <PagedTable
           rows={view.rows}
           columns={view.columns}

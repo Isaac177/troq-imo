@@ -1,5 +1,5 @@
 import { Banknote, Gavel } from 'lucide-react';
-import { AmountInput, Button, Dialog, Drawer, Input, Select, Skeleton } from '@mungini/ui-web';
+import { AmountInput, Button, Dialog, Drawer, Input, Select, Skeleton, Textarea } from '@mungini/ui-web';
 import { useClaimDetail } from '@/hooks/claims/useClaimDetail';
 
 type Props = { caseId: string | null; onClose: () => void; onChanged: () => void };
@@ -39,6 +39,22 @@ export default function ClaimDetailDrawer({ caseId, onClose, onChanged }: Props)
                   <li key={evidence.id} className="flex items-center justify-between gap-2 py-2 text-body">
                     <span className="min-w-0 truncate">{evidence.fileName}</span>
                     <span className="text-label tabular-nums text-muted-foreground">{Math.max(1, Math.ceil(evidence.sizeBytes / 1024))} KB</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="border-t border-border pt-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-label text-muted-foreground">{view.labels.statements}</p>
+                <Button size="sm" variant="outline" onClick={view.openStatement}>{view.labels.addStatement}</Button>
+              </div>
+              {item.statements.length === 0 ? <p className="mt-1 text-label text-muted-foreground">{view.labels.noStatements}</p> : null}
+              <ul className="mt-1 divide-y divide-border">
+                {item.statements.map((statement) => (
+                  <li key={statement.id} className="py-2 text-body">
+                    <p className="whitespace-pre-wrap break-words">{statement.body}</p>
+                    <p className="text-label text-muted-foreground">{view.partyLabel(statement.party)} · <span className="tabular-nums">{view.time(statement.createdAt)}</span></p>
                   </li>
                 ))}
               </ul>
@@ -93,6 +109,30 @@ export default function ClaimDetailDrawer({ caseId, onClose, onChanged }: Props)
               <AmountInput value={view.approvedAmount} onValueChange={view.setApprovedAmount} fractionDigits={2} ariaLabel={view.labels.partialAmount} />
             </label>
           ) : null}
+        </div>
+      </Dialog>
+
+      <Dialog
+        open={view.statementOpen}
+        onOpenChange={view.setStatementOpen}
+        title={view.labels.addStatement}
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" disabled={view.busy} onClick={() => view.setStatementOpen(false)}>{view.labels.dismiss}</Button>
+            <Button variant="primary" loading={view.busy} disabled={!view.statementBody.trim()} onClick={() => void view.submitStatement()}>{view.labels.save}</Button>
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-3">
+          {view.formError ? <p role="alert" className="text-label text-destructive">{view.formError}</p> : null}
+          <label className="flex flex-col gap-1 text-label text-muted-foreground">
+            {view.labels.statementParty}
+            <Select options={view.partyOptions} value={view.party} onValueChange={view.setParty} ariaLabel={view.labels.statementParty} />
+          </label>
+          <label className="flex flex-col gap-1 text-label text-muted-foreground">
+            {view.labels.statementBody}
+            <Textarea rows={4} maxLength={2000} value={view.statementBody} placeholder={view.labels.statementPlaceholder} onChange={(event) => view.setStatementBody(event.target.value)} />
+          </label>
         </div>
       </Dialog>
 

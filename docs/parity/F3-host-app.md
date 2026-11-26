@@ -18,7 +18,7 @@ Status: host reservations slice implemented on 26/11/2026, read-checked and type
 | Assigned physical unit and room picker | `StayReservationRoomPicker.tsx` | `components/reservations/ReservationAssignment.tsx`, `hooks/reservations/useReservationAssignment.ts`, assignment and move routes | done: shows the assigned room, lists compatible room options, assigns a room or moves the stay from a chosen date; gated by `reservations.write` |
 | Unit type image gallery | `StayTypeGallery.tsx` | `unitTypeCoverUrl` unused | open |
 | Guest messages | reservation detail legacy link to messages | `components/reservations/ReservationMessages.tsx`, `hooks/reservations/useReservationMessages.ts`, `GET` and `POST /api/host/reservations/{id}/messages` | done in the reservation drawer: chronological thread, city-time stamps and a send box, gated by `messages.write`; a standalone inbox with unread counts remains open |
-| Export reservations | `StayReservationsFooter.tsx` | none | open: `/api/host/reservations/export` exists but the UI and file format are not specified |
+| Export reservations | `StayReservationsFooter.tsx` | `apps/host/src/views/reservations/ReservationsView.tsx` toolbar action, `hooks/reservations/useReservationsExport.ts`, `utils/csv/reservationsCsv.ts`, `services/reservations/reservations.api.ts` against `GET /api/host/reservations/export` | done: paged CSV with UTF-8 BOM, quoted fields, CRLF lines, dd/mm/yyyy dates, CDF money and translated state labels; gated by `analytics.export` |
 | Permission gating | legacy permission checks in the page hook | module requires `reservations.read`; action buttons use server `allowedActions`; the message thread requires `messages.write` | done |
 | Phone layout | legacy table rules | one column toolbar, hidden secondary columns, row title carries the state, drawer full width below `sm` | implemented, 375px runtime check not run |
 | Seed states | `stay-service/seeds` reservations | existing `backend/seeds/reservations` rows cover requested, confirmed, checked in, checked out, cancelled and expired in Goma | done |
@@ -30,19 +30,22 @@ Limits recorded for the owner:
 - Runtime, console and 375px English/French checks were not run.
 - The message thread was read against the running API for a seeded confirmed reservation with two messages; sending a message was not exercised.
 - Room options were read for a confirmed stay needing a room (1 option) and a confirmed stay already assigned (1 alternative). Assignment and move writes were not exercised.
+- The reservation CSV export was type-checked only. No file was downloaded and the export route was not called against the running API.
+- The export pages with `pageSize` 100 because the kernel validates page sizes up to 100 (`MAX_PAGE_SIZE`); the slice brief asked for 200, which the server rejects.
 
 ## Calendar slice
 
 | Legacy feature | Legacy location | Mungini location | Status |
 |---|---|---|---|
 | Calendar read model with unit types, nightly capacity and prices | `components/stays/calendar`, `hooks/stays` calendar hooks, `stay-service/src/calendar` | `apps/host/src/views/calendar/CalendarView.tsx`, `hooks/calendar/useHostCalendar.ts`, `services/calendar/calendar.api.ts` | done against `GET /api/host/calendar` |
-| Strip view per unit type with open and full nights | `components/stays/calendar` strip view | `components/calendar/UnitStrip.tsx` | done on phone width; month grid view open |
+| Strip view per unit type with open and full nights | `components/stays/calendar` strip view | `components/calendar/UnitStrip.tsx` | done |
+| Month grid view with aggregated allocation, price range and a day details sheet | legacy calendar month view and day sheet | `components/calendar/CalendarMonthView.tsx`, `CalendarMonthGrid.tsx`, `CalendarMonthCell.tsx`, `CalendarDaySheet.tsx`, `hooks/calendar/useCalendarMonth.ts` | done: type-checked only, 375px and runtime not checked |
 | Property and date range selection | calendar filters | toolbar in `CalendarView.tsx`, 93 night limit | done |
 | Reservations in the period, opening the reservation detail | calendar reservation overlays | `components/calendar/CalendarReservationList.tsx` opens the shared reservation drawer | done |
 | Block list with remove | calendar blocks | `components/calendar/CalendarBlockList.tsx`, `DELETE /api/host/blocks/{id}` | done |
 | Create a block with unit type, dates and reason | calendar block dialog | `components/calendar/BlockDatesDialog.tsx`, `POST /api/host/blocks` | done; button requires `inventory.write` |
 | Restrictions in the period | calendar restriction overlays | `components/calendar/CalendarRestrictionList.tsx`, `RestrictionDialog.tsx`, `hooks/calendar/useCalendarRestrictions.ts`, `POST /api/host/restrictions/bulk` | done: add minimum/maximum nights, advance notice, horizon, turnover buffer, closed-to-arrival and closed-to-departure rules for all or one unit type, with optional dates and removal; gated by `inventory.write` |
-| Drag to move, day decision sheet, month view | calendar drag and sheet flows | none | open |
+| Drag to move and day decision actions | calendar drag and sheet flows | none | open: the day sheet is read only |
 | ICS feed tokens | legacy calendar feed settings | none | open, backend routes exist |
 | Phone layout | legacy calendar shell | horizontal strip scrolls inside its section, toolbar stacks, dialogs are full width | implemented, 375px runtime check not run |
 | Seed data | `stay-service/seeds` calendar rows | Goma property with units, reservation, restrictions parsed from `/api/host/calendar` | done |
@@ -52,6 +55,9 @@ Calendar limits:
 - The running API returned 5 unit types, 14 nights per unit, one reservation and 6 restrictions for the demo property, in `Africa/Lubumbashi`.
 - Block creation and removal were not exercised, so the demo data is unchanged.
 - Restriction add and remove were not exercised; the bulk route and validation were type-checked only.
+- The month grid and the day details sheet are type-checked only. 375px in English and French, dark mode, the console and runtime behaviour were not checked.
+- Month totals and the day sheet aggregate the unit-type page returned by the API, which is 10 unit types per page. The unit pager is shown in month view as well, so paging changes the visible totals.
+- Days outside the selected date range are shown muted with no allocation or price, and are not clickable.
 
 ## Credits slice
 
@@ -68,6 +74,21 @@ Credits limits:
 
 - The host summary and ledger were requested against the running API for the demo host: balance 802150.00 CDF, rate 12.50%, 18 ledger rows.
 - Date times use the active city time zone from `/api/public/cities`. The ledger response itself carries no time zone.
+
+## Notifications slice
+
+| Legacy feature | Legacy location | Mungini location | Status |
+|---|---|---|---|
+| Host notification inbox with server pagination | legacy notification center | `apps/host/src/views/notifications/NotificationsView.tsx`, `hooks/notifications/useHostNotifications.ts`, `GET /api/host/notifications` | done: all and unread filters, unread count, mark one or all read |
+| Notification rows with type, priority, city-time timestamp and read state | legacy notification rows | `components/notifications/NotificationRow.tsx` | done; type and priority codes fall back to the raw code and a muted tone when unknown |
+| Deep link navigation | legacy notification targets | hook follows internal links only, after marking read | done; external and protocol-relative links are ignored |
+| Phone layout | legacy notification center | paginated rows, icon-only mark-all below `sm`, controls 32px | implemented, 375px runtime check not run |
+
+Notifications limits:
+
+- Unread count and read-all return only a 200 response in the contract, so the client treats missing data as an internal error.
+- The backend unread count does not apply the list expiry filter, so it can exceed the rows the list shows.
+- No live notification request or 375px check was run.
 
 ## Rates slice
 

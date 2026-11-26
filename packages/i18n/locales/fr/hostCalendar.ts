@@ -1,9 +1,19 @@
+import type { HostCalendarLocale } from '../en/hostCalendar';
+
 export const hostCalendar = {
   title: 'Calendrier',
   subtitle: 'Disponibilités, tarifs, réservations et blocages d’un hébergement.',
   property: 'Hébergement',
   chooseProperty: 'Choisir un hébergement',
   range: 'Dates',
+  view: 'Vue du calendrier',
+  viewStrip: 'Liste',
+  viewMonth: 'Mois',
+  previousMonth: 'Mois précédent',
+  nextMonth: 'Mois suivant',
+  monthRangeHint: 'Les disponibilités et les tarifs couvrent la période sélectionnée.',
+  outsideRange: 'En dehors de la période sélectionnée',
+  today: 'Aujourd’hui',
   invalidRange: 'Choisissez une période entre 1 et 93 nuits.',
   previous: 'Précédent',
   next: 'Suivant',
@@ -77,6 +87,4 @@ export const hostCalendar = {
     UNIT_TYPE_NOT_FOUND: 'Ce type de logement n’existe plus.',
     BULK_SIZE_INVALID: 'Nombre de restrictions invalide pour une action.',
   },
-};
-
-export type HostCalendarLocale = typeof hostCalendar;
+} satisfies HostCalendarLocale;

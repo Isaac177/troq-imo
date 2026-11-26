@@ -8,6 +8,8 @@ export const adminReservations = {
   noCases: 'No case for this reservation.', noAmendments: 'No date change for this reservation.', noTimeline: 'No activity yet.',
   caseDeadline: 'Deadline', amendmentExpires: 'Expires', amendmentDelta: 'Difference', amendmentResponded: 'Answered',
   timelineEvent: 'Reservation event',
+  reference: 'Reference', checkIn: 'Check-in', checkOut: 'Check-out',
+  exportAction: 'Export', exported: '{count} reservations exported.', exportError: 'Could not export reservations.',
   caseTypes: {
     GUEST_COMPLAINT: 'Guest complaint',
     OPERATOR_COMPLAINT: 'Host complaint',

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Globe } from 'lucide-react';
 import { Button, ThemeToggle } from '@mungini/ui-web';
+import { NotificationsLink } from '@/components/notifications/NotificationsLink';
 import { useSiteHeader } from '@/hooks/layout/useSiteHeader';
 
 export default function SiteHeader() {
@@ -26,6 +27,7 @@ export default function SiteHeader() {
         <ThemeToggle lightLabel={header.labels.light} darkLabel={header.labels.dark} />
         {header.status === 'authenticated' ? (
           <>
+            <NotificationsLink />
             <Link href="/account" className="hidden text-body text-muted-foreground hover:text-foreground sm:block">
               {header.name || header.labels.account}
             </Link>

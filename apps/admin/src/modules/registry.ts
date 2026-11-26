@@ -1,4 +1,4 @@
-import { Building2, ClipboardList, FileCheck2, FolderOpen, LayoutDashboard, ShieldAlert, Star, Users, CalendarDays } from 'lucide-react';
+import { Bell, Building2, ClipboardList, FileCheck2, FolderOpen, LayoutDashboard, ShieldAlert, Star, Users, CalendarDays } from 'lucide-react';
 import DashboardView from '@/views/dashboard/DashboardView';
 import ApplicationsView from '@/views/applications/ApplicationsView';
 import HostsView from '@/views/hosts/HostsView';
@@ -9,6 +9,8 @@ import ReviewsView from '@/views/reviews/ReviewsView';
 import CasesView from '@/views/cases/CasesView';
 import ListingReviewsView from '@/views/listings/ListingReviewsView';
 import ClaimsView from '@/views/claims/ClaimsView';
+import PropertiesView from '@/views/properties/PropertiesView';
+import NotificationsView from '@/views/notifications/NotificationsView';
 import type { ModuleDefinition } from '@/types/modules/module';
 
 export const moduleRegistry: ModuleDefinition[] = [
@@ -77,5 +79,14 @@ export const moduleRegistry: ModuleDefinition[] = [
     id: 'claims', component: ClaimsView, labelKey: 'navClaims',
     section: 'sectionOperations', route: '/claims', icon: ShieldAlert,
     permission: 'properties.moderate',
+  },
+  {
+    id: 'properties', component: PropertiesView, labelKey: 'navProperties',
+    section: 'sectionOperations', route: '/properties', icon: Building2,
+    permission: 'properties.moderate',
+  },
+  {
+    id: 'notifications', component: NotificationsView, labelKey: 'navNotifications',
+    section: 'sectionOperations', route: '/notifications', icon: Bell,
   },
 ];

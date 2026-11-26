@@ -57,9 +57,25 @@ Mungini locations: `apps/web/src/{app,components,hooks,services,types}/trips`, `
 | 30 | State labels for requested, pending payment, confirmed, checked in, checked out, no show, completed, cancelled, expired, declined, held | `stays.json` `stays.mine.state` | `packages/i18n/locales/{en,fr}/trips.ts` | done | |
 | 31 | Cancellation, withdraw and error strings in English and French | `stays.json` `stays.mine.booking` | `packages/i18n/locales/{en,fr}/trips.ts` | done | French satisfies the English type. |
 | 32 | Demo trips for every state | `stay-service/seeds` | `backend/seeds/reservations/01-reservations-goma.sql`, `06-guest-trips.sql` | done | Existing seeds cover `CONFIRMED`, `REQUESTED`, `PENDING_PAYMENT`, checked in, checked out, cancelled, declined, expired and no show for the seeded guest. |
-| 33 | Demo cancelled trip with a charge due at the property | legacy seeds | none | open | No seeded confirmed trip has a non-zero penalty, so the charged cancellation path has no demo data. Seeds are outside this slice. |
+| 33 | Demo cancelled trip with a charge due at the property | legacy seeds | `backend/seeds/reservations/08-charged-cancellation.sql` | done in seed: a confirmed stay cloned from the seeded confirmed trip with a past cancellation deadline and a 50 percent penalty, so the cancellation preview shows a charge. The seed must be applied by the owner |
 | 34 | Demo trip with an approved cancellation on a past deadline | legacy seeds | none | open | The seeded confirmed trip is still inside its free window. |
 | 35 | Deadline formatting in the city time zone | `useMyStays.ts`, `useMyStayDetail.ts` | `useTripActions.ts` | done | Time zone read from `CityView.timezone` returned by `/api/public/cities`, not a hardcoded map. |
+
+## Notification inbox
+
+| Legacy feature | Legacy location | Mungini location | Status |
+|---|---|---|---|
+| Guest notification inbox | legacy notification center | `apps/web/src/app/notifications/page.tsx`, `components/notifications/NotificationsView.tsx`, `hooks/notifications/useNotifications.ts`, `GET /api/guest/notifications` | done: server pagination, all/unread tabs, unread summary, mark all read, skeleton, error and empty states |
+| Rows with type, priority, city-time timestamp and read state | legacy rows | `components/notifications/NotificationRow.tsx` | done; 15 types and 4 priorities translated, unknown values fall back |
+| Mark read and deep-link navigation | legacy notification targets | hook marks unread rows read and follows internal links only | done; external and protocol-relative links are ignored |
+| Filter and page in the URL | legacy query state | `?filter=unread` and `?page=` kept with `history.replaceState` | done |
+| Header entry | legacy bell | `components/notifications/NotificationsLink.tsx` in `SiteHeader` | done |
+| Phone and dark mode | legacy notification center | rows stack, controls within 36px | implemented, 375px and dark-mode checks not run |
+
+Inbox limits:
+
+- Unread count can exceed the list total because the backend count skips the list expiry filter.
+- The guest list returns every notification owned by the user and does not filter by audience; seeded users separate audiences, so it is not visible today.
 
 ## Verification
 

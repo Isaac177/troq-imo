@@ -6,8 +6,8 @@ type Row = { id: string; reason: string; unit: string; start: string; end: strin
 type Props = {
   rows: Row[];
   empty: string;
-  removeLabel: string;
-  onRemove: (row: Row) => void;
+  removeLabel?: string;
+  onRemove?: (row: Row) => void;
 };
 
 export default function CalendarBlockList({ rows, empty, removeLabel, onRemove }: Props) {
@@ -20,7 +20,7 @@ export default function CalendarBlockList({ rows, empty, removeLabel, onRemove }
             <span className="block truncate font-medium text-foreground">{row.reason}</span>
             <span className="block truncate text-label text-muted-foreground">{row.unit} · {row.start} – {row.end}</span>
           </span>
-          <Button size="sm" variant="outline" icon={<Ban />} collapseLabel aria-label={removeLabel} title={removeLabel} onClick={() => onRemove(row)}>{removeLabel}</Button>
+          {onRemove && removeLabel ? <Button size="sm" variant="outline" icon={<Ban />} collapseLabel aria-label={removeLabel} title={removeLabel} onClick={() => onRemove(row)}>{removeLabel}</Button> : null}
         </li>
       ))}
     </ul>

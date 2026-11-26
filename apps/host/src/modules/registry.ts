@@ -1,4 +1,4 @@
-import { BadgePercent, Building2, CalendarDays, CalendarRange, ClipboardCheck, LayoutDashboard, Settings, Star, Users, Wallet } from 'lucide-react';
+import { BadgePercent, Bell, Building2, CalendarDays, CalendarRange, ClipboardCheck, LayoutDashboard, Settings, Star, Users, Wallet } from 'lucide-react';
 import type { ModuleDefinition } from '@/types/modules/module';
 
 export const moduleRegistry: ModuleDefinition[] = [
@@ -72,6 +72,13 @@ export const moduleRegistry: ModuleDefinition[] = [
     section: 'sectionAccount',
     route: '/onboarding',
     icon: ClipboardCheck,
+  },
+  {
+    id: 'notifications',
+    labelKey: 'navNotifications',
+    section: 'sectionAccount',
+    route: '/notifications',
+    icon: Bell,
   },
   {
     id: 'settings',

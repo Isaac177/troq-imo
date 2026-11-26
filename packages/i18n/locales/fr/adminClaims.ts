@@ -26,6 +26,13 @@ export const adminClaims = {
   reason: 'Motif de la réclamation',
   evidence: 'Justificatifs',
   noEvidence: 'Aucun justificatif.',
+  statements: 'Déclarations',
+  noStatements: 'Aucune déclaration enregistrée.',
+  addStatement: 'Ajouter une déclaration',
+  statementParty: 'Partie',
+  statementBody: 'Déclaration',
+  statementPlaceholder: 'Résumé de ce que la partie a déclaré',
+  statementSaved: 'Déclaration enregistrée.',
   decide: 'Décider',
   decisionTitle: 'Décision sur la réclamation',
   decisionBody: 'Approuvez, approuvez partiellement ou refusez la réclamation. La décision est auditée.',
@@ -67,6 +74,10 @@ export const adminClaims = {
     FAILED: 'Échoué',
     NOT_DUE: 'Pas encore dû',
   },
+  parties: {
+    HOST: 'Hôte',
+    GUEST: 'Client',
+  },
   errors: {
     generic: 'L’action n’a pas pu être effectuée.',
     CLAIM_NOT_FOUND: 'Cette réclamation n’existe plus.',
@@ -81,6 +92,8 @@ export const adminClaims = {
     PAYOUT_REF_TOO_LONG: 'La référence de paiement est trop longue.',
     PAYOUT_NOT_DUE: 'Le délai de contestation est encore ouvert.',
     PAYOUT_ALREADY_PAID: 'Cette réclamation est déjà payée.',
+    STATEMENT_PARTY_INVALID: 'Choisissez l’hôte ou le client.',
+    STATEMENT_BODY_INVALID: 'Rédigez d’abord une déclaration.',
     FORBIDDEN: 'Vous n’avez pas la permission pour cette action.',
   },
 };

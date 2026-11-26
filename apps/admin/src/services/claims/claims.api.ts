@@ -1,7 +1,6 @@
 import type { SessionClient } from '@mungini/session';
 import { apiErrorCode } from '@mungini/session';
 import type { ClaimDetail, ClaimRow, ClaimSummary, PayoutResult, RequestResult } from '@/types/claims/claims';
-
 export type PagedResult<T> = { items: T[]; total: number; page: number; pageSize: number };
 export type ClaimQuery = { status: string; search: string; page: number; pageSize: number };
 
@@ -55,3 +54,9 @@ export const recordPayout = async (client: SessionClient, caseId: string, input:
 };
 
 export const listCities = (client: SessionClient) => client.api.GET('/api/public/cities');
+
+export const addStatement = async (client: SessionClient, caseId: string, party: string, body: string): Promise<RequestResult<{ id: string; party: string; body: string; createdAt: string }>> => {
+  const response = await client.api.POST('/api/admin/claims/{caseId}/statement', { params: { path: { caseId } }, body: { party, body } });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};

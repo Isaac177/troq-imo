@@ -26,6 +26,13 @@ export const adminClaims = {
   reason: 'Claim reason',
   evidence: 'Evidence',
   noEvidence: 'No evidence file.',
+  statements: 'Statements',
+  noStatements: 'No statement recorded.',
+  addStatement: 'Add statement',
+  statementParty: 'Party',
+  statementBody: 'Statement',
+  statementPlaceholder: 'Summary of what the party said',
+  statementSaved: 'Statement recorded.',
   decide: 'Decide',
   decisionTitle: 'Claim decision',
   decisionBody: 'Approve, approve partially or reject the claim. The decision is audited.',
@@ -67,6 +74,10 @@ export const adminClaims = {
     FAILED: 'Failed',
     NOT_DUE: 'Not due yet',
   },
+  parties: {
+    HOST: 'Host',
+    GUEST: 'Guest',
+  },
   errors: {
     generic: 'The action could not be completed.',
     CLAIM_NOT_FOUND: 'This claim no longer exists.',
@@ -81,6 +92,8 @@ export const adminClaims = {
     PAYOUT_REF_TOO_LONG: 'The payment reference is too long.',
     PAYOUT_NOT_DUE: 'The dispute window is still open.',
     PAYOUT_ALREADY_PAID: 'This claim is already paid.',
+    STATEMENT_PARTY_INVALID: 'Choose the host or the guest.',
+    STATEMENT_BODY_INVALID: 'Write a statement first.',
     FORBIDDEN: 'You do not have permission for this action.',
   },
 };
