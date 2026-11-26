@@ -3,7 +3,6 @@ use kernel::error::{Error, ErrorCode, Result};
 pub const NAME_INVALID: ErrorCode = ErrorCode::new("AMENITY_NAME_INVALID");
 pub const CODE_INVALID: ErrorCode = ErrorCode::new("AMENITY_CODE_INVALID");
 pub const ICON_INVALID: ErrorCode = ErrorCode::new("AMENITY_ICON_INVALID");
-pub const LOCALE_INVALID: ErrorCode = ErrorCode::new("AMENITY_LOCALE_INVALID");
 pub const CODE_EXHAUSTED: ErrorCode = ErrorCode::new("AMENITY_CODE_EXHAUSTED");
 pub const GROUP_NOT_FOUND: ErrorCode = ErrorCode::new("AMENITY_GROUP_NOT_FOUND");
 pub const AMENITY_NOT_FOUND: ErrorCode = ErrorCode::new("AMENITY_NOT_FOUND");
@@ -12,15 +11,6 @@ pub fn name(value: &str) -> Result<String> {
     let value = value.trim();
     if value.is_empty() || value.chars().count() > 80 {
         Err(Error::bad_request(NAME_INVALID))
-    } else {
-        Ok(value.to_owned())
-    }
-}
-
-pub fn locale(value: &str) -> Result<String> {
-    let value = value.trim();
-    if value.is_empty() || value.len() > 35 || !value.chars().all(|c| c.is_ascii_alphanumeric() || c == '-') {
-        Err(Error::bad_request(LOCALE_INVALID))
     } else {
         Ok(value.to_owned())
     }

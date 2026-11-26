@@ -45,6 +45,8 @@ export const host = {
   invite: 'Inviter',
   inviteEmail: 'E-mail',
   inviteSend: 'Envoyer l\u2019invitation',
+  inviteCityHint: 'Les membres doivent avoir leur ville de résidence dans la même ville que votre établissement. Les nouveaux invités doivent choisir cette ville lors de leur inscription.',
+  inviteCityMismatch: 'La ville de résidence de ce compte est différente de celle de votre établissement. Ce compte ne peut pas rejoindre l’équipe.',
   inviteEmpty: 'Aucune invitation en attente.',
   revoke: 'R\u00e9voquer',
   onboardingTitle: 'Candidature h\u00f4te',

@@ -39,6 +39,7 @@ impl Notice {
         self
     }
 
+    #[cfg(test)]
     pub fn actor(mut self, actor_id: Option<&str>) -> Self {
         self.actor_id = actor_id.filter(|value| !value.is_empty()).map(ToString::to_string);
         self

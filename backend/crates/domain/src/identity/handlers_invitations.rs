@@ -6,9 +6,11 @@ use kernel::error::{codes, Error, ErrorBody, Result};
 use kernel::paging::PageRequest;
 use kernel::{KernelState, Page};
 
+use super::accept_invitation::accept_invitation;
 use super::api_types::MessageResponse;
+use super::invitation_inbox::list_my_invitations;
 use super::invitations::{
-    accept_invitation, create_invitation, list_invitations, list_my_invitations, revoke_invitation,
+    create_invitation, list_invitations, revoke_invitation,
     CreateInvitation, InvitationView, MyInvitationView,
 };
 

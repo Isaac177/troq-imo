@@ -5150,6 +5150,23 @@ export interface components {
             metadata: components["schemas"]["Metadata"];
             success: boolean;
         };
+        Envelope_InventoryCalendarView: {
+            data: {
+                blocks: components["schemas"]["CalendarBlock"][];
+                from: string;
+                page: number;
+                pageSize: number;
+                propertyId: string;
+                reservations: components["schemas"]["CalendarReservation"][];
+                restrictions: components["schemas"]["RestrictionView"][];
+                timezone: string;
+                to: string;
+                totalUnits: number;
+                units: components["schemas"]["CalendarUnit"][];
+            };
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
         Envelope_InventoryDefaultsResult: {
             data: {
                 enabled: boolean;
@@ -7117,6 +7134,19 @@ export interface components {
             id: string;
             isCover: boolean;
             url: string;
+        };
+        InventoryCalendarView: {
+            blocks: components["schemas"]["CalendarBlock"][];
+            from: string;
+            page: number;
+            pageSize: number;
+            propertyId: string;
+            reservations: components["schemas"]["CalendarReservation"][];
+            restrictions: components["schemas"]["RestrictionView"][];
+            timezone: string;
+            to: string;
+            totalUnits: number;
+            units: components["schemas"]["CalendarUnit"][];
         };
         InventoryDefaultsInput: {
             enabled: boolean;
@@ -9153,7 +9183,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_CalendarView"];
+                    "application/json": components["schemas"]["Envelope_InventoryCalendarView"];
                 };
             };
             400: {
@@ -14953,7 +14983,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_CalendarView"];
+                    "application/json": components["schemas"]["Envelope_InventoryCalendarView"];
                 };
             };
             400: {

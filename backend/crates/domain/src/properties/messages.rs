@@ -39,7 +39,6 @@ pub const TEMPLATE_NOT_FOUND: ErrorCode = ErrorCode::new("TEMPLATE_NOT_FOUND");
 pub const TEMPLATE_AMOUNT_INVALID: ErrorCode = ErrorCode::new("TEMPLATE_AMOUNT_INVALID");
 pub const TEMPLATE_STATUS_INVALID: ErrorCode = ErrorCode::new("TEMPLATE_STATUS_INVALID");
 pub const TEMPLATE_VERSION_CONFLICT: ErrorCode = ErrorCode::new("TEMPLATE_VERSION_CONFLICT");
-pub const TEMPLATE_ID_REQUIRED: ErrorCode = ErrorCode::new("TEMPLATE_ID_REQUIRED");
 
 pub const LISTING_VERSION_CONFLICT: ErrorCode = ErrorCode::new("LISTING_VERSION_CONFLICT");
 pub const LISTING_STATUS_INVALID: ErrorCode = ErrorCode::new("LISTING_STATUS_INVALID");

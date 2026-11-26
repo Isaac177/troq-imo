@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { SaveFavorite } from '@/components/favorites/SaveFavorite';
+import { BookingPanel } from '@/components/booking/BookingPanel';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { createI18n } from '@mungini/i18n';
+import { createServerI18n } from '@mungini/i18n/server';
 import { getStay } from '@/services/guest/discovery.server';
 
 type StayProps = {
@@ -14,9 +16,9 @@ export default async function StayPage({ params, searchParams }: StayProps) {
   const { city: requestedCity } = await searchParams;
   const city = requestedCity === 'KIN' ? 'KIN' : 'GOMA';
   const language = (await cookies()).get('mungini-language')?.value === 'fr' ? 'fr' : 'en';
-  const i18n = createI18n(language);
+  const i18n = createServerI18n(language);
   const t = i18n.getFixedT(language, 'guest') as unknown as (key: string) => string;
-  const stay = await getStay(city, propertyId);
+  const stay = await getStay(city, propertyId, language);
 
   if (!stay) notFound();
 
@@ -46,6 +48,9 @@ export default async function StayPage({ params, searchParams }: StayProps) {
           ))}
         </section>
       ) : null}
+
+      <SaveFavorite propertyId={propertyId} city={city} />
+      <BookingPanel propertyId={propertyId} city={city} stays={stay.unitTypes.map((unit) => ({ id: unit.id, name: unit.name }))} />
 
       <section className="flex flex-col gap-2 rounded-card border border-border bg-card p-4">
         <h2 className="text-title font-semibold">{t('detailAbout')}</h2>

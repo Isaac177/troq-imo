@@ -16,6 +16,6 @@ pub use feed_tokens::{
 pub use service::{admin_calendar, host_calendar, host_feed};
 pub use types::{
     CalendarBlock, CalendarDay, CalendarFeedQuery, CalendarQuery, CalendarReservation, CalendarUnit,
-    CalendarView, MAX_RANGE_DAYS,
+    InventoryCalendarView, MAX_RANGE_DAYS,
 };
 pub use view::feed_text;

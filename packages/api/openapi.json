@@ -5749,6 +5749,92 @@
         ],
         "type": "object"
       },
+      "Envelope_InventoryCalendarView": {
+        "properties": {
+          "data": {
+            "properties": {
+              "blocks": {
+                "items": {
+                  "$ref": "#/components/schemas/CalendarBlock"
+                },
+                "type": "array"
+              },
+              "from": {
+                "format": "date",
+                "type": "string"
+              },
+              "page": {
+                "format": "int32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "pageSize": {
+                "format": "int32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "propertyId": {
+                "type": "string"
+              },
+              "reservations": {
+                "items": {
+                  "$ref": "#/components/schemas/CalendarReservation"
+                },
+                "type": "array"
+              },
+              "restrictions": {
+                "items": {
+                  "$ref": "#/components/schemas/RestrictionView"
+                },
+                "type": "array"
+              },
+              "timezone": {
+                "type": "string"
+              },
+              "to": {
+                "format": "date",
+                "type": "string"
+              },
+              "totalUnits": {
+                "format": "int64",
+                "type": "integer"
+              },
+              "units": {
+                "items": {
+                  "$ref": "#/components/schemas/CalendarUnit"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "propertyId",
+              "timezone",
+              "from",
+              "to",
+              "units",
+              "totalUnits",
+              "page",
+              "pageSize",
+              "reservations",
+              "blocks",
+              "restrictions"
+            ],
+            "type": "object"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "Envelope_InventoryDefaultsResult": {
         "properties": {
           "data": {
@@ -14828,6 +14914,76 @@
         ],
         "type": "object"
       },
+      "InventoryCalendarView": {
+        "properties": {
+          "blocks": {
+            "items": {
+              "$ref": "#/components/schemas/CalendarBlock"
+            },
+            "type": "array"
+          },
+          "from": {
+            "format": "date",
+            "type": "string"
+          },
+          "page": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyId": {
+            "type": "string"
+          },
+          "reservations": {
+            "items": {
+              "$ref": "#/components/schemas/CalendarReservation"
+            },
+            "type": "array"
+          },
+          "restrictions": {
+            "items": {
+              "$ref": "#/components/schemas/RestrictionView"
+            },
+            "type": "array"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "to": {
+            "format": "date",
+            "type": "string"
+          },
+          "totalUnits": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "units": {
+            "items": {
+              "$ref": "#/components/schemas/CalendarUnit"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "propertyId",
+          "timezone",
+          "from",
+          "to",
+          "units",
+          "totalUnits",
+          "page",
+          "pageSize",
+          "reservations",
+          "blocks",
+          "restrictions"
+        ],
+        "type": "object"
+      },
       "InventoryDefaultsInput": {
         "properties": {
           "enabled": {
@@ -21434,7 +21590,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_CalendarView"
+                  "$ref": "#/components/schemas/Envelope_InventoryCalendarView"
                 }
               }
             },
@@ -31658,7 +31814,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_CalendarView"
+                  "$ref": "#/components/schemas/Envelope_InventoryCalendarView"
                 }
               }
             },

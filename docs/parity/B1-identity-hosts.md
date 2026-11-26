@@ -15,14 +15,16 @@ Verification on 26/11/2026: `cargo check --workspace --all-targets` and `cargo t
 | `auth-service/src/scoped_grants/team_lists.rs` `list_my_operators` | `hosts/membership.rs`, `identity/team.rs` | done: paginated active memberships and paginated member listing with effective permissions and overrides |
 | `stay-service/src/operators/contact.rs` contact validation | `hosts/contact.rs`, `migration 00003` | done: scoped city and active membership checks, audit and outbox |
 | Host onboarding, documents, agreements, team and transfers | `hosts/onboarding/`, migrations `00029`; `identity/team.rs`, `identity/invitations.rs` | partial: applications, document upload and review, approve/reject, suspend/reinstate, team invitations and membership management done; agreements and ownership transfers remain open because no legacy flow exists to port |
-| Host and identity routes, permissions and notifications | `identity/routes.rs`, `hosts/routes.rs`; `api/src/registry.rs`, `api/src/main.rs` | done for routes and permissions; an invitation notification event is emitted but the notifications module has no subscriber yet |
+| Host and identity routes, permissions and notifications | `identity/routes.rs`, `hosts/routes.rs`; `api/src/registry.rs`, `api/src/main.rs` | partial: routes and permissions implemented; invitation event queues bilingual email for existing or new invitees, runtime verification and inbox UI remain open |
 | Legacy demo host and identity states | `seeds/identity/01` to `09` | done: two cities, active, removed, suspended and expired examples, pending/accepted/expired/revoked invitations, draft/pending/approved/rejected applications, every document status, platform staff accounts and host status history |
 | Legacy tests and database tests | `identity/session_tests.rs`, unit tests per module | done: unit and SQLx tests run locally; host application and invitation database paths were exercised through live requests |
 
 ## Open
 
-- Invitation emails: the outbox event `identity.invitation.created` has no notification subscriber yet. Invitees see the invitation in the app after signing in with the invited email.
+- Invitation emails: subscriber and queued delivery implemented; owner compilation, provider delivery and job runtime verification remain. Events already published without a subscriber require a separate replay decision. Guest invitation inbox UI remains open.
 - Agreements and ownership transfers: schema not created because the legacy code defines no flow. A Mungini specification is required before building them.
 - Network-level login and OTP rate limiting: account lockout exists; Redis-based per-network limits remain open.
 - Property-scoped grants and overrides stay closed in the directory until property ownership verification exists (B2 contract).
 - Contact migration from TROQ auth is part of cutover C1.
+
+- Registration and invitation cities: a verified email may have pending invitations in several cities. Registration must not be blocked or have its home city selected by an unsolicited invitation. Show a warning after OTP verification listing eligible invitation cities while preserving the user's choice; the response contract, generated client and guest UI remain open.

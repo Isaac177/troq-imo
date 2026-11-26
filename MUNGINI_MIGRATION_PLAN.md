@@ -18,12 +18,22 @@ Stay today is a separate microservice (`stay-service`) wired into the marketplac
 
 ## Current state
 
-Updated 26/11/2026 after inspecting the working tree and the current handoff. Mungini is a Git repository; preserve the existing implementation and uncommitted work. The claims and parity ledgers track individual slices.
+Updated 26/11/2026 against the working tree and task ledger. A slice is complete only when its parity ledger has no open rows and required verification is complete.
 
-- Backend modules for identity, hosts, properties, inventory, pricing, reservations, guest discovery, reviews, billing, notifications and admin exist at varying levels of completeness. Several routes are registered, but authenticated access remains fail-closed while identity is incomplete. Rust and SQL changes have not been compiled or executed by the agent.
-- The four client apps are still shells. Generated client output is blocked until the owner compiles a current API binary. Feature screens, complete parity and data-copy rehearsal remain open.
-- Demo seeds exist for multiple modules and are ordered by their current dependencies; the order still requires a database rehearsal.
-- TROQ removal is gated by completed parity ledgers and owner review. Do not delete legacy code before that gate.
+| Area | Status | Done and remaining |
+|---|---|---|
+| Identity and hosts | Partial | Registration, sessions, team and onboarding are implemented. Invitation email delivery is implemented but requires runtime verification and a replay plan for already-published events. Agreements, ownership transfers, network rate limiting, property-scoped grants and contact cutover remain open. |
+| Backend | Partial | Admin guest and dashboard reads, property lifecycle and inventory code are present. The admin calendar read model exists and its API client has been regenerated; runtime verification remains open. Document delivery retries are implemented behind migration 00031; historical documents and provider/runtime verification remain open. Other reports and database ownership verification remain open. Consult the individual parity ledgers for additional gaps. |
+| API contract | Partial | Generated client and OpenAPI are present; the current document contains 242 paths. Compression, network rate limiting and contract freshness verification remain open. |
+| Host and admin web | Partial | Login, shells, dashboards, host team and onboarding, admin applications, hosts and guests exist. The admin reservation list, status filter, detail drawer and calendar screen are implemented; full case, amendment and timeline detail, reports and other feature screens remain open. Phone, language and theme checks remain open. |
+| Guest web | Partial | Discovery, property detail, login, email registration and account exist. French discovery content and an invitation inbox are implemented. Favorites and wishlist screens are implemented, pending runtime and phone checks. Guest name editing, trip list and detail, and pay-at-property booking through hold submission are implemented. Hold submission needs live verification; prepaid booking remains closed due to conflicting payment terms. Trip actions, contact editing and preferred-language editing remain open. Host team membership is limited to the account home city. Existing cross-city accounts are rejected at invitation creation; new invitees receive city guidance but may still register in another city. |
+| Mobile | Open | App remains a shell; feature screens and mobile session storage remain open. |
+| Data and cutover | Open | Contact and Stay data copy, count verification and cutover rehearsal remain open. |
+| TROQ removal | Blocked | Parity ledgers and owner review must be complete before removal. |
+
+The task ledger records previous compilation, tests, seed application and live requests. Current Rust changes are read-checked only until the owner's watcher reports the result. Frontend type checks for API, session, host, admin and guest web passed in the latest review. No 375px or light-mode checks were performed.
+
+Startup warning cleanup: the 23 warnings in the supplied startup log have been addressed in code, including unused exports, duplicate listing functions, unused document fields and test-only helpers. Owner compilation is pending, so a warning-free build is not yet verified. Active-language validation and document delivery reconciliation remain separate open feature work.
 
 ## Decisions made
 
@@ -55,6 +65,7 @@ Work that depends on an open decision must wait or follow the default and say so
 | D11 | Visual language. TROQ's `DESIGN.md` (green, Onest, status dots, curved panels; the stays pages are its reference) and Troqbound's `DESIGN.md` (lime, Plus Jakarta Sans, tone pills) differ in look and agree on behaviour. Which look does Mungini use, and does it get its own brand colour and typeface? | Keep the TROQ stays language for the ported screens so parity is easy to check, expressed as semantic tokens in one theme file so a Mungini brand change is a one file edit. Comparison in `MUNGINI_UI_DESIGN.md` section 2. |
 | D12 | Locale file format. TROQ uses JSON files in `shared-i18n`. Troqbound uses typed per-feature TypeScript files where `fr` must satisfy the type of `en`, so a missing key is a compile error. | Typed per-feature files in `packages/i18n`, English and French. JSON locales are converted during the port. |
 | D13 | Translatable content storage. Stay keeps `nameEn` and `nameFr` style columns, the agent rules ask for per-locale content tables. | Owner decided on 26/11/2026: keep the Stay columns for the port, convert to per-locale tables in a later migration. |
+| D14 | Can a host team member manage a host in a different city from their account home city? | Owner decided: no. Host team access remains limited to the account home city. |
 
 ## Source of truth for extraction
 

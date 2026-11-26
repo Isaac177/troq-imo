@@ -26,7 +26,6 @@ struct Row {
     read_at: Option<DateTime<Utc>>,
     seen_at: Option<DateTime<Utc>>,
     created_at: DateTime<Utc>,
-    total: i64,
 }
 
 const COLUMNS: &str = "id, type AS kind, title_en, title_fr, body_en, body_fr, priority, deep_link, event_key, category, audience, params, entity_type, entity_id, read_at, seen_at, created_at";
@@ -63,7 +62,7 @@ fn view(row: Row, language: &str) -> NotificationView {
 pub async fn list(pool: &PgPool, user_id: &str, unread_only: bool, language: &str, page: PageRequest) -> Result<Page<NotificationView>> {
     let page = page.validated()?;
     let sql = format!(
-        "SELECT {COLUMNS}, COUNT(*) OVER() AS total FROM notifications WHERE user_id = $1 AND deleted_at IS NULL AND (expires_at IS NULL OR expires_at > now()) AND (NOT $2 OR read_at IS NULL) ORDER BY created_at DESC, id LIMIT $3 OFFSET $4"
+        "SELECT {COLUMNS} FROM notifications WHERE user_id = $1 AND deleted_at IS NULL AND (expires_at IS NULL OR expires_at > now()) AND (NOT $2 OR read_at IS NULL) ORDER BY created_at DESC, id LIMIT $3 OFFSET $4"
     );
     let rows = sqlx::query_as::<_, Row>(&sql)
         .bind(user_id)
@@ -72,7 +71,9 @@ pub async fn list(pool: &PgPool, user_id: &str, unread_only: bool, language: &st
         .bind(page.offset())
         .fetch_all(pool)
         .await?;
-    let total = rows.first().map(|row| row.total).unwrap_or(0);
+    let total = sqlx::query_scalar::<_, i64>(
+        "SELECT COUNT(*) FROM notifications WHERE user_id = $1 AND deleted_at IS NULL AND (expires_at IS NULL OR expires_at > now()) AND (NOT $2 OR read_at IS NULL)",
+    ).bind(user_id).bind(unread_only).fetch_one(pool).await?;
     Ok(Page::new(rows.into_iter().map(|row| view(row, language)).collect(), total, page))
 }
 

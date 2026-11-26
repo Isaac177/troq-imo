@@ -38,7 +38,6 @@ pub fn guest_name(value: &Value) -> Result<String> {
 }
 
 pub struct ViewBase {
-    pub labels: Map<String, Value>,
     pub missing: String,
     pub view: Map<String, Value>,
 }
@@ -49,7 +48,7 @@ pub fn view_base(root: &Path, kind: DocumentKind, locale: Locale, brand: &str) -
     let mut view = Map::new();
     view.insert("labels".into(), Value::Object(labels.clone()));
     view.insert("brand".into(), Value::String(brand.to_string()));
-    Ok(ViewBase { labels, missing, view })
+    Ok(ViewBase { missing, view })
 }
 
 pub fn put(view: &mut Map<String, Value>, key: &str, value: impl Into<String>) {

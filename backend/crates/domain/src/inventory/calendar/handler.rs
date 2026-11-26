@@ -14,7 +14,7 @@ use super::feed_tokens::{
     create, feed_by_token, list, revoke, CreateFeedTokenInput, FeedTokenCreated, FeedTokenRevoked, FeedTokenView,
 };
 use super::service::{admin_calendar, host_calendar, host_feed};
-use super::types::{CalendarFeedQuery, CalendarQuery, CalendarView};
+use super::types::{CalendarFeedQuery, CalendarQuery, InventoryCalendarView};
 use crate::inventory::http::{JsonBody, Params};
 use crate::inventory::messages::FEED_NOT_FOUND;
 use crate::inventory::query::paging;
@@ -35,14 +35,14 @@ pub struct FeedTokenListQuery {
 #[utoipa::path(
     get, path = "/api/host/calendar", operation_id = "inventory_calendar_get",
     params(CalendarQuery),
-    responses((status = 200, body = Envelope<CalendarView>), (status = 400, body = ErrorBody), (status = 403, body = ErrorBody), (status = 404, body = ErrorBody))
+    responses((status = 200, body = Envelope<InventoryCalendarView>), (status = 400, body = ErrorBody), (status = 403, body = ErrorBody), (status = 404, body = ErrorBody))
 )]
 pub async fn host_get<S>(
     State(state): State<S>,
     actor: Actor,
     RequestId(request_id): RequestId,
     Params(query): Params<CalendarQuery>,
-) -> Result<Json<Envelope<CalendarView>>>
+) -> Result<Json<Envelope<InventoryCalendarView>>>
 where
     S: KernelState + Clone + Send + Sync + 'static,
 {
@@ -53,14 +53,14 @@ where
 #[utoipa::path(
     get, path = "/api/admin/calendar", operation_id = "admin_inventory_calendar_get",
     params(CalendarQuery),
-    responses((status = 200, body = Envelope<CalendarView>), (status = 400, body = ErrorBody), (status = 403, body = ErrorBody), (status = 404, body = ErrorBody))
+    responses((status = 200, body = Envelope<InventoryCalendarView>), (status = 400, body = ErrorBody), (status = 403, body = ErrorBody), (status = 404, body = ErrorBody))
 )]
 pub async fn admin_get<S>(
     State(state): State<S>,
     actor: Actor,
     RequestId(request_id): RequestId,
     Params(query): Params<CalendarQuery>,
-) -> Result<Json<Envelope<CalendarView>>>
+) -> Result<Json<Envelope<InventoryCalendarView>>>
 where
     S: KernelState + Clone + Send + Sync + 'static,
 {

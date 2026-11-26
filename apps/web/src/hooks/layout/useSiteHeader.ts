@@ -1,8 +1,10 @@
 import { useTranslation } from '@mungini/i18n';
 import { useSession } from '@mungini/session';
+import { useRouter } from 'next/navigation';
 
 export const useSiteHeader = () => {
   const { i18n } = useTranslation();
+  const router = useRouter();
   const { session, status, logout } = useSession();
   const t = i18n.getFixedT(i18n.language, 'guest') as unknown as (key: string) => string;
   const common = i18n.getFixedT(i18n.language, 'common') as unknown as (key: string) => string;
@@ -27,6 +29,7 @@ export const useSiteHeader = () => {
       void i18n.changeLanguage(language);
       document.documentElement.lang = language;
       document.cookie = `mungini-language=${language}; path=/; max-age=31536000; samesite=lax`;
+      router.refresh();
     },
     logout: () => {
       void logout();

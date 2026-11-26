@@ -12,7 +12,5 @@ pub use detail::property_detail;
 pub use media::media_content;
 pub use queries::{property_is_listed, published_count};
 pub use types::{
-    AvailabilityOptionView, AvailabilityQuery, AvailabilityView, CalendarDayView, CalendarQuery,
-    CalendarView, DestinationView, ImageView, LocaleQuery, MediaContentView, MediaView,
-    PropertyDetailView, RatePlanView, UnitTypeView,
+    AvailabilityView, CalendarView, DestinationView, PropertyDetailView,
 };

@@ -23,20 +23,6 @@ pub async fn revision_property_id(pool: &PgPool, revision_id: &str) -> Result<Op
         .await?)
 }
 
-pub async fn mark_submitted(conn: &mut PgConnection, revision_id: &str, actor: &str) -> Result<()> {
-    sqlx::query(
-        r#"UPDATE stay_property_revisions SET "reviewStatus" = 'SUBMITTED', "submittedAt" = now(),
-           "submittedByUserId" = $2, "reviewedAt" = NULL, "reviewedByUserId" = NULL,
-           "reviewReasons" = '[]'::jsonb, "reviewGuidance" = NULL, version = version + 1, "updatedAt" = now()
-           WHERE id = $1"#,
-    )
-    .bind(revision_id)
-    .bind(actor)
-    .execute(&mut *conn)
-    .await?;
-    Ok(())
-}
-
 pub async fn set_revision_decision(
     conn: &mut PgConnection,
     revision_id: &str,

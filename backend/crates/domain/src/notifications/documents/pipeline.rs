@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use sha2::{Digest, Sha256};
 
 use super::assets::font_face_css;
-use super::checks::{ensure_passes, inspect, PdfReport};
+use super::checks::{ensure_passes, inspect};
 use super::engine::{footer_template, normalize, Engine};
 use super::i18n;
 use super::kind::{DocumentKind, Locale};
@@ -26,7 +26,6 @@ pub struct Generated {
     pub sha256: String,
     pub page_count: usize,
     pub file_name: String,
-    pub report: PdfReport,
 }
 
 pub async fn render(engine: &Engine, root: &Path, request: RenderRequest<'_>) -> Result<Generated> {
@@ -46,6 +45,5 @@ pub async fn render(engine: &Engine, root: &Path, request: RenderRequest<'_>) ->
         file_name: format!("{}-{}.pdf", request.kind.file_prefix(), request.file_stem),
         bytes,
         sha256,
-        report,
     })
 }

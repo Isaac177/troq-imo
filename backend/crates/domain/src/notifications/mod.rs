@@ -19,6 +19,7 @@ mod event_data;
 mod handle;
 mod inbox_read;
 mod inbox_write;
+mod invitation;
 mod links;
 mod notice;
 mod prefs;

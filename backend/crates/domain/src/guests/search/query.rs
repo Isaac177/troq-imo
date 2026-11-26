@@ -8,7 +8,6 @@ use utoipa::ToSchema;
 use super::normalize::{
     normalize_code_format, normalize_codes, normalize_sort, origin_from, parse_price, window_from,
 };
-pub use super::normalize::cancellation_class;
 pub use super::raw::RawSearch;
 use crate::guests::messages::{
     SEARCH_CANCELLATION_HOURS_RANGE, SEARCH_CHILD_AGES_MISSING, SEARCH_CHILD_AGE_RANGE,

@@ -4,10 +4,8 @@ import UiCopyBridge from '@/components/app/UiCopyBridge';
 import AppShell from '@/components/layout/AppShell';
 import RequireSession from '@/components/layout/RequireSession';
 import LoginView from '@/views/auth/LoginView';
-import DashboardView from '@/views/dashboard/DashboardView';
-import ApplicationsView from '@/views/applications/ApplicationsView';
-import HostsView from '@/views/hosts/HostsView';
-import GuestsView from '@/views/guests/GuestsView';
+import ModuleRoute from '@/components/layout/ModuleRoute';
+import { moduleRegistry } from '@/modules/registry';
 import { sessionClient } from '@/services/session/sessionClient';
 
 export default function App() {
@@ -19,10 +17,7 @@ export default function App() {
           <Route path="/login" element={<LoginView />} />
           <Route element={<RequireSession />}>
             <Route element={<AppShell />}>
-              <Route index element={<DashboardView />} />
-              <Route path="applications" element={<ApplicationsView />} />
-              <Route path="hosts" element={<HostsView />} />
-              <Route path="guests" element={<GuestsView />} />
+              {moduleRegistry.map((module) => <Route key={module.id} path={module.route} element={<ModuleRoute module={module} />} />)}
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

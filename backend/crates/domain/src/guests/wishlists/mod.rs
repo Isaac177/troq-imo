@@ -13,6 +13,5 @@ pub use service::{
     remove_item as remove_wishlist_item, update_wishlist,
 };
 pub use types::{
-    CreateWishlist, ItemsQuery, UpdateWishlist, WishlistItem, WishlistView, MAX_ITEMS_PER_WISHLIST,
-    MAX_WISHLISTS_PER_GUEST,
+    CreateWishlist, UpdateWishlist, WishlistItem, WishlistView,
 };

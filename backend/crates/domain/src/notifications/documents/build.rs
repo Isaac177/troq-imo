@@ -12,7 +12,6 @@ use super::pipeline::{self, Generated, RenderRequest};
 pub struct Built {
     pub generated: Generated,
     pub reference: String,
-    pub entity_id: String,
 }
 
 pub async fn build(
@@ -41,7 +40,7 @@ pub async fn build(
     )
     .await
     .with_context(|| format!("building {}", kind.as_str()))?;
-    Ok(Some(Built { generated, reference: payload.reference().to_string(), entity_id: payload.entity_id().to_string() }))
+    Ok(Some(Built { generated, reference: payload.reference().to_string() }))
 }
 
 pub fn mail_copy(root: &Path, brand: &str, kind: DocumentKind, locale: Locale, reference: &str) -> Result<(String, String)> {

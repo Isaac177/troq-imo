@@ -11,13 +11,11 @@ pub struct PropertyScope {
     pub id: String,
     pub host_id: String,
     pub city_id: String,
-    pub timezone: String,
-    pub status: String,
 }
 
 pub async fn find(pool: &PgPool, property_id: &str) -> Result<Option<PropertyScope>> {
     let row = sqlx::query_as::<_, PropertyScope>(
-        r#"SELECT id, "operatorId" AS host_id, city_id, timezone, status
+        r#"SELECT id, "operatorId" AS host_id, city_id
            FROM stay_properties WHERE id = $1"#,
     )
     .bind(property_id)

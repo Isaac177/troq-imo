@@ -14,6 +14,7 @@ pub struct StoreRequest<'a> {
     pub guest_user_id: Option<&'a str>,
     pub host_id: Option<&'a str>,
     pub created_by: &'a str,
+    pub source_delivery_id: &'a str,
 }
 
 pub fn storage_key(request: &StoreRequest<'_>) -> Result<String> {
@@ -32,22 +33,29 @@ pub async fn upload(storage: &Storage, generated: &Generated, request: &StoreReq
     Ok(key)
 }
 
-pub async fn exists(conn: &mut PgConnection, kind: DocumentKind, entity_id: &str) -> Result<bool> {
-    let found = sqlx::query_scalar::<_, bool>(
-        "SELECT EXISTS (SELECT 1 FROM messaging_document WHERE kind = $1 AND entity_type = $2 AND entity_id = $3)",
-    )
-    .bind(kind.as_str())
-    .bind(kind.entity_type())
-    .bind(entity_id)
-    .fetch_one(conn)
-    .await?;
-    Ok(found)
+pub struct Existing {
+    pub city: String,
+    pub locale: String,
+    pub source_delivery_id: Option<String>,
+    pub storage_key: String,
+    pub file_name: String,
+    pub sha256: String,
+    pub page_count: i32,
+}
+
+pub async fn find(conn: &mut PgConnection, kind: DocumentKind, entity_id: &str) -> Result<Option<Existing>> {
+    let row = sqlx::query_as::<_, (String, String, Option<String>, String, String, String, i32)>(
+        "SELECT city_id, locale, source_delivery_id, storage_key, file_name, sha256, page_count FROM messaging_document WHERE kind = $1 AND entity_type = $2 AND entity_id = $3",
+    ).bind(kind.as_str()).bind(kind.entity_type()).bind(entity_id).fetch_optional(conn).await?;
+    Ok(row.map(|(city, locale, source_delivery_id, storage_key, file_name, sha256, page_count)| Existing {
+        city, locale, source_delivery_id, storage_key, file_name, sha256, page_count,
+    }))
 }
 
 pub async fn record(conn: &mut PgConnection, generated: &Generated, storage_key: &str, request: &StoreRequest<'_>) -> Result<String> {
     let id = new_id("doc");
     sqlx::query(
-        "INSERT INTO messaging_document (id, city_id, kind, locale, entity_type, entity_id, storage_key, file_name, sha256, page_count, bytes, guest_user_id, host_id, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)",
+        "INSERT INTO messaging_document (id, city_id, kind, locale, entity_type, entity_id, storage_key, file_name, sha256, page_count, bytes, guest_user_id, host_id, created_by, source_delivery_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
     )
     .bind(&id)
     .bind(request.city.code())
@@ -63,6 +71,7 @@ pub async fn record(conn: &mut PgConnection, generated: &Generated, storage_key:
     .bind(request.guest_user_id)
     .bind(request.host_id)
     .bind(request.created_by)
+    .bind(request.source_delivery_id)
     .execute(&mut *conn)
     .await?;
     record_event(conn, &id, "generated", Some(request.created_by)).await?;

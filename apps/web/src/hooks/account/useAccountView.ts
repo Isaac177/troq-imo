@@ -11,6 +11,8 @@ export const useAccountView = () => {
     session,
     labels: {
       title: t('accountTitle'),
+      favorites: t('favoritesTitle'),
+      trips: i18n.getFixedT(i18n.language, 'trips')('title') as string,
       email: t('email'),
       phone: t('phone'),
       city: t('city'),

@@ -14,6 +14,7 @@ use super::render::fill;
 
 pub struct EventContext<'a> {
     pub event_id: &'a str,
+    pub aggregate_id: &'a str,
     pub city: City,
     pub event_type: &'a str,
     pub data: &'a Value,

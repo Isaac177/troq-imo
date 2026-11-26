@@ -18,7 +18,7 @@ mod store;
 mod template;
 mod voucher;
 
-pub use issue::{issue, Issued};
+pub use issue::issue;
 pub use kind::{DocumentKind, Locale};
 pub use preview::preview;
 pub use read::{fetch, list, DocumentScope};

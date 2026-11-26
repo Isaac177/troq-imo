@@ -45,6 +45,8 @@ export const host = {
   invite: 'Invite',
   inviteEmail: 'Email',
   inviteSend: 'Send invitation',
+  inviteCityHint: 'Team members must have their account home city in the same city as your host. New invitees should choose that city when registering.',
+  inviteCityMismatch: 'This account’s home city is different from your host’s city, so it cannot join the team.',
   inviteEmpty: 'No pending invitation.',
   revoke: 'Revoke',
   onboardingTitle: 'Host application',

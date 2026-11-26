@@ -143,6 +143,8 @@ impl IntoResponse for Error {
     fn into_response(self) -> Response {
         if let Self::Internal(detail) = &self {
             tracing::error!(detail = %detail, "request failed");
+        } else {
+            tracing::warn!(code = %self.code().as_str(), status = %self.status(), "request rejected");
         }
         let body = ErrorBody {
             success: false,

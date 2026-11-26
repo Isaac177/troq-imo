@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
-import { createI18n } from '@mungini/i18n';
+import { createServerI18n } from '@mungini/i18n/server';
 import { formatCdf } from '@mungini/utils';
 import SearchBar from '@/components/stays/SearchBar';
 import { listStays, servedCities } from '@/services/guest/discovery.server';
@@ -20,9 +20,9 @@ export default async function Page({ searchParams }: HomeProps) {
   const search = params.search ?? '';
   const page = pageNumber(params.page);
   const language = (await cookies()).get('mungini-language')?.value === 'fr' ? 'fr' : 'en';
-  const i18n = createI18n(language);
+  const i18n = createServerI18n(language);
   const t = i18n.getFixedT(language, 'guest') as unknown as (key: string) => string;
-  const [cities, result] = await Promise.all([servedCities(), listStays(city, search, page)]);
+  const [cities, result] = await Promise.all([servedCities(), listStays(city, search, page, language)]);
   const items = result?.items ?? [];
   const total = result?.total ?? 0;
   const pageSize = result?.pageSize ?? 12;

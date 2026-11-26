@@ -160,6 +160,8 @@ export default function TeamView() {
         }
       >
         <div className="flex flex-col gap-3">
+          <p className="text-label text-muted-foreground">{view.labels.inviteCityHint}</p>
+          {view.inviteError ? <p role="alert" className="text-label text-destructive">{view.inviteError}</p> : null}
           <label className="flex flex-col gap-1 text-label text-muted-foreground">
             {view.labels.email}
             <Input type="email" value={view.email} onChange={(event) => view.setEmail(event.target.value)} />

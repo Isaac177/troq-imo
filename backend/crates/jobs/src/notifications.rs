@@ -21,6 +21,7 @@ impl TransactionalSubscriber for NotificationsSubscriber {
     async fn handle(&self, tx: &mut Transaction<'_, Postgres>, event: &Event) -> Result<()> {
         let context = EventContext {
             event_id: &event.id,
+            aggregate_id: &event.aggregate_id,
             city: event.city,
             event_type: &event.event_type,
             data: &event.data,

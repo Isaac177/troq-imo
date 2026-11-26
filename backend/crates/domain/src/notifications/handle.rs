@@ -11,7 +11,7 @@ use super::reservation_events::notices;
 const FAMILIES: [&str; 3] = ["reservation.", "property.", "case."];
 
 pub fn accepts(event_type: &str) -> bool {
-    FAMILIES.iter().any(|family| event_type.starts_with(family))
+    event_type == "identity.invitation.created" || FAMILIES.iter().any(|family| event_type.starts_with(family))
 }
 
 pub fn document_for(event_type: &str) -> Option<DocumentKind> {
@@ -40,6 +40,9 @@ async fn enqueue_document(conn: &mut PgConnection, ctx: &EventContext<'_>) -> Re
 }
 
 pub async fn handle_event(tx: &mut Transaction<'_, Postgres>, ctx: &EventContext<'_>) -> Result<()> {
+    if ctx.event_type == "identity.invitation.created" {
+        return super::invitation::enqueue(&mut **tx, ctx).await;
+    }
     let found = match ctx.event_type.split('.').next().unwrap_or_default() {
         "reservation" => notices(ctx.event_type, ctx.data),
         "property" => property_notices(ctx.event_type, ctx.data),
@@ -61,6 +64,8 @@ mod tests {
         assert!(accepts("reservation.held"));
         assert!(accepts("property.revision.submitted"));
         assert!(accepts("case.closed"));
+        assert!(accepts("identity.invitation.created"));
+        assert!(!accepts("identity.invitation.revoked"));
         assert!(!accepts("operations.task.created"));
         assert!(!accepts("claim.decided"));
     }

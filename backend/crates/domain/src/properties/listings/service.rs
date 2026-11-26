@@ -3,28 +3,17 @@ use kernel::error::{Error, Result};
 use kernel::paging::{Page, PageRequest};
 use sqlx::PgPool;
 
-use super::types::{AdminRevisionView, LifecycleInput, QueueItem, ReadinessView};
-use super::{admin_queue, lifecycle, queries, readiness, revision_view};
+use super::types::{AdminRevisionView, LifecycleInput, QueueItem};
+use super::{admin_queue, lifecycle, queries, revision_view};
 use crate::properties::messages::REVISION_NOT_FOUND;
 use crate::properties::property::types::PropertyView;
 use crate::properties::revisions::content::ListingContent;
 use crate::properties::scope::{admin_property, property_for};
-use kernel::permissions::names::{PROPERTIES_READ, PROPERTIES_WRITE};
+use kernel::permissions::names::PROPERTIES_WRITE;
 
 pub async fn host_lifecycle(pool: &PgPool, actor: &Actor, property_id: &str, input: LifecycleInput) -> Result<PropertyView> {
     property_for(pool, actor, property_id, PROPERTIES_WRITE).await?;
     lifecycle::apply(pool, actor, property_id, input, false).await
-}
-
-pub async fn host_readiness(pool: &PgPool, actor: &Actor, property_id: &str, revision_id: &str) -> Result<ReadinessView> {
-    let property = property_for(pool, actor, property_id, PROPERTIES_READ).await?;
-    let row = queries::find_revision(pool, revision_id)
-        .await?
-        .filter(|row| row.summary.property_id == property.id)
-        .ok_or_else(|| Error::not_found(REVISION_NOT_FOUND))?;
-    let content = ListingContent::from_snapshot(&row.snapshot)?;
-    let mut conn = pool.acquire().await?;
-    readiness::inspect(&mut conn, &property.operator_id, &property.id, &content).await
 }
 
 pub async fn admin_lifecycle(pool: &PgPool, actor: &Actor, property_id: &str, input: LifecycleInput) -> Result<PropertyView> {

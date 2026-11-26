@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { Button } from '@mungini/ui-web';
 import { useTranslation } from '@mungini/i18n';
+import { Invitations } from '@/components/account/Invitations';
+import { ProfileForm } from '@/components/account/ProfileForm';
 import { useAccountView } from '@/hooks/account/useAccountView';
 
 export default function AccountView() {
@@ -33,6 +35,7 @@ export default function AccountView() {
           {view.labels.signOut}
         </Button>
       </div>
+      <ProfileForm />
       <dl className="grid grid-cols-1 gap-3 rounded-card border border-border bg-card p-4 sm:grid-cols-2">
         <div>
           <dt className="text-label text-muted-foreground">{view.labels.email}</dt>
@@ -47,6 +50,9 @@ export default function AccountView() {
           <dd className="text-body">{view.session.user.city}</dd>
         </div>
       </dl>
+      <Link href="/favorites" className="text-body text-primary underline-offset-4 hover:underline">{view.labels.favorites}</Link>
+      <Link href="/trips" className="text-body text-primary underline-offset-4 hover:underline">{view.labels.trips}</Link>
+      <Invitations />
     </main>
   );
 }

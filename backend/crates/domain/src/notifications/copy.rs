@@ -201,3 +201,12 @@ pub static REGISTRATION_OTP: Template = tpl(
     "Code de vérification Mungini",
     "Votre code d'inscription est {code}.",
 );
+
+
+pub static HOST_INVITATION: Template = tpl(
+    "identity.invitation.created",
+    "Invitation to join a host team",
+    "{host} has invited you to join their team on Mungini. Sign in with this email address, or register with it and choose {city} as your home city to view your invitation.",
+    "Invitation à rejoindre une équipe",
+    "{host} vous invite à rejoindre son équipe sur Mungini. Connectez-vous avec cette adresse e-mail, ou inscrivez-vous avec celle-ci en choisissant {city} comme ville de résidence pour consulter votre invitation.",
+);

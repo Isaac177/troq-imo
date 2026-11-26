@@ -8,7 +8,7 @@ use sqlx::PgPool;
 
 use super::prices::nightly_prices;
 use super::queries;
-use super::types::{CalendarDay, CalendarUnit, CalendarView};
+use super::types::{CalendarDay, CalendarUnit, InventoryCalendarView};
 use crate::inventory::restrictions::overlapping;
 use crate::properties::media::image_url;
 use crate::inventory::scope::PropertyRef;
@@ -21,7 +21,7 @@ pub async fn build_view(
     to: NaiveDate,
     page: PageRequest,
     guest_names: bool,
-) -> Result<CalendarView> {
+) -> Result<InventoryCalendarView> {
     let local_today = local_date(&property.timezone, Utc::now())
         .ok_or_else(|| Error::internal("property timezone is not supported"))?;
     let total_units = queries::count_units(pool, &property.id).await?;
@@ -65,7 +65,7 @@ pub async fn build_view(
     for reservation in reservations.iter_mut() {
         reservation.unit_type_cover_url = covers.get(&reservation.unit_type_id).cloned();
     }
-    Ok(CalendarView {
+    Ok(InventoryCalendarView {
         property_id: property.id.clone(),
         timezone: property.timezone.clone(),
         from,

@@ -7,6 +7,7 @@ identity/06-password-login.sql
 identity/07-registration-otp.sql
 identity/08-team.sql
 identity/09-host-onboarding.sql
+identity/10-invitees.sql
 properties/01-amenities.sql
 billing/01-hosts-rates.sql
 properties/02-properties.sql
@@ -25,16 +26,19 @@ pricing/02-settings.sql
 pricing/03-rates-goma.sql
 pricing/04-rates-kin.sql
 pricing/05-quotes.sql
+pricing/06-booking-demo.sql
 reservations/01-reservations-goma.sql
 reservations/02-reservations-kin.sql
 reservations/03-cases-claims-goma.sql
 reservations/04-cases-tasks-kin.sql
 reservations/05-tasks-goma.sql
+reservations/06-guest-trips.sql
 inventory/05-assignments-feeds.sql
 reviews/01-reviews-goma.sql
 reviews/02-reviews-kin.sql
 guests/01-guests-goma.sql
 guests/02-guests-kin.sql
+guests/03-wishlist-account.sql
 notifications/01-notifications.sql
 notifications/02-preferences-tokens-deliveries.sql
 billing/02-reservations.sql

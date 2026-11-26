@@ -83,7 +83,7 @@ pub struct CalendarBlock {
 
 #[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct CalendarView {
+pub struct InventoryCalendarView {
     pub property_id: String,
     pub timezone: String,
     pub from: NaiveDate,

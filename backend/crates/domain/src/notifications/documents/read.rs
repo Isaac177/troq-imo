@@ -31,7 +31,7 @@ impl DocumentScope<'_> {
     }
 }
 
-type Row = (String, String, String, String, String, Option<String>, String, String, i32, i32, DateTime<Utc>, i64);
+type Row = (String, String, String, String, String, Option<String>, String, String, i32, i32, DateTime<Utc>);
 
 pub async fn list(
     pool: &PgPool,
@@ -45,7 +45,7 @@ pub async fn list(
         return Err(Error::bad_request(DOCUMENT_KIND_INVALID));
     }
     let rows = sqlx::query_as::<_, Row>(
-        "SELECT id, kind, locale, entity_type, entity_id, document_number, file_name, sha256, page_count, bytes, created_at, COUNT(*) OVER() AS total FROM messaging_document WHERE ($1::text IS NULL OR guest_user_id = $1) AND ($2::text[] IS NULL OR host_id = ANY($2)) AND ($3::text IS NULL OR kind = $3) AND ($4::text IS NULL OR entity_id = $4) ORDER BY created_at DESC, id LIMIT $5 OFFSET $6",
+        "SELECT id, kind, locale, entity_type, entity_id, document_number, file_name, sha256, page_count, bytes, created_at FROM messaging_document WHERE ($1::text IS NULL OR guest_user_id = $1) AND ($2::text[] IS NULL OR host_id = ANY($2)) AND ($3::text IS NULL OR kind = $3) AND ($4::text IS NULL OR entity_id = $4) ORDER BY created_at DESC, id LIMIT $5 OFFSET $6",
     )
     .bind(scope.guest())
     .bind(scope.hosts())
@@ -55,7 +55,9 @@ pub async fn list(
     .bind(page.offset())
     .fetch_all(pool)
     .await?;
-    let total = rows.first().map(|row| row.11).unwrap_or(0);
+    let total = sqlx::query_scalar::<_, i64>(
+        "SELECT COUNT(*) FROM messaging_document WHERE ($1::text IS NULL OR guest_user_id = $1) AND ($2::text[] IS NULL OR host_id = ANY($2)) AND ($3::text IS NULL OR kind = $3) AND ($4::text IS NULL OR entity_id = $4)",
+    ).bind(scope.guest()).bind(scope.hosts()).bind(kind).bind(entity_id).fetch_one(pool).await?;
     let items = rows
         .into_iter()
         .map(|row| DocumentView {

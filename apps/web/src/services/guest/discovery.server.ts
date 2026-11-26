@@ -20,14 +20,14 @@ const load = async <T>(path: string, city: string): Promise<T | null> => {
   }
 };
 
-export const listStays = (city: string, search: string, page: number) => {
-  const query = new URLSearchParams({ page: String(page), pageSize: '12', locale: 'en' });
+export const listStays = (city: string, search: string, page: number, language: string) => {
+  const query = new URLSearchParams({ page: String(page), pageSize: '12', locale: language });
   if (search.trim()) query.set('search', search.trim());
   return load<SearchResponse>(`/api/public/properties?${query.toString()}`, city);
 };
 
-export const getStay = (city: string, propertyId: string) =>
-  load<PropertyDetailView>(`/api/public/properties/${encodeURIComponent(propertyId)}?locale=en`, city);
+export const getStay = (city: string, propertyId: string, language: string) =>
+  load<PropertyDetailView>(`/api/public/properties/${encodeURIComponent(propertyId)}?${new URLSearchParams({ locale: language })}`, city);
 
 export const servedCities = async (): Promise<{ code: string; name: string }[]> => {
   const data = await load<{ code: string; name: string }[]>('/api/public/cities', 'GOMA');

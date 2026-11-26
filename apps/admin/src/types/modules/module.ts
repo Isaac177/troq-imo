@@ -5,6 +5,7 @@ export type Permission = `${string}.${string}`;
 
 export type ModuleDefinition = {
   id: string;
+  component: ComponentType;
   labelKey: string;
   section: string;
   route: string;

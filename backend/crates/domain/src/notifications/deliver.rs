@@ -17,11 +17,14 @@ async fn process(
             deliver_notice::run_push(kernel, config, delivery, "fr").await?;
             Ok(None)
         }
+        Some(Channel::Email) if super::invitation::is_invitation(delivery) => {
+            super::invitation::deliver(kernel, config, delivery).await.map(Some)
+        }
         Some(Channel::Email) => match contacts {
             Some(directory) => deliver_notice::run_email(config, delivery, directory).await.map(Some),
             None => Ok(Some("no contact directory")),
         },
-        Some(Channel::Document) => deliver_document::run(kernel, config, delivery).await.map(Some),
+        Some(Channel::Document) => deliver_document::run(kernel, config, contacts, delivery).await.map(Some),
         Some(Channel::Whatsapp) | None => Ok(Some("unsupported channel")),
     }
 }
@@ -32,10 +35,7 @@ pub async fn deliver_pending(
     contacts: Option<&dyn ContactDirectory>,
     limit: usize,
 ) -> Result<usize> {
-    let mut channels = vec![Channel::Push.as_str(), Channel::Document.as_str()];
-    if contacts.is_some() {
-        channels.push(Channel::Email.as_str());
-    }
+    let channels = vec![Channel::Push.as_str(), Channel::Document.as_str(), Channel::Email.as_str()];
     let mut handled = 0;
     while handled < limit {
         let mut tx = kernel.db.pool().begin().await?;
@@ -44,7 +44,7 @@ pub async fn deliver_pending(
             break;
         };
         match process(kernel, config, contacts, &delivery).await {
-            Ok(Some("no contact" | "no user" | "no contact directory")) if delivery.channel == Channel::Email.as_str() => {
+            Ok(Some("no contact" | "no user" | "no contact directory")) if delivery.channel == Channel::Email.as_str() || delivery.channel == Channel::Document.as_str() => {
                 deliveries::defer_contact(&mut tx, &delivery.id).await?
             }
             Ok(Some(note)) if note.starts_with("no ") || note.starts_with("unsupported") => {

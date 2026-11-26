@@ -172,6 +172,7 @@ pub fn is_delegable(permission: &str) -> bool {
     DELEGABLE.contains(&permission)
 }
 
+#[cfg(test)]
 pub fn validate_delegable(permissions: &[String]) -> Vec<&str> {
     permissions
         .iter()

@@ -4,7 +4,7 @@ use kernel::storage::Storage;
 use kernel::permissions::names::{RESERVATIONS_GUEST_DETAILS, RESERVATIONS_READ};
 use sqlx::PgPool;
 
-use super::types::{validate_range, CalendarQuery, CalendarView};
+use super::types::{validate_range, CalendarQuery, InventoryCalendarView};
 use super::view::{build_view, feed_text};
 use crate::inventory::query::paging;
 use crate::inventory::scope::{admin_property, host_property};
@@ -14,7 +14,7 @@ pub async fn host_calendar(
     storage: &Storage,
     actor: &Actor,
     query: CalendarQuery,
-) -> Result<CalendarView> {
+) -> Result<InventoryCalendarView> {
     actor.require(RESERVATIONS_READ)?;
     validate_range(query.from, query.to)?;
     let property = host_property(pool, actor, &query.property_id, RESERVATIONS_READ).await?;
@@ -31,7 +31,7 @@ pub async fn admin_calendar(
     storage: &Storage,
     actor: &Actor,
     query: CalendarQuery,
-) -> Result<CalendarView> {
+) -> Result<InventoryCalendarView> {
     actor.require_platform(kernel::permissions::names::PROPERTIES_MODERATE)?;
     validate_range(query.from, query.to)?;
     let property = admin_property(pool, actor, &query.property_id).await?;

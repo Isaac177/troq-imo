@@ -47,10 +47,6 @@ impl Engine {
         }
     }
 
-    pub async fn shutdown(&self) {
-        self.slot.lock().await.retire().await;
-    }
-
     pub async fn render_pdf(&self, html: &str, footer: Option<&str>) -> Result<Vec<u8>> {
         let mut slot = self.slot.lock().await;
         if slot.session.is_none() || slot.renders >= self.recycle_after {

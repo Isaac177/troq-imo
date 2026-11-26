@@ -4,3 +4,6 @@ export { host } from './host';
 export { admin } from './admin';
 export { guest } from './guest';
 export { ui } from './ui';
+export { trips } from './trips';
+export { adminReservations } from './adminReservations';
+export { booking } from './booking';

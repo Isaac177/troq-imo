@@ -109,18 +109,31 @@ pub async fn create_invitation(
     for permission in &permissions {
         actor.require_scoped(permission, Some(host_id), None)?;
     }
+    let mut tx = pool.begin().await?;
+    sqlx::query("SELECT pg_advisory_xact_lock(hashtext('identity_user_contact'))")
+        .execute(&mut *tx)
+        .await?;
+    let wrong_city: bool = sqlx::query_scalar(
+        "SELECT EXISTS (SELECT 1 FROM identity_users WHERE lower(email) = $1 AND home_city_id <> $2)",
+    )
+    .bind(&email)
+    .bind(actor.city.code())
+    .fetch_one(&mut *tx)
+    .await?;
+    if wrong_city {
+        return Err(Error::conflict(super::messages::INVITEE_CITY_MISMATCH));
+    }
     let existing_member: bool = sqlx::query_scalar(
         "SELECT EXISTS (SELECT 1 FROM host_members m JOIN identity_users u ON u.id = m.user_id WHERE m.host_id = $1 AND m.status = 'ACTIVE' AND lower(u.email) = $2)",
     )
     .bind(host_id)
     .bind(&email)
-    .fetch_one(pool)
+    .fetch_one(&mut *tx)
     .await?;
     if existing_member {
         return Err(Error::conflict(codes::NOT_FOUND).with_params(json!({ "member": true })));
     }
     let id = new_id("invite");
-    let mut tx = pool.begin().await?;
     let row = sqlx::query_as::<_, (DateTime<Utc>, DateTime<Utc>)>(
         "INSERT INTO identity_invitations (id, host_id, email, permissions, invited_by, expires_at) VALUES ($1, $2, $3, $4, $5, now() + make_interval(days => $6::int)) ON CONFLICT (host_id, lower(email)) WHERE status = 'PENDING' DO NOTHING RETURNING expires_at, created_at",
     )
@@ -219,120 +232,12 @@ pub async fn revoke_invitation(pool: &PgPool, actor: &Actor, host_id: &str, invi
     Ok(())
 }
 
-fn invitation_status(status: &str, expires_at: DateTime<Utc>) -> String {
+pub(super) fn invitation_status(status: &str, expires_at: DateTime<Utc>) -> String {
     if status == "PENDING" && expires_at <= Utc::now() {
         "EXPIRED".into()
     } else {
         status.to_string()
     }
-}
-
-pub async fn list_my_invitations(pool: &PgPool, actor: &Actor, request: PageRequest) -> Result<Page<MyInvitationView>> {
-    let request = request.validated()?;
-    let email: Option<String> = sqlx::query_scalar("SELECT lower(email) FROM identity_users WHERE id = $1 AND status = 'ACTIVE'")
-        .bind(actor.user_id().as_str())
-        .fetch_optional(pool)
-        .await?
-        .flatten();
-    let Some(email) = email else {
-        return Ok(Page::new(Vec::new(), 0, request));
-    };
-    let total = sqlx::query_scalar::<_, i64>(
-        "SELECT COUNT(*) FROM identity_invitations WHERE lower(email) = $1 AND status = 'PENDING' AND expires_at > now()",
-    )
-    .bind(&email)
-    .fetch_one(pool)
-    .await?;
-    let rows = sqlx::query_as::<_, (String, String, String, Vec<String>, DateTime<Utc>)>(
-        "SELECT i.id, i.host_id, h.display_name, i.permissions, i.expires_at FROM identity_invitations i JOIN hosts h ON h.id = i.host_id WHERE lower(i.email) = $1 AND i.status = 'PENDING' AND i.expires_at > now() AND h.status = 'ACTIVE' ORDER BY i.created_at DESC, i.id LIMIT $2 OFFSET $3",
-    )
-    .bind(&email)
-    .bind(request.limit())
-    .bind(request.offset())
-    .fetch_all(pool)
-    .await?;
-    let items = rows
-        .into_iter()
-        .map(|(id, host_id, host_name, permissions, expires_at)| MyInvitationView { id, host_id, host_name, permissions, expires_at })
-        .collect();
-    Ok(Page::new(items, total, request))
-}
-
-pub async fn accept_invitation(pool: &PgPool, actor: &Actor, invitation_id: &str) -> Result<InvitationView> {
-    actor.ensure_writable()?;
-    let email: Option<String> = sqlx::query_scalar("SELECT lower(email) FROM identity_users WHERE id = $1 AND status = 'ACTIVE'")
-        .bind(actor.user_id().as_str())
-        .fetch_optional(pool)
-        .await?
-        .flatten();
-    let email = email.ok_or_else(|| Error::forbidden(codes::AUTH_REQUIRED))?;
-    let mut tx = pool.begin().await?;
-    let row = sqlx::query_as::<_, (String, String, Vec<String>, String, DateTime<Utc>, DateTime<Utc>)>(
-        "SELECT id, host_id, permissions, status, expires_at, created_at FROM identity_invitations WHERE id = $1 AND lower(email) = $2 FOR UPDATE",
-    )
-    .bind(invitation_id)
-    .bind(&email)
-    .fetch_optional(&mut *tx)
-    .await?
-    .ok_or_else(|| Error::not_found(codes::NOT_FOUND))?;
-    if row.3 != "PENDING" || row.4 <= Utc::now() {
-        return Err(Error::conflict(codes::NOT_FOUND).with_params(json!({ "invitation": invitation_status(&row.3, row.4) })));
-    }
-    let host: Option<(String, String)> = sqlx::query_as(
-        "SELECT id, city_id FROM hosts WHERE id = $1 AND status = 'ACTIVE' FOR SHARE",
-    )
-    .bind(&row.1)
-    .fetch_optional(&mut *tx)
-    .await?;
-    let Some((host_id, city)) = host else {
-        return Err(Error::conflict(codes::NOT_FOUND).with_params(json!({ "host": "inactive" })));
-    };
-    if city != actor.city.code() {
-        return Err(Error::forbidden(codes::CITY_MISMATCH));
-    }
-    sqlx::query(
-        "INSERT INTO host_members (id, host_id, user_id, is_owner, status) VALUES ($1, $2, $3, false, 'ACTIVE') ON CONFLICT (host_id, user_id) WHERE status = 'ACTIVE' DO NOTHING",
-    )
-    .bind(new_id("member"))
-    .bind(&host_id)
-    .bind(actor.user_id().as_str())
-    .execute(&mut *tx)
-    .await?;
-    for permission in &row.2 {
-        sqlx::query(
-            "INSERT INTO identity_grants (id, user_id, permission, scope_type, scope_id, host_id) VALUES ($1, $2, $3, 'HOST', $4, $4)",
-        )
-        .bind(new_id("grant"))
-        .bind(actor.user_id().as_str())
-        .bind(permission)
-        .bind(&host_id)
-        .execute(&mut *tx)
-        .await?;
-    }
-    sqlx::query("UPDATE identity_invitations SET status = 'ACCEPTED', accepted_by = $2, resolved_at = now() WHERE id = $1")
-        .bind(invitation_id)
-        .bind(actor.user_id().as_str())
-        .execute(&mut *tx)
-        .await?;
-    audit::record(&mut tx, &actor.audit(), AuditEntry {
-        action: "identity.invitation.accepted",
-        resource_type: "identity_invitation",
-        resource_id: invitation_id,
-        reason: None,
-        change: json!({ "hostId": host_id }),
-    })
-    .await?;
-    outbox::enqueue(&mut tx, actor.city, "identity_invitation", invitation_id, "identity.invitation.accepted", json!({ "hostId": host_id, "userId": actor.user_id().as_str() })).await?;
-    tx.commit().await?;
-    Ok(InvitationView {
-        id: row.0,
-        host_id,
-        email,
-        permissions: row.2,
-        status: "ACCEPTED".into(),
-        expires_at: row.4,
-        created_at: row.5,
-    })
 }
 
 pub async fn expire_invitations(pool: &PgPool, limit: i64) -> Result<u64> {

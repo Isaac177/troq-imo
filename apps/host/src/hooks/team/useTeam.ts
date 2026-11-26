@@ -26,6 +26,7 @@ export const useTeam = () => {
   const [editing, setEditing] = useState<MemberView | null>(null);
   const [draft, setDraft] = useState<string[]>([]);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [preset, setPreset] = useState('');
 
@@ -98,9 +99,10 @@ export const useTeam = () => {
   const sendInvite = async () => {
     const selected = presets.find((item) => item.code === preset);
     if (!selected) return;
+    setInviteError(null);
     const result = await api.invite(hostId, email.trim(), selected.permissions);
     if (result.error) {
-      setError(t('error'));
+      setInviteError(result.error === 'INVITEE_CITY_MISMATCH' ? t('inviteCityMismatch') : t('error'));
       return;
     }
     setInviteOpen(false);
@@ -147,6 +149,7 @@ export const useTeam = () => {
     savePermissions,
     removeMember,
     inviteOpen,
+    inviteError,
     setInviteOpen,
     email,
     setEmail,
@@ -168,6 +171,7 @@ export const useTeam = () => {
       invite: t('invite'),
       email: t('inviteEmail'),
       inviteSend: t('inviteSend'),
+      inviteCityHint: t('inviteCityHint'),
       inviteEmpty: t('inviteEmpty'),
       membersEmpty: t('membersEmpty'),
       cancel: t('cancel'),

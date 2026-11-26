@@ -14,7 +14,7 @@ Verification on 26/11/2026: the workspace compiles and the domain, api and kerne
 | Admin reservations list and summary | `stay-service/src/admin_reservations/{list,summary,filters}.rs` | `admin/reservation_*.rs` | done; live list request verified through the admin route |
 | Admin reservation detail | `stay-service/src/admin_reservations/detail.rs` | `admin/reservation_detail*.rs` | done: child collections paginated and CDF strings |
 | Admin reservation export | `stay-service/src/admin_reservations/list.rs` | `admin/reservation_list.rs`, `reservation_handlers.rs` | done: SQL-paginated with a total |
-| Admin calendar | `stay-service/src/admin_calendar/` | none | open: inventory exposes admin calendar data, but a dedicated admin read model is not ported |
+| Admin calendar | `stay-service/src/admin_calendar/`, `stay-service/src/calendar/handler.rs` | `inventory/calendar/{handler,service,view,queries}.rs`, `GET /api/admin/calendar` | implemented: platform and city scoped, paginated units with reservations, blocks, restrictions and prices; database and live API verification remain open; inventory response type renamed `InventoryCalendarView` to eliminate a collision with guest `CalendarView`, generated client awaits owner rebuild |
 | Host analytics summary report | `stay-service/src/reports/` | `admin/report*.rs` | done: host and property scoped aggregates |
 | Other reports | `stay-service/src/reports/` | none | open |
 | Host applications and hosts | new in Mungini (D2) | `hosts/onboarding/admin.rs` | done: application list, detail, decision, document review, host list and status change; live requests verified |
@@ -23,6 +23,8 @@ Verification on 26/11/2026: the workspace compiles and the domain, api and kerne
 
 ## Open
 
-- Admin calendar read model and the remaining report screens are not ported.
+- Admin calendar read model is implemented in inventory; database and live API verification remain open. Remaining reports are not ported.
 - Dashboard night counts depend on inventory rows inside the selected range; seeded nights outside the period produce zero nights sold, which is correct but makes the occupancy figure look empty in short demos.
 - No dedicated admin database tests exist; the current verification is compile, unit tests and live requests against the seeded dev database.
+
+The admin calendar screen is implemented against the regenerated `InventoryCalendarView` contract. Property search and unit pages are server-paginated; date range is limited to 93 nights. Live API and screen behavior and 375px English/French layouts remain unverified.

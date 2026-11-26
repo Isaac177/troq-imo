@@ -36,6 +36,8 @@ pub use presets::{is_delegable, preset, DELEGABLE, PLATFORM_ONLY, PRESETS};
 mod team;
 pub use team::{list_members, remove_member, set_member_permissions, MemberOverride, MemberView, SetMemberPermissions};
 
+mod accept_invitation;
+mod invitation_inbox;
 mod invitations;
 pub use invitations::{expire_invitations, CreateInvitation, InvitationView, MyInvitationView};
 
