@@ -66,7 +66,7 @@ async fn presign(kernel: &Kernel, key: &str, media_id: &str) -> Option<String> {
     }
 }
 
-async fn images_for_unit_types(kernel: &Kernel, unit_type_ids: &[String]) -> Result<HashMap<String, Vec<ImageView>>> {
+pub async fn images_for_unit_types(kernel: &Kernel, unit_type_ids: &[String]) -> Result<HashMap<String, Vec<ImageView>>> {
     let mut images: HashMap<String, Vec<ImageView>> = HashMap::new();
     if unit_type_ids.is_empty() {
         return Ok(images);

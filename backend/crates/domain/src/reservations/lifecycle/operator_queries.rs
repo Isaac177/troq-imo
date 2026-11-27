@@ -75,10 +75,18 @@ pub struct ListFilter<'a> {
     pub property_id: Option<&'a str>,
     pub state: Option<&'a str>,
     pub search: Option<&'a str>,
+    pub check_in_from: Option<NaiveDate>,
+    pub check_in_to: Option<NaiveDate>,
 }
 
 fn push_filters(builder: &mut QueryBuilder<'_, Postgres>, filter: &ListFilter<'_>) {
     builder.push(" AND r.city_id = ").push_bind(filter.city.code());
+    if let Some(from) = filter.check_in_from {
+        builder.push(r#" AND i."checkIn" >= "#).push_bind(from);
+    }
+    if let Some(to) = filter.check_in_to {
+        builder.push(r#" AND i."checkIn" <= "#).push_bind(to);
+    }
     if let Some(property_id) = filter.property_id {
         builder.push(r#" AND r."propertyId" = "#).push_bind(property_id.to_string());
     }

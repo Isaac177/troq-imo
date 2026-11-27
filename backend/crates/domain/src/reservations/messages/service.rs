@@ -32,21 +32,33 @@ async fn party_of(pool: &PgPool, actor: &Actor, reservation_id: &str) -> Result<
     .ok_or_else(|| Error::not_found(RESERVATION_NOT_FOUND))
 }
 
-fn role_of(actor: &Actor, party: &PartyRow) -> Result<&'static str> {
-    if actor.user_id().as_str() == party.guest_user_id {
-        return Ok("GUEST");
-    }
-    actor
-        .ensure_host_scope(MESSAGES_WRITE, &party.operator_id, &party.property_id)
-        .map_err(hide_membership)?;
-    Ok("OPERATOR")
+#[derive(Clone, Copy)]
+pub enum MessageAudience {
+    Guest,
+    Host,
 }
 
-pub async fn list(kernel: &Kernel, actor: &Actor, reservation_id: &str, query: MessagesQuery) -> Result<Page<MessageView>> {
+fn role_of(actor: &Actor, party: &PartyRow, audience: MessageAudience) -> Result<&'static str> {
+    match audience {
+        MessageAudience::Guest if actor.user_id().as_str() == party.guest_user_id => Ok("GUEST"),
+        MessageAudience::Guest => Err(Error::not_found(RESERVATION_NOT_FOUND)),
+        MessageAudience::Host => {
+            actor.ensure_host_scope(MESSAGES_WRITE, &party.operator_id, &party.property_id).map_err(hide_membership)?;
+            Ok("OPERATOR")
+        }
+    }
+}
+
+pub async fn ensure_host_access(pool: &PgPool, actor: &Actor, reservation_id: &str) -> Result<()> {
+    let party = party_of(pool, actor, reservation_id).await?;
+    actor.ensure_host_scope(MESSAGES_WRITE, &party.operator_id, &party.property_id).map_err(hide_membership)
+}
+
+pub async fn list(kernel: &Kernel, actor: &Actor, reservation_id: &str, audience: MessageAudience, query: MessagesQuery) -> Result<Page<MessageView>> {
     let pool = kernel.db.pool();
     let page = paging(query.page, query.page_size)?;
     let party = party_of(pool, actor, reservation_id).await?;
-    role_of(actor, &party)?;
+    role_of(actor, &party, audience)?;
     let total: i64 = sqlx::query_scalar(r#"SELECT COUNT(*) FROM stay_reservation_messages WHERE "reservationId" = $1"#)
         .bind(reservation_id)
         .fetch_one(pool)
@@ -74,11 +86,11 @@ pub fn clean_body(body: &str) -> Result<String> {
     Ok(body)
 }
 
-pub async fn send(kernel: &Kernel, actor: &Actor, reservation_id: &str, input: SendMessageInput) -> Result<MessageView> {
+pub async fn send(kernel: &Kernel, actor: &Actor, reservation_id: &str, audience: MessageAudience, input: SendMessageInput) -> Result<MessageView> {
     let pool = kernel.db.pool();
     let body = clean_body(&input.body)?;
     let party = party_of(pool, actor, reservation_id).await?;
-    let role = role_of(actor, &party)?;
+    let role = role_of(actor, &party, audience)?;
     let mut tx = pool.begin().await?;
     let row = sqlx::query_as::<_, MessageView>(
         r#"INSERT INTO stay_reservation_messages (id, city_id, "reservationId", "senderRole", "senderUserId", body)
@@ -109,6 +121,26 @@ pub async fn send(kernel: &Kernel, actor: &Actor, reservation_id: &str, input: S
 #[cfg(test)]
 mod tests {
     use super::*;
+    use kernel::auth::{CityAccess, CurrentUser, Role};
+    use kernel::ids::{HostId, UserId};
+    use kernel::permissions::{Access, Grant};
+
+    #[test]
+    fn message_audience_controls_authorization_and_sender_role() {
+        let actor = Actor {
+            user: CurrentUser { user_id: UserId::new("seed-user"), role: Role::Host, issued_at: 0, auth_city: Some("GOMA".into()), city_access_mode: None },
+            city: kernel::City::GOMA,
+            request_id: "test".into(),
+            city_access: CityAccess::Full,
+            access: Access { grants: vec![Grant::host(MESSAGES_WRITE, "seed-host")], host_ids: vec![HostId::new("seed-host")], auth_city: Some("GOMA".into()) },
+        };
+        let party = PartyRow { guest_user_id: "seed-user".into(), operator_id: "seed-host".into(), property_id: "seed-property".into() };
+        assert_eq!(role_of(&actor, &party, MessageAudience::Guest).unwrap(), "GUEST");
+        assert_eq!(role_of(&actor, &party, MessageAudience::Host).unwrap(), "OPERATOR");
+        let other = PartyRow { guest_user_id: "seed-other".into(), operator_id: "seed-other-host".into(), property_id: "seed-property".into() };
+        assert!(role_of(&actor, &other, MessageAudience::Guest).is_err());
+        assert!(role_of(&actor, &other, MessageAudience::Host).is_err());
+    }
 
     #[test]
     fn message_bodies_are_trimmed_and_bounded() {

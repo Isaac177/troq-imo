@@ -25,6 +25,14 @@ export const useCalendarBlocks = (propertyId: string, unitOptions: PropertyOptio
 
   const message = (code: string | null) => (code && KNOWN_ERRORS.includes(code) ? translate(`errors.${code}`) : translate('errors.generic'));
 
+  const openCreate = (initialRange: CalendarRange = { start: null, end: null }) => {
+    setRange(initialRange);
+    setReason('');
+    setError(null);
+    setNotice(null);
+    setOpen(true);
+  };
+
   useEffect(() => {
     setRange({ start: null, end: null });
     setReason('');
@@ -74,6 +82,7 @@ export const useCalendarBlocks = (propertyId: string, unitOptions: PropertyOptio
   return {
     open,
     setOpen,
+    openCreate,
     unitTypeId,
     setUnitTypeId,
     range,

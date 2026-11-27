@@ -6,6 +6,7 @@ use serde_json::json;
 use sqlx::PgPool;
 
 use super::mine::{list, tab_predicate};
+use super::mine_counts::counts;
 use super::special_request::apply_special_request;
 use super::types::SpecialRequestDecisionInput;
 use crate::reservations::amendments::list as amendment_list;
@@ -102,6 +103,8 @@ async fn my_stays_tabs_split_upcoming_pending_and_past() {
     assert_eq!(count(Some("pending")).await, 1);
     assert_eq!(count(Some("past")).await, 1);
     assert_eq!(count(Some("cancelled")).await, 0);
+    let summary = counts(&pool, City::GOMA, &guest).await.unwrap();
+    assert_eq!((summary.all, summary.pending, summary.upcoming, summary.active, summary.past, summary.cancelled), (3, 1, 1, 0, 1, 0));
     assert!(tab_predicate(Some("nonsense")).is_err());
 }
 

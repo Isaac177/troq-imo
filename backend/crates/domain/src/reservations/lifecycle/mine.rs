@@ -5,6 +5,7 @@ use serde_json::{json, Value};
 use sqlx::{FromRow, PgPool};
 
 use super::types::{MineCover, MyReservationView, MyReservationsQuery, PendingAmendmentView};
+use super::mine_counts::{self, MyReservationsPage};
 use crate::reservations::codes::RESERVATION_TAB_UNKNOWN;
 use crate::reservations::contract::{discount_from, nights_from};
 use crate::reservations::links::properties;
@@ -53,12 +54,13 @@ pub fn tab_predicate(tab: Option<&str>) -> Result<&'static str> {
     }
 }
 
-pub async fn my_reservations(kernel: &Kernel, actor: &Actor, query: MyReservationsQuery) -> Result<Page<MyReservationView>> {
+pub async fn my_reservations(kernel: &Kernel, actor: &Actor, query: MyReservationsQuery) -> Result<MyReservationsPage> {
     let page = paging(query.page, query.page_size)?;
     let predicate = tab_predicate(query.tab.as_deref())?;
     let (mut items, total) = list(kernel.db.pool(), actor.city, actor.user_id().as_str(), page, predicate).await?;
     attach_covers(kernel, &mut items).await?;
-    Ok(Page::new(items, total, page))
+    let counts = mine_counts::counts(kernel.db.pool(), actor.city, actor.user_id().as_str()).await?;
+    Ok(MyReservationsPage::new(Page::new(items, total, page), counts))
 }
 
 async fn attach_covers(kernel: &Kernel, items: &mut [MyReservationView]) -> Result<()> {

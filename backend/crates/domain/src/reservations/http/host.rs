@@ -114,7 +114,7 @@ pub async fn amend<S: AppState>(State(state): State<S>, actor: Actor, RequestId(
     responses((status = 200, body = Envelope<Page<MessageView>>), (status = 404, body = ErrorBody))
 )]
 pub async fn messages_list<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Path(reservation_id): Path<String>, Params(query): Params<MessagesQuery>) -> Reply<Page<MessageView>> {
-    Ok(reply(messages::list(app_kernel(&state), &actor, &reservation_id, query).await?, id))
+    Ok(reply(messages::list(app_kernel(&state), &actor, &reservation_id, messages::MessageAudience::Host, query).await?, id))
 }
 
 #[utoipa::path(
@@ -123,5 +123,22 @@ pub async fn messages_list<S: AppState>(State(state): State<S>, actor: Actor, Re
     responses((status = 200, body = Envelope<MessageView>), (status = 400, body = ErrorBody))
 )]
 pub async fn messages_send<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Path(reservation_id): Path<String>, Body(input): Body<SendMessageInput>) -> Reply<MessageView> {
-    Ok(reply(messages::send(app_kernel(&state), &actor, &reservation_id, input).await?, id))
+    Ok(reply(messages::send(app_kernel(&state), &actor, &reservation_id, messages::MessageAudience::Host, input).await?, id))
+}
+
+#[utoipa::path(
+    get, path = "/api/host/message-conversations", operation_id = "host_message_conversations", params(crate::reservations::messages::inbox::InboxQuery),
+    responses((status = 200, body = Envelope<Page<crate::reservations::messages::inbox::ConversationView>>), (status = 403, body = ErrorBody))
+)]
+pub async fn message_conversations<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Params(query): Params<crate::reservations::messages::inbox::InboxQuery>) -> Reply<Page<crate::reservations::messages::inbox::ConversationView>> {
+    Ok(reply(crate::reservations::messages::inbox::list(app_kernel(&state), &actor, query).await?, id))
+}
+
+#[utoipa::path(
+    post, path = "/api/host/reservations/{reservationId}/messages/read", operation_id = "host_messages_mark_read",
+    params(("reservationId" = String, Path)), request_body = crate::reservations::messages::read::ReadMessagesInput,
+    responses((status = 200, body = Envelope<crate::reservations::messages::read::ReadMessagesResult>), (status = 404, body = ErrorBody))
+)]
+pub async fn messages_mark_read<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Path(reservation_id): Path<String>, Body(input): Body<crate::reservations::messages::read::ReadMessagesInput>) -> Reply<crate::reservations::messages::read::ReadMessagesResult> {
+    Ok(reply(crate::reservations::messages::read::mark(app_kernel(&state), &actor, &reservation_id, input).await?, id))
 }

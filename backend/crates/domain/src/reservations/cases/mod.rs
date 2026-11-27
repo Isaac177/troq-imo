@@ -1,6 +1,7 @@
 pub mod access;
 pub mod admin;
 pub mod admin_actions;
+pub mod assignees;
 pub mod evidence;
 pub mod queries;
 pub mod read;

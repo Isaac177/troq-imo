@@ -4,6 +4,7 @@ import { Button, DateRangePicker, EmptyState, FadeIn, SegmentedControl, Section,
 import BlockDatesDialog from '@/components/calendar/BlockDatesDialog';
 import CalendarBlockList from '@/components/calendar/CalendarBlockList';
 import CalendarDaySheet from '@/components/calendar/CalendarDaySheet';
+import CalendarFeeds from '@/components/calendar/CalendarFeeds';
 import CalendarMonthView from '@/components/calendar/CalendarMonthView';
 import CalendarReservationList from '@/components/calendar/CalendarReservationList';
 import CalendarRestrictionList from '@/components/calendar/CalendarRestrictionList';
@@ -12,6 +13,7 @@ import RestrictionDialog from '@/components/calendar/RestrictionDialog';
 import UnitStrip from '@/components/calendar/UnitStrip';
 import ReservationDrawer from '@/components/reservations/ReservationDrawer';
 import { useCalendarBlocks } from '@/hooks/calendar/useCalendarBlocks';
+import { useCalendarDayActions } from '@/hooks/calendar/useCalendarDayActions';
 import { useCalendarMonth } from '@/hooks/calendar/useCalendarMonth';
 import { useCalendarRestrictions } from '@/hooks/calendar/useCalendarRestrictions';
 import { useHostCalendar } from '@/hooks/calendar/useHostCalendar';
@@ -21,6 +23,7 @@ export default function CalendarView() {
   const blocks = useCalendarBlocks(view.propertyId, view.unitOptions, view.refresh);
   const restrictions = useCalendarRestrictions(view.propertyId, view.unitOptions, view.refresh);
   const month = useCalendarMonth(view.calendar, view.range, view.setSelected);
+  const dayActions = useCalendarDayActions(month, blocks, restrictions, view.canWrite && Boolean(view.propertyId));
 
   if (!view.hasHost) {
     return (
@@ -49,7 +52,7 @@ export default function CalendarView() {
               <DateRangePicker value={view.range} onChange={view.setRange} ariaLabel={view.labels.range} />
             </div>
             {view.canWrite && view.propertyId ? (
-              <Button variant="primary" size="sm" icon={<Ban />} collapseLabel aria-label={view.labels.blockDates} title={view.labels.blockDates} onClick={() => blocks.setOpen(true)}>{view.labels.blockDates}</Button>
+              <Button variant="primary" size="sm" icon={<Ban />} collapseLabel aria-label={view.labels.blockDates} title={view.labels.blockDates} onClick={() => blocks.openCreate()}>{view.labels.blockDates}</Button>
             ) : null}
           </div>
         }
@@ -102,14 +105,14 @@ export default function CalendarView() {
             <div className="border-t border-border pt-4">
               <h2 className="text-title font-semibold text-foreground">{view.labels.blocks}</h2>
               <div className="mt-2">
-                <CalendarBlockList rows={view.blocks} empty={view.labels.noBlocks} removeLabel={view.labels.removeBlock} onRemove={blocks.askRemove} />
+                <CalendarBlockList rows={view.blocks} empty={view.labels.noBlocks} removeLabel={view.labels.removeBlock} onRemove={view.canWrite ? blocks.askRemove : undefined} />
               </div>
             </div>
 
             <div className="border-t border-border pt-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-title font-semibold text-foreground">{view.labels.restrictions}</h2>
-                {view.canWrite && view.propertyId ? <Button variant="outline" size="sm" icon={<Ban />} collapseLabel aria-label={restrictions.labels.addRestriction} title={restrictions.labels.addRestriction} onClick={restrictions.openCreate}>{restrictions.labels.addRestriction}</Button> : null}
+                {view.canWrite && view.propertyId ? <Button variant="outline" size="sm" icon={<Ban />} collapseLabel aria-label={restrictions.labels.addRestriction} title={restrictions.labels.addRestriction} onClick={() => restrictions.openCreate()}>{restrictions.labels.addRestriction}</Button> : null}
               </div>
               {restrictions.error ? <p role="alert" className="mt-2 text-label text-destructive">{restrictions.error}</p> : null}
               {restrictions.notice ? <p role="status" className="mt-2 text-label text-muted-foreground">{restrictions.notice}</p> : null}
@@ -117,13 +120,14 @@ export default function CalendarView() {
                 <CalendarRestrictionList rows={view.restrictions} empty={view.labels.noRestrictions} removeLabel={restrictions.labels.removeRestriction} onRemove={view.canWrite ? restrictions.setRemoveTarget : undefined} />
               </div>
             </div>
+            {view.canIntegrate && view.calendar?.propertyId === view.propertyId ? <CalendarFeeds key={view.propertyId} propertyId={view.propertyId} timezone={view.calendar.timezone} /> : null}
           </div>
         ) : null}
       </Section>
 
       <BlockDatesDialog view={blocks} unitOptions={view.unitOptions} />
       <RestrictionDialog view={restrictions} />
-      <CalendarDaySheet view={month} />
+      <CalendarDaySheet view={month} actions={dayActions} />
       <ReservationDrawer reservationId={view.selected} onClose={() => view.setSelected(null)} onChanged={view.refresh} />
     </>
   );

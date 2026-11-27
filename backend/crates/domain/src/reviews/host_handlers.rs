@@ -7,7 +7,7 @@ use kernel::paging::Page;
 use kernel::KernelState;
 
 use super::extract;
-use super::property_reviews::list_property_reviews;
+use super::host_list::{self, HostReviewView};
 use super::reply::reply_review;
 use super::types::{page_request, ReplyReviewInput, ReviewListQuery, ReviewView};
 
@@ -41,7 +41,7 @@ where
     get, path = "/api/host/properties/{propertyId}/reviews", operation_id = "reviews_host_list", tag = "reviews",
     params(("propertyId" = String, Path), ReviewListQuery, ("x-city" = Option<String>, Header), ("x-request-id" = Option<String>, Header)),
     responses(
-        (status = 200, body = Envelope<Page<ReviewView>>, headers(("x-request-id" = String))),
+        (status = 200, body = Envelope<Page<HostReviewView>>, headers(("x-request-id" = String))),
         (status = 400, body = ErrorBody)
     )
 )]
@@ -51,20 +51,12 @@ pub async fn list<S>(
     RequestId(request_id): RequestId,
     Path(property_id): Path<String>,
     query: std::result::Result<Query<ReviewListQuery>, QueryRejection>,
-) -> Result<Json<Envelope<Page<ReviewView>>>>
+) -> Result<Json<Envelope<Page<HostReviewView>>>>
 where
     S: KernelState + Clone + Send + Sync + 'static,
 {
     let query = extract::query(query)?;
     let page = page_request(query.page, query.page_size);
-    let data = list_property_reviews(
-        state.kernel(),
-        actor.city,
-        Some(&actor),
-        &property_id,
-        query.status.as_deref(),
-        page,
-    )
-    .await?;
+    let data = host_list::list(state.kernel(), &actor, &property_id, query.status.as_deref(), page).await?;
     Ok(Json(Envelope::ok(data, request_id)))
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Input } from '@mungini/ui-web';
+import { Button, Input, Select } from '@mungini/ui-web';
 import { useProfileForm } from '@/hooks/account/useProfileForm';
 
 export const ProfileForm = () => {
@@ -19,6 +19,11 @@ export const ProfileForm = () => {
           <Input value={form.lastName} onChange={form.changeLastName} autoComplete="family-name" maxLength={160} />
         </label>
       </div>
+      <label className="flex flex-col gap-1 text-label text-muted-foreground">
+        {form.labels.language}
+        <Select value={form.language} onValueChange={form.setLanguage} options={form.languageOptions} ariaLabel={form.labels.language} disabled={form.busy || form.languageOptions.length === 0} />
+      </label>
+      {form.languageError ? <p role="alert" className="text-label text-destructive">{form.labels.languageError}</p> : null}
       {form.error ? <p role="alert" className="text-label text-destructive">{form.error}</p> : null}
       {form.saved ? <p role="status" className="text-label text-muted-foreground">{form.labels.saved}</p> : null}
       <div><Button type="submit" size="sm" disabled={form.busy}>{form.busy ? form.labels.saving : form.labels.save}</Button></div>

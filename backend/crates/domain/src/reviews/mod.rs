@@ -6,6 +6,7 @@ mod events;
 mod extract;
 mod guest_handlers;
 mod host_handlers;
+mod host_list;
 mod list_queries;
 mod moderation;
 mod property_reviews;
@@ -77,7 +78,7 @@ where
         admin_handlers::queue,
         admin_handlers::decide
     ),
-    components(schemas(ReviewView, AdminReviewItem, SubmitReviewInput, ReplyReviewInput, DecideReviewInput))
+    components(schemas(ReviewView, host_list::HostReviewView, AdminReviewItem, SubmitReviewInput, ReplyReviewInput, DecideReviewInput))
 )]
 struct Doc;
 

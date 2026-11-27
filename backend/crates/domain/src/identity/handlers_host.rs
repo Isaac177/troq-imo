@@ -35,6 +35,19 @@ where S: KernelState + Clone + Send + Sync + 'static {
 }
 
 #[utoipa::path(
+    get, path = "/api/host/hosts/{hostId}/contact", operation_id = "host_contact_get",
+    params(("hostId" = String, Path)),
+    responses((status = 200, body = Envelope<HostContact>), (status = 403, body = ErrorBody), (status = 404, body = ErrorBody))
+)]
+pub async fn get_contact<S>(
+    State(state): State<S>, actor: Actor, RequestId(id): RequestId, Path(host_id): Path<String>,
+) -> Result<Json<Envelope<HostContact>>>
+where S: KernelState + Clone + Send + Sync + 'static {
+    let contact = hosts::get_contact(state.kernel().db.pool(), &actor, &host_id).await?;
+    Ok(Json(Envelope::ok(contact, id)))
+}
+
+#[utoipa::path(
     patch, path = "/api/host/hosts/{hostId}/contact", operation_id = "host_contact_update",
     params(("hostId" = String, Path)), request_body = UpdateHostContact,
     responses((status = 200, body = Envelope<HostContact>), (status = 400, body = ErrorBody), (status = 403, body = ErrorBody), (status = 404, body = ErrorBody))

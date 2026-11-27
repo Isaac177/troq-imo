@@ -4,6 +4,7 @@ pub mod cancellation;
 pub mod decision;
 pub mod decision_queries;
 pub mod mine;
+pub mod mine_counts;
 mod item_assignment;
 pub mod no_show;
 pub mod operator_cancel;

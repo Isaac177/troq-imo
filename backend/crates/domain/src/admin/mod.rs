@@ -1,3 +1,4 @@
+mod platform_report;
 mod report;
 mod report_handler;
 mod report_queries;
@@ -57,6 +58,7 @@ where S: KernelState + Clone + Send + Sync + 'static {
         .route("/guests/:user_id", get(guest_handlers::detail::<S>))
         .route("/guests/:userId/bookings", get(handlers::guest_bookings::<S>))
         .route("/dashboard", get(dashboard_handler::summary::<S>))
+        .route("/reports/summary", get(platform_report::summary::<S>))
         .route("/dashboard/hosts", get(dashboard_handler::hosts::<S>))
         .route("/reservations", get(reservation_handlers::list::<S>))
         .route("/reservations/summary", get(reservation_handlers::summary::<S>))
@@ -65,7 +67,7 @@ where S: KernelState + Clone + Send + Sync + 'static {
 }
 
 #[derive(OpenApi)]
-#[openapi(paths(handlers::guest_bookings, guest_handlers::list, guest_handlers::detail, dashboard_handler::summary, dashboard_handler::hosts, dashboard_handler::host_summary, reservation_handlers::list, reservation_handlers::summary, reservation_handlers::export, reservation_detail_handler::get, report_handler::summary), components(schemas(GuestBooking, GuestItem, CityFigures, DashboardDay, DashboardFigures, DashboardSummary, dashboard_hosts::HostFigures, ReservationRow, ReservationSummary, report_types::AnalyticsSummary)))]
+#[openapi(paths(platform_report::summary, handlers::guest_bookings, guest_handlers::list, guest_handlers::detail, dashboard_handler::summary, dashboard_handler::hosts, dashboard_handler::host_summary, reservation_handlers::list, reservation_handlers::summary, reservation_handlers::export, reservation_detail_handler::get, report_handler::summary), components(schemas(GuestBooking, GuestItem, CityFigures, DashboardDay, DashboardFigures, DashboardSummary, dashboard_hosts::HostFigures, ReservationRow, ReservationSummary, report_types::AnalyticsSummary)))]
 struct Doc;
 
 pub fn openapi() -> utoipa::openapi::OpenApi {

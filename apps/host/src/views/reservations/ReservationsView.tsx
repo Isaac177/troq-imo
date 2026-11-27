@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Download, Search } from 'lucide-react';
-import { Button, EmptyState, Input, PagedTable, Section, Select } from '@mungini/ui-web';
+import { Button, DateRangePicker, EmptyState, Input, PagedTable, Section, Select } from '@mungini/ui-web';
 import ReservationDrawer from '@/components/reservations/ReservationDrawer';
 import { useHostReservations } from '@/hooks/reservations/useHostReservations';
 import { useReservationsExport } from '@/hooks/reservations/useReservationsExport';
@@ -12,6 +12,8 @@ export default function ReservationsView() {
     propertyId: view.propertyId,
     state: view.state,
     search: view.search,
+    checkInFrom: view.range.start,
+    checkInTo: view.range.end,
   });
 
   if (!view.hasHost) {
@@ -42,6 +44,9 @@ export default function ReservationsView() {
             </div>
             <div className="w-full sm:w-[180px]">
               <Select options={view.stateOptions} value={view.state} onValueChange={view.setState} ariaLabel={view.labels.statusFilter} />
+            </div>
+            <div className="w-full sm:w-[220px]">
+              <DateRangePicker value={view.range} onChange={view.setRange} ariaLabel={view.labels.checkInRange} placeholder={view.labels.checkInRange} clearable />
             </div>
             <div className="w-full sm:w-[220px]">
               <Input type="search" value={view.search} onChange={(event) => view.setSearch(event.target.value)} placeholder={view.labels.search} aria-label={view.labels.search} leadingIcon={<Search />} />

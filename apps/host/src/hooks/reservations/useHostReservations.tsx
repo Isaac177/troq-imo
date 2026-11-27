@@ -22,6 +22,10 @@ export const useHostReservations = () => {
   const [state, setState] = useState('all');
   const [propertyId, setPropertyId] = useState('all');
   const [search, setSearch] = useState('');
+  const [range, setRange] = useState<{ start: string | null; end: string | null }>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return { start: params.get('checkInFrom'), end: params.get('checkInTo') };
+  });
   const term = useDebouncedValue(search, 250);
   const [page, setPage] = useState(1);
   const [rows, setRows] = useState<HostReservation[]>([]);
@@ -39,7 +43,15 @@ export const useHostReservations = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [hostId, state, propertyId, term]);
+  }, [hostId, state, propertyId, term, range.start, range.end]);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    for (const [key, value] of [['checkInFrom', range.start], ['checkInTo', range.end]] as const) {
+      if (value) url.searchParams.set(key, value); else url.searchParams.delete(key);
+    }
+    window.history.replaceState(window.history.state, '', url);
+  }, [range.start, range.end]);
 
   useEffect(() => {
     setPropertyId('all');
@@ -66,7 +78,7 @@ export const useHostReservations = () => {
     let active = true;
     setLoading(true);
     setError(null);
-    void listReservations(client, { hostId, propertyId: propertyId === 'all' ? '' : propertyId, state: state === 'all' ? '' : state, search: term, page, pageSize: PAGE_SIZE, locale }).then((result) => {
+    void listReservations(client, { hostId, propertyId: propertyId === 'all' ? '' : propertyId, state: state === 'all' ? '' : state, search: term, checkInFrom: range.start, checkInTo: range.end, page, pageSize: PAGE_SIZE, locale }).then((result) => {
       if (!active) return;
       setLoading(false);
       if (result.error || !result.data) {
@@ -81,7 +93,7 @@ export const useHostReservations = () => {
     return () => {
       active = false;
     };
-  }, [client, hostId, propertyId, state, term, page, locale, refreshToken, translate]);
+  }, [client, hostId, propertyId, state, term, range.start, range.end, page, locale, refreshToken, translate]);
 
   const stateOptions = useMemo(
     () => [{ value: 'all', label: translate('allStates') }, ...STATES.map((value) => ({ value, label: translate(`states.${value}`) }))],
@@ -147,6 +159,8 @@ export const useHostReservations = () => {
     setPropertyId,
     search,
     setSearch,
+    range,
+    setRange,
     page,
     setPage,
     pageSize: PAGE_SIZE,
@@ -166,6 +180,7 @@ export const useHostReservations = () => {
       search: translate('search'),
       statusFilter: translate('statusFilter'),
       propertyFilter: translate('propertyFilter'),
+      checkInRange: translate('checkInRange'),
       empty: translate('empty'),
       noHost: translateHost('noHost'),
       noHostAction: translateHost('noHostAction'),

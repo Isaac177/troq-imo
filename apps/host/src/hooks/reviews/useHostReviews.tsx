@@ -115,7 +115,7 @@ export const useHostReviews = () => {
       setFormError(message(result.error));
       return;
     }
-    setRows((current) => current.map((review) => (review.id === result.data?.id ? (result.data as Review) : review)));
+    setRows((current) => current.map((review) => (review.id === result.data?.id ? { ...review, ...result.data } : review)));
     setReplyTarget(null);
     setNotice(translate('saved'));
   };
@@ -125,7 +125,7 @@ export const useHostReviews = () => {
     {
       key: 'review',
       header: translate('comment'),
-      cell: (row) => <div className="min-w-0"><p className="truncate font-medium text-foreground">{unitName(row) || translate('unit')}</p><p className="truncate text-label text-muted-foreground">{row.comment || ''}</p></div>,
+      cell: (row) => <div className="min-w-0"><p className="truncate font-medium text-foreground">{row.guestName || translate('unknownGuest')}</p><p className="truncate text-label text-muted-foreground">{unitName(row) || translate('unit')}</p><p className="truncate text-label text-muted-foreground">{row.comment || ''}</p></div>,
     },
     { key: 'date', header: translate('date'), hideBelow: 'sm', cell: (row) => <span className="whitespace-nowrap tabular-nums">{formatDateTime(row.createdAt, timezone)}</span> },
     { key: 'status', header: translate('status'), hideBelow: 'sm', cell: (row) => translate(`statuses.${row.status}`) },

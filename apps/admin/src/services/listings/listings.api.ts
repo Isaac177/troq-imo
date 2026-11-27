@@ -1,4 +1,3 @@
-import type { components } from '@mungini/api';
 import type { SessionClient } from '@mungini/session';
 import { apiErrorCode } from '@mungini/session';
 import type { AdminRevision, ListingDecisionBody, QueueItem, RequestResult, Revision } from '@/types/listings/listings';
@@ -27,7 +26,7 @@ export const getRevision = async (client: SessionClient, revisionId: string): Pr
 export const decideListing = async (client: SessionClient, revisionId: string, body: ListingDecisionBody): Promise<RequestResult<Revision>> => {
   const response = await client.api.POST('/api/admin/listings/{revisionId}/decision', {
     params: { path: { revisionId } },
-    body: body as unknown as components['schemas']['DecisionInput'],
+    body,
   });
   if (response.error || !response.data) return fail(response.error);
   return { data: response.data.data, error: null, blockers: [] };

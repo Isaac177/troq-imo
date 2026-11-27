@@ -12,6 +12,7 @@ The first migration implements the kernel contract in `P0-2-kernel.md`. It has b
 | Identity and host schemas | `auth-service/migrations/` | `backend/migrations/00002_identity.sql` | open: partial access foundation; lifecycle and complete model remain |
 | Goma and Kinshasa demo data and edge cases | `stay-service/seeds/` | `backend/seeds/`, `00-order.txt` | open: multiple modules now have demo seeds; full source coverage and database rehearsal remain |
 | Data copy and count verification | existing per-city databases | Phase 3 copy scripts | open |
+| Offline identifier and count reconciliation | Goma and Kinshasa Stay databases and Mungini | `scripts/cutover/reconcile-cli.ts`, `scripts/cutover/README.md`, `scripts/cutover/TABLE-MAPPING.md` | open: compares supplied snapshots and flags duplicates, cross-city keys and differences; unit tests passed. A reviewed table mapping now documents renamed, dropped and restructured targets. Snapshot completeness, copy scripts and database rehearsal remain |
 
 The seed order was reconciled from the current foreign keys and seed references: hosts and properties precede inventory; inventory and policies precede rates; reservations precede assignments and reviews; billing reservations precede credit entries and settlement items. The paused Kinshasa billing example uses a property owned by the paused host. This was a static review only, not a database rehearsal; existing database rows are not updated by conflict-ignoring seed inserts.
 

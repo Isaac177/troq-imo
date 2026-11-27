@@ -1,0 +1,18 @@
+export const hostNav = {
+  navReports: 'Reports',
+  navDashboard: 'Dashboard',
+  navProperties: 'Properties',
+  navReservations: 'Reservations',
+  navTasks: 'Tasks',
+  navTemplates: 'Accommodation types',
+  navCases: 'Cases',
+  navCalendar: 'Calendar',
+  navCredits: 'Credits',
+  navRates: 'Rates',
+  navReviews: 'Reviews',
+  navNotifications: 'Notifications',
+  navTeam: 'Team',
+  navOnboarding: 'Become a host',
+  navSettings: 'Settings',
+  navMessages: 'Messages',
+};

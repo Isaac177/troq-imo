@@ -25,6 +25,8 @@ export const guest = {
   lastName: 'Nom',
   city: 'Ville',
   language: 'Langue',
+  languages: { en: 'Anglais', fr: 'Français' },
+  profileLanguagesError: 'Impossible de charger les langues. Vous pouvez toujours modifier votre nom.',
   sendCode: 'Envoyer le code',
   code: 'Code de v\u00e9rification',
   verify: 'V\u00e9rifier',

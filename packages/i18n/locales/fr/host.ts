@@ -1,15 +1,8 @@
+import { hostNav } from './hostNav';
+
 export const host = {
-  navDashboard: 'Tableau de bord',
-  navProperties: 'H\u00e9bergements',
-  navReservations: 'R\u00e9servations',
-  navCalendar: 'Calendrier',
-  navCredits: 'Crédits',
-  navRates: 'Tarifs',
-  navReviews: 'Avis',
-  navNotifications: 'Notifications',
-  navTeam: '\u00c9quipe',
-  navOnboarding: 'Devenir h\u00f4te',
-  navSettings: 'Param\u00e8tres',
+  ...hostNav,
+  accessDenied: 'Vous n’avez pas accès à cette page.',
   sectionWorkspace: 'Espace de travail',
   sectionAccount: 'Compte',
   dashboardTitle: 'Tableau de bord',

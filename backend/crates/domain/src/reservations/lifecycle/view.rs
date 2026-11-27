@@ -3,9 +3,9 @@ use kernel::{City, Error, Kernel, Result};
 use serde_json::Value;
 use sqlx::FromRow;
 
-use super::types::{GuestView, ReservationView};
-use crate::reservations::contract::nights_from;
-use crate::reservations::links::properties::covers_for_unit_types;
+use super::types::{GuestView, ReservationView, TripImageView};
+use crate::reservations::contract::{discount_from, nights_from};
+use crate::reservations::links::properties::images_for_unit_types;
 
 #[derive(Debug, FromRow)]
 struct ReservationRow {
@@ -14,6 +14,7 @@ struct ReservationRow {
     state: String,
     property_id: String,
     total: String,
+    discount: Option<Value>,
     currency: String,
     approval_deadline_at: Option<DateTime<Utc>>,
     version: i32,
@@ -38,7 +39,7 @@ struct ItemRow {
 pub async fn view(kernel: &Kernel, city: City, reservation_id: &str) -> Result<Option<ReservationView>> {
     let pool = kernel.db.pool();
     let reservation = sqlx::query_as::<_, ReservationRow>(
-        r#"SELECT id, reference, state, "propertyId" AS property_id, "totalAmount"::text AS total, currency,
+        r#"SELECT id, reference, state, "propertyId" AS property_id, "totalAmount"::text AS total, "contractSnapshot"->'discount' AS discount, currency,
                   "approvalDeadlineAt" AS approval_deadline_at, version,
                   "specialRequest" AS special_request, "specialRequestState" AS special_request_state
            FROM stay_reservations WHERE id = $1 AND city_id = $2"#,
@@ -70,9 +71,14 @@ pub async fn view(kernel: &Kernel, city: City, reservation_id: &str) -> Result<O
     .fetch_one(pool)
     .await?;
     let nights = nights_from(item.nightly_charges)?;
-    let unit_type_cover_url = covers_for_unit_types(kernel, std::slice::from_ref(&item.unit_type_id))
+    let unit_type_images: Vec<TripImageView> = images_for_unit_types(kernel, std::slice::from_ref(&item.unit_type_id))
         .await?
-        .remove(&item.unit_type_id);
+        .remove(&item.unit_type_id)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|image| TripImageView { id: image.id, url: image.url, alt_en: image.alt_en, alt_fr: image.alt_fr })
+        .collect();
+    let unit_type_cover_url = unit_type_images.first().map(|image| image.url.clone());
     let payment_required = reservation.state == super::state::PENDING_PAYMENT;
     Ok(Some(ReservationView {
         id: reservation.id,
@@ -80,6 +86,7 @@ pub async fn view(kernel: &Kernel, city: City, reservation_id: &str) -> Result<O
         state: reservation.state,
         property_id: reservation.property_id,
         unit_type_cover_url,
+        unit_type_images,
         unit_type_id: item.unit_type_id,
         rate_plan_id: item.rate_plan_id,
         check_in: item.check_in,
@@ -89,6 +96,7 @@ pub async fn view(kernel: &Kernel, city: City, reservation_id: &str) -> Result<O
         currency: reservation.currency,
         total: reservation.total,
         nights,
+        discount: discount_from(reservation.discount)?,
         guest: GuestView {
             full_name: item.full_name,
             contact_phone: item.contact_phone,

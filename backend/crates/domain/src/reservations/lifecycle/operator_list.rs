@@ -1,6 +1,7 @@
 use kernel::auth::Actor;
 use kernel::permissions::names::{ANALYTICS_EXPORT, RESERVATIONS_READ};
 use kernel::{Error, Kernel, Page, Result};
+use kernel::error::codes::MALFORMED_REQUEST;
 
 use super::access::hide_membership;
 use super::operator_queries::{self, ListFilter};
@@ -21,6 +22,9 @@ pub async fn export_operator_reservations(kernel: &Kernel, actor: &Actor, query:
 
 async fn list_scoped(kernel: &Kernel, actor: &Actor, query: OperatorReservationQuery, permission: &str) -> Result<Page<OperatorReservationView>> {
     actor.require(permission)?;
+    if query.check_in_from.zip(query.check_in_to).is_some_and(|(from, to)| from > to) {
+        return Err(Error::bad_request(MALFORMED_REQUEST));
+    }
     if query.host_id.trim().is_empty() {
         return Err(Error::bad_request(HOST_REQUIRED));
     }
@@ -40,6 +44,8 @@ async fn list_scoped(kernel: &Kernel, actor: &Actor, query: OperatorReservationQ
         property_id: query.property_id.as_deref(),
         state: query.state.as_deref(),
         search,
+        check_in_from: query.check_in_from,
+        check_in_to: query.check_in_to,
     };
     let (rows, total) = operator_queries::list(pool, &filter, page).await?;
     let french = query.locale.as_deref() == Some("fr");

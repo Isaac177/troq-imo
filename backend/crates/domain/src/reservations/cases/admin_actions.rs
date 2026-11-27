@@ -14,7 +14,7 @@ use super::admin::{find_item, AdminCaseItem};
 use super::queries::{self, NewCase};
 use super::rules::{ensure_closable, validate_reason, PLATFORM_CASE_TYPES};
 use crate::reservations::codes::{
-    CASE_ALREADY_ESCALATED, CASE_TYPE_NOT_ALLOWED, CASE_VERSION_CONFLICT, EVIDENCE_NOT_FOUND, RESERVATION_NOT_FOUND,
+    CASE_ALREADY_ESCALATED, CASE_ASSIGNEE_INVALID, CASE_TYPE_NOT_ALLOWED, CASE_VERSION_CONFLICT, EVIDENCE_NOT_FOUND, RESERVATION_NOT_FOUND,
 };
 use crate::reservations::events::{self, types::{CASE_ESCALATED, CASE_OPENED}};
 use crate::reservations::links::settings;
@@ -54,6 +54,11 @@ pub async fn assign_case(kernel: &Kernel, actor: &Actor, case_id: &str, input: A
     actor.require_platform(PROPERTIES_MODERATE)?;
     let pool = kernel.db.pool();
     let assignee = input.assignee_user_id.as_deref().map(str::trim).filter(|value| !value.is_empty());
+    if let Some(user_id) = assignee {
+        if !super::assignees::eligible(pool, user_id).await? {
+            return Err(Error::bad_request(CASE_ASSIGNEE_INVALID));
+        }
+    }
     let case = find_item(pool, actor.city, case_id).await?;
     ensure_closable(&case.state)?;
     let mut tx = pool.begin().await?;

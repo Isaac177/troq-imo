@@ -5,3 +5,4 @@ export type AdminCaseDetail = components['schemas']['AdminCaseDetail'];
 export type CaseEvidence = components['schemas']['EvidenceView'];
 export type EvidenceContent = components['schemas']['AdminEvidenceContent'];
 export type RequestResult<T> = { data: T | null; error: string | null };
+export type CaseAssignee = components['schemas']['CaseAssignee'];

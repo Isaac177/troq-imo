@@ -35,12 +35,12 @@ pub enum ProfileLanguage {
 }
 
 impl ProfileLanguage {
+    pub const ALL: [Self; 2] = [Self::En, Self::Fr];
+
     pub fn parse(value: &str) -> Result<Self> {
-        match value.trim().to_ascii_lowercase().as_str() {
-            "en" => Ok(Self::En),
-            "fr" => Ok(Self::Fr),
-            _ => Err(Error::bad_request(codes::MALFORMED_REQUEST)),
-        }
+        let value = value.trim().to_ascii_lowercase();
+        Self::ALL.into_iter().find(|language| language.as_str() == value)
+            .ok_or_else(|| Error::bad_request(codes::MALFORMED_REQUEST))
     }
 
     pub fn as_str(self) -> &'static str {

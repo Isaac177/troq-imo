@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@mungini/ui-web';
 import { useTripDetail } from '@/hooks/trips/useTripDetail';
 import { TripActions } from '@/components/trips/TripActions';
+import { TripGallery } from '@/components/trips/TripGallery';
 
 type Props = { reservationId: string };
 
@@ -16,7 +17,7 @@ export const TripDetailView = ({ reservationId }: Props) => {
       {view.status === 'anonymous' && <p className="text-body">{view.labels.signInPrompt} <Link href="/login" className="text-primary hover:underline">{view.labels.signIn}</Link></p>}
       {(view.status === 'loading' || view.loading) && <p className="text-body">{view.labels.loading}</p>}
       {view.error && <div role="alert" className="flex gap-3 text-body"><span>{view.labels.error}</span><Button size="sm" variant="outline" onClick={view.retry}>{view.labels.retry}</Button></div>}
-      {view.trip && view.coverUrl ? <img src={view.coverUrl} alt={view.trip.reference} className="h-[180px] w-full rounded-card object-cover" /> : null}
+      {view.photo ? <TripGallery photo={view.photo} hasMultiplePhotos={view.hasMultiplePhotos} previous={view.previousPhoto} next={view.nextPhoto} previousLabel={view.labels.previousPhoto} nextLabel={view.labels.nextPhoto} /> : null}
       {view.trip ? (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
@@ -47,6 +48,7 @@ export const TripDetailView = ({ reservationId }: Props) => {
                 </li>
               ))}
             </ul>
+            {view.discount ? <div className="mt-2 flex justify-between gap-4"><span>{view.labels.discount}</span><span className="tabular-nums">{view.discount}</span></div> : null}
             <div className="mt-2 flex justify-between gap-4 border-t border-border pt-2 font-medium">
               <span>{view.labels.total}</span>
               <span className="tabular-nums">{view.total}</span>

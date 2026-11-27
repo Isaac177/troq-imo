@@ -15,6 +15,8 @@ export type ReservationQuery = {
   propertyId: string;
   state: string;
   search: string;
+  checkInFrom: string | null;
+  checkInTo: string | null;
   page: number;
   pageSize: number;
   locale: string;
@@ -30,6 +32,8 @@ const reservationQuery = (query: ReservationQuery) => ({
   ...(query.propertyId ? { propertyId: query.propertyId } : {}),
   ...(query.state ? { state: query.state } : {}),
   ...(query.search.trim() ? { search: query.search.trim() } : {}),
+  ...(query.checkInFrom ? { checkInFrom: query.checkInFrom } : {}),
+  ...(query.checkInTo ? { checkInTo: query.checkInTo } : {}),
 });
 
 export const listReservations = async (client: SessionClient, query: ReservationQuery): Promise<RequestResult<HostReservationPage>> => {
@@ -115,9 +119,9 @@ export const proposeAmendment = async (client: SessionClient, reservationId: str
   return { data: response.data.data, error: null };
 };
 
-export const listMessages = async (client: SessionClient, reservationId: string): Promise<RequestResult<MessagePage>> => {
+export const listMessages = async (client: SessionClient, reservationId: string, page: number): Promise<RequestResult<MessagePage>> => {
   const response = await client.api.GET('/api/host/reservations/{reservationId}/messages', {
-    params: { path: { reservationId }, query: { page: 1, pageSize: 50 } },
+    params: { path: { reservationId }, query: { page, pageSize: 50 } },
   });
   if (response.error || !response.data) return fail(response.error);
   return { data: response.data.data, error: null };

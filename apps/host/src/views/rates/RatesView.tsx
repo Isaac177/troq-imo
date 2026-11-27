@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Button, EmptyState, PagedTable, Section, Select } from '@mungini/ui-web';
 import PromotionDialog from '@/components/rates/PromotionDialog';
+import PricePreview from '@/components/rates/PricePreview';
 import RatePlanDialog from '@/components/rates/RatePlanDialog';
 import RateRuleDialog from '@/components/rates/RateRuleDialog';
 import { usePromotions } from '@/hooks/rates/usePromotions';
@@ -79,6 +80,8 @@ export default function RatesView() {
             />
           </Section>
         ) : null}
+
+        {view.selectedPlan ? <PricePreview propertyId={view.propertyId} plan={view.selectedPlan} /> : null}
 
         <Section
           title={promotions.labels.promotions}

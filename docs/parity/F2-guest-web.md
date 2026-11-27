@@ -11,18 +11,18 @@ Mungini locations: `apps/web/src/{app,components,hooks,services,types}/trips`, `
 | # | Legacy feature | Legacy location | Mungini location | Status | Notes |
 |---|---|---|---|---|---|
 | 1 | Guest stays list | `components/user/stays/StaysTab.tsx` | `components/trips/TripsView.tsx`, `hooks/trips/useTrips.ts` | done | Paginated list with city and status filter, loading, error and empty text. |
-| 2 | Status tabs with counts (all, pending, upcoming, active, past, cancelled) | `hooks/useMyStays.ts`, `StaysTab.tsx` | `components/trips/TripsView.tsx` | open | Mungini has a status selector and no server-computed counts. |
+| 2 | Status tabs with counts (all, pending, upcoming, active, past, cancelled) | `hooks/useMyStays.ts`, `StaysTab.tsx` | `components/trips/TripsView.tsx`, `reservations/lifecycle/mine_counts.rs` | open | Tabs use city-scoped SQL aggregates and URL state; Rust and SQL read-checked only. API contract regenerated; runtime and phone verification remain. |
 | 3 | Total count label | `StaysTab.tsx` | `components/trips/TripsView.tsx` | done | Header shows the total returned by the server. |
 | 4 | Reference highlight from `?reference=` | `hooks/useMyStays.ts` | `components/trips/TripsView.tsx`, `hooks/trips/useTrips.ts` | done | The matching row is highlighted and labelled; when the reference is on another page or filter, a translated note points it out. |
 | 5 | Explore stays call to action on the empty list | `StaysTab.tsx` | `components/trips/TripsView.tsx` | done | Links to the discovery home. |
-| 6 | Stay row: number, photo, property, unit, dates, nights, guests, reference, total, status dot and label | `MyStayRow.tsx` | `components/trips/TripsView.tsx`, `hooks/trips/useTrips.ts` | partial | Cover photo, property, unit, dates, nights, guest counts, reference, total and state label are shown. The row number and status dot are not. |
+| 6 | Stay row: number, photo, property, unit, dates, nights, guests, reference, total, status dot and label | `MyStayRow.tsx` | `components/trips/TripsView.tsx`, `hooks/trips/useTrips.ts` | done | Cover photo, row number, property, unit, dates, nights, guest counts, reference, total and a status dot with the state label are shown. |
 | 7 | Approval deadline on a requested row | `MyStayRow.tsx`, `hooks/useMyStays.ts` | `hooks/trips/useTrips.ts` | done | Rendered in the city time zone when present. |
-| 8 | Trip detail sheet with photos, status, facts and pricing | `MyStayDetailSheet.tsx`, `hooks/useMyStayDetail.ts` | `components/trips/TripDetailView.tsx`, `hooks/trips/useTripDetail.ts` | partial | Reference, status, dates, nights, guest and contact, occupancy, total, deadlines and one cover image are shown. State explanation text and a full photo gallery remain open. |
+| 8 | Trip detail sheet with photos, status, facts and pricing | `MyStayDetailSheet.tsx`, `hooks/useMyStayDetail.ts` | `components/trips/TripDetailView.tsx`, `hooks/trips/useTripDetail.ts` | open | Facts, state guidance and a unit photo gallery are implemented; API contract regenerated; visual verification remains. |
 | 9 | State information text per reservation state | `hooks/useMyStayDetail.ts` | `hooks/trips/useTripDetail.ts`, `TripDetailView.tsx` | done | Each state has a translated explanation in English and French. |
-| 10 | Night price lines and discount | `hooks/useMyStayDetail.ts` | `TripDetailView.tsx` | partial | Night lines and total are shown. The guest detail response carries no discount field, so a discount line is open until the contract changes. |
+| 10 | Night price lines and discount | `hooks/useMyStayDetail.ts` | `reservations/lifecycle/view.rs`, `TripDetailView.tsx` | open | Stored contract discount is exposed and rendered with the night lines; API contract regenerated; verification remains. Seed `09-discounted-trip.sql` covers a discounted stay. |
 | 11 | Guest name and contact details on the detail | `useMyStayDetail.ts` | `useTripDetail.ts` | done | Name, email and phone with mail and phone links. |
 | 12 | Nights count, approval deadline and hold expiry on the detail | `useMyStayDetail.ts` | `useTripDetail.ts` | done | Deadlines use the city time zone from `/api/public/cities`. |
-| 13 | Unit photos on the detail | `useMyStayDetail.ts` | `TripDetailView.tsx` | partial | The unit cover image is shown; a gallery remains open. |
+| 13 | Unit photos on the detail | `useMyStayDetail.ts` | `reservations/lifecycle/view.rs`, `components/trips/TripGallery.tsx` | open | Ordered ready unit photos and localized alt text are returned for the reservation, with a cover fallback; existing media seeds have storage keys but require actual objects. API contract regenerated; visual verification remains. |
 | 14 | View listing link | `MyStayDetailSheet.tsx` | `TripDetailView.tsx` | done | Links to `/stays/{propertyId}`. |
 
 ## Trip actions
@@ -74,11 +74,17 @@ Mungini locations: `apps/web/src/{app,components,hooks,services,types}/trips`, `
 
 Inbox limits:
 
-- Unread count can exceed the list total because the backend count skips the list expiry filter.
-- The guest list returns every notification owned by the user and does not filter by audience; seeded users separate audiences, so it is not visible today.
+- Unread count expiry filtering is implemented in the backend and awaits owner compilation and live verification.
+- Audience filtering is implemented for inbox operations and awaits owner compilation and verification; historical rows with no audience need a cutover decision.
 
 ## Verification
 
 - `bunx tsc --noEmit` in `apps/web`: passed.
 - `bunx tsc --noEmit` in `packages/i18n`: passed.
 - Runtime, seed load, live API calls and 375px checks in English and French: not run.
+
+## Guest profile language
+
+| Legacy feature | Legacy location | Mungini location | Status |
+|---|---|---|---|
+| Profile language preference | `troqzone-web/src/components/user/ProfileEditModal.tsx` | `GET /api/public/languages`, `PATCH /api/guest/profile`, `components/account/ProfileForm.tsx`, `hooks/account/useProfileForm.ts` | open: supported languages come from the identity profile language catalog; saving updates the session and active site language. Existing identity seeds include English and French. Rust read-checked only; API contract regenerated; phone verification remains open. |

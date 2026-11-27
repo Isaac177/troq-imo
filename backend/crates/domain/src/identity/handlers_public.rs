@@ -175,6 +175,16 @@ where S: KernelState + Clone + Send + Sync + 'static {
 }
 
 #[utoipa::path(
+    get, path = "/api/public/languages", operation_id = "languages_list",
+    responses((status = 200, body = Envelope<Vec<String>>))
+)]
+pub async fn languages<S>(State(_state): State<S>, RequestId(id): RequestId) -> Result<Json<Envelope<Vec<String>>>>
+where S: KernelState + Clone + Send + Sync + 'static {
+    let languages = ProfileLanguage::ALL.into_iter().map(|language| language.as_str().to_string()).collect();
+    Ok(Json(Envelope::ok(languages, id)))
+}
+
+#[utoipa::path(
     get, path = "/api/public/cities", operation_id = "cities_list",
     responses((status = 200, body = Envelope<Vec<CityView>>))
 )]

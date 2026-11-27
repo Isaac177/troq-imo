@@ -12,8 +12,9 @@ use crate::reservations::amendments::types::{AmendmentListItem, AmendmentListQue
 use crate::reservations::lifecycle::cancel_guest::cancel_stay;
 use crate::reservations::lifecycle::cancellation::evaluate_cancellation;
 use crate::reservations::lifecycle::mine::my_reservations;
+use crate::reservations::lifecycle::mine_counts::MyReservationsPage;
 use crate::reservations::lifecycle::types::{
-    CancelStayInput, CancelledStayView, CancellationView, HoldRequest, MyReservationView, MyReservationsQuery,
+    CancelStayInput, CancelledStayView, CancellationView, HoldRequest, MyReservationsQuery,
     ReservationView, VersionedAction,
 };
 use crate::reservations::lifecycle::view::require_view;
@@ -36,9 +37,9 @@ pub async fn hold<S: AppState>(State(state): State<S>, actor: Actor, RequestId(i
 
 #[utoipa::path(
     get, path = "/api/guest/reservations/mine", operation_id = "reservations_mine", params(MyReservationsQuery),
-    responses((status = 200, body = Envelope<Page<MyReservationView>>), (status = 400, body = ErrorBody))
+    responses((status = 200, body = Envelope<MyReservationsPage>), (status = 400, body = ErrorBody))
 )]
-pub async fn mine<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Params(query): Params<MyReservationsQuery>) -> Reply<Page<MyReservationView>> {
+pub async fn mine<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Params(query): Params<MyReservationsQuery>) -> Reply<MyReservationsPage> {
     Ok(reply(my_reservations(app_kernel(&state), &actor, query).await?, id))
 }
 
@@ -125,7 +126,7 @@ pub async fn decline<S: AppState>(State(state): State<S>, actor: Actor, RequestI
     responses((status = 200, body = Envelope<Page<MessageView>>), (status = 404, body = ErrorBody))
 )]
 pub async fn messages_list<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Path(reservation_id): Path<String>, Params(query): Params<MessagesQuery>) -> Reply<Page<MessageView>> {
-    Ok(reply(messages::list(app_kernel(&state), &actor, &reservation_id, query).await?, id))
+    Ok(reply(messages::list(app_kernel(&state), &actor, &reservation_id, messages::MessageAudience::Guest, query).await?, id))
 }
 
 #[utoipa::path(
@@ -134,5 +135,5 @@ pub async fn messages_list<S: AppState>(State(state): State<S>, actor: Actor, Re
     responses((status = 200, body = Envelope<MessageView>), (status = 400, body = ErrorBody))
 )]
 pub async fn messages_send<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Path(reservation_id): Path<String>, Body(input): Body<SendMessageInput>) -> Reply<MessageView> {
-    Ok(reply(messages::send(app_kernel(&state), &actor, &reservation_id, input).await?, id))
+    Ok(reply(messages::send(app_kernel(&state), &actor, &reservation_id, messages::MessageAudience::Guest, input).await?, id))
 }

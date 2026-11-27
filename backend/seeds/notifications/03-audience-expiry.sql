@@ -1,0 +1,5 @@
+INSERT INTO notifications (id, city_id, user_id, type, title, title_en, title_fr, body, body_en, body_fr, status, priority, deep_link, event_key, category, audience, source_event_id, expires_at)
+VALUES
+    ('seed-notif-host-as-guest', 'GOMA', 'seed-user-goma-host', 'INFO', 'Réservation acceptée', 'Reservation accepted', 'Réservation acceptée', 'Votre séjour à Lake Kivu Guesthouse a été accepté.', 'Your stay at Lake Kivu Guesthouse was accepted.', 'Votre séjour à Lake Kivu Guesthouse a été accepté.', 'SENT', 'HIGH', '/trips', 'stay.reservation_accepted.guest', 'stays', 'guest', 'seed-event-host-as-guest', NULL),
+    ('seed-notif-host-expired', 'GOMA', 'seed-user-goma-host', 'REMINDER', 'Réservation à confirmer', 'Reservation to confirm', 'Réservation à confirmer', 'Une demande de réservation précédente a expiré.', 'A previous reservation request has expired.', 'Une demande de réservation précédente a expiré.', 'SENT', 'HIGH', '/reservations', 'stay.reservation_held.host', 'stays', 'host', 'seed-event-host-expired', now() - interval '1 day')
+ON CONFLICT (id) DO NOTHING;

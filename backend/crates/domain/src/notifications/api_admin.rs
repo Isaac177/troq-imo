@@ -33,28 +33,28 @@ fn query<T>(input: std::result::Result<Query<T>, QueryRejection>) -> Result<T> {
     params(ListQuery, ("x-request-id" = Option<String>, Header)),
     responses((status = 200, body = Envelope<Page<NotificationView>>), (status = 400, body = ErrorBody)))]
 pub async fn list<S: KernelState + Clone + Send + Sync + 'static>(State(state): State<S>, actor: Actor, RequestId(request_id): RequestId, input: std::result::Result<Query<ListQuery>, QueryRejection>) -> Reply<Page<NotificationView>> {
-    ok(shared::list(state.kernel(), &actor, query(input)?).await?, request_id)
+    ok(shared::list(state.kernel(), &actor, AUDIENCE, query(input)?).await?, request_id)
 }
 
 #[utoipa::path(get, path = "/api/admin/notifications/unread-count", operation_id = "notifications_admin_unread_count", tag = "notifications",
     params(("x-request-id" = Option<String>, Header)),
     responses((status = 200, body = Envelope<UnreadCount>)))]
 pub async fn unread_count<S: KernelState + Clone + Send + Sync + 'static>(State(state): State<S>, actor: Actor, RequestId(request_id): RequestId) -> Reply<UnreadCount> {
-    ok(shared::unread(state.kernel(), &actor).await?, request_id)
+    ok(shared::unread(state.kernel(), &actor, AUDIENCE).await?, request_id)
 }
 
 #[utoipa::path(post, path = "/api/admin/notifications/{id}/read", operation_id = "notifications_admin_mark_read", tag = "notifications",
     params(("id" = String, Path), ("x-request-id" = Option<String>, Header)),
     responses((status = 200, body = Envelope<MarkedCount>), (status = 404, body = ErrorBody)))]
 pub async fn mark_read<S: KernelState + Clone + Send + Sync + 'static>(State(state): State<S>, actor: Actor, RequestId(request_id): RequestId, Path(id): Path<String>) -> Reply<MarkedCount> {
-    ok(shared::read_one(state.kernel(), &actor, &id).await?, request_id)
+    ok(shared::read_one(state.kernel(), &actor, AUDIENCE, &id).await?, request_id)
 }
 
 #[utoipa::path(post, path = "/api/admin/notifications/read-all", operation_id = "notifications_admin_mark_all_read", tag = "notifications",
     params(("x-request-id" = Option<String>, Header)),
     responses((status = 200, body = Envelope<MarkedCount>)))]
 pub async fn mark_all_read<S: KernelState + Clone + Send + Sync + 'static>(State(state): State<S>, actor: Actor, RequestId(request_id): RequestId) -> Reply<MarkedCount> {
-    ok(shared::read_all(state.kernel(), &actor).await?, request_id)
+    ok(shared::read_all(state.kernel(), &actor, AUDIENCE).await?, request_id)
 }
 
 #[utoipa::path(get, path = "/api/admin/notification-preferences", operation_id = "notifications_admin_preferences", tag = "notifications",

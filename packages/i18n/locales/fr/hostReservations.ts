@@ -4,6 +4,7 @@ export const hostReservations = {
   search: 'Rechercher une réservation',
   statusFilter: 'Statut de la réservation',
   propertyFilter: 'Hébergement',
+  checkInRange: 'Dates d’arrivée',
   allStates: 'Tous les statuts',
   allProperties: 'Tous les hébergements',
   empty: 'Aucune réservation ne correspond à ces filtres.',

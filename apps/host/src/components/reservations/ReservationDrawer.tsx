@@ -29,7 +29,7 @@ export default function ReservationDrawer({ reservationId, onClose, onChanged }:
               <div><dt className="text-label text-muted-foreground">{view.labels.reference}</dt><dd className="font-medium">{detail.reference}</dd></div>
               <div><dt className="text-label text-muted-foreground">{view.labels.status}</dt><dd>{view.stateLabel(detail.state)}</dd></div>
               <div><dt className="text-label text-muted-foreground">{view.labels.property}</dt><dd>{detail.propertyName}</dd></div>
-              <div><dt className="text-label text-muted-foreground">{view.labels.unit}</dt><dd>{detail.unitTypeName}</dd></div>
+              <div><dt className="text-label text-muted-foreground">{view.labels.unit}</dt><dd>{detail.unitTypeName}</dd>{detail.unitTypeCoverUrl ? <img src={detail.unitTypeCoverUrl} alt={detail.unitTypeName} loading="lazy" className="mt-2 h-24 w-full rounded-md object-cover sm:w-40" /> : null}</div>
               {detail.assignedUnitCode ? <div><dt className="text-label text-muted-foreground">{view.labels.assignedUnit}</dt><dd>{detail.assignedUnitCode}</dd></div> : null}
               <div><dt className="text-label text-muted-foreground">{view.labels.stay}</dt><dd className="tabular-nums">{view.day(detail.checkIn)} – {view.day(detail.checkOut)}</dd></div>
               <div><dt className="text-label text-muted-foreground">{view.labels.adults} / {view.labels.children}</dt><dd className="tabular-nums">{detail.adultCount} / {detail.childCount}</dd></div>

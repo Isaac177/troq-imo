@@ -20,23 +20,33 @@ pub enum Audience {
     Admin,
 }
 
-pub async fn list(kernel: &Kernel, actor: &Actor, query: ListQuery) -> Result<Page<NotificationView>> {
+impl Audience {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Guest => "guest",
+            Self::Host => "host",
+            Self::Admin => "admin",
+        }
+    }
+}
+
+pub async fn list(kernel: &Kernel, actor: &Actor, audience: Audience, query: ListQuery) -> Result<Page<NotificationView>> {
     let language = locale(query.locale.as_deref())?;
     let page = paging(query.page, query.page_size);
-    inbox_read::list(kernel.db.pool(), actor.user_id().as_str(), query.unread_only.unwrap_or(false), language, page).await
+    inbox_read::list(kernel.db.pool(), actor.user_id().as_str(), audience.as_str(), query.unread_only.unwrap_or(false), language, page).await
 }
 
-pub async fn unread(kernel: &Kernel, actor: &Actor) -> Result<UnreadCount> {
-    Ok(UnreadCount { unread: inbox_read::unread_count(kernel.db.pool(), actor.user_id().as_str()).await? })
+pub async fn unread(kernel: &Kernel, actor: &Actor, audience: Audience) -> Result<UnreadCount> {
+    Ok(UnreadCount { unread: inbox_read::unread_count(kernel.db.pool(), actor.user_id().as_str(), audience.as_str()).await? })
 }
 
-pub async fn read_one(kernel: &Kernel, actor: &Actor, id: &str) -> Result<MarkedCount> {
-    inbox_read::mark_read(kernel.db.pool(), actor.user_id().as_str(), id).await?;
+pub async fn read_one(kernel: &Kernel, actor: &Actor, audience: Audience, id: &str) -> Result<MarkedCount> {
+    inbox_read::mark_read(kernel.db.pool(), actor.user_id().as_str(), audience.as_str(), id).await?;
     Ok(MarkedCount { updated: 1 })
 }
 
-pub async fn read_all(kernel: &Kernel, actor: &Actor) -> Result<MarkedCount> {
-    inbox_read::mark_all_read(kernel.db.pool(), actor.user_id().as_str()).await
+pub async fn read_all(kernel: &Kernel, actor: &Actor, audience: Audience) -> Result<MarkedCount> {
+    inbox_read::mark_all_read(kernel.db.pool(), actor.user_id().as_str(), audience.as_str()).await
 }
 
 pub async fn preferences(kernel: &Kernel, actor: &Actor) -> Result<PreferenceList> {

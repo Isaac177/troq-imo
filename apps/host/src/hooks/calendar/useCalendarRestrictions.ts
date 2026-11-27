@@ -39,12 +39,12 @@ export const useCalendarRestrictions = (propertyId: string, unitOptions: Propert
     if (kind !== 'MIN_NIGHTS' && basis === 'ARRIVAL') setBasis('STAY_THROUGH');
   }, [kind, basis]);
 
-  const openCreate = () => {
+  const openCreate = (initialRange: CalendarRange = { start: null, end: null }) => {
     setKind('MIN_NIGHTS');
     setBasis('STAY_THROUGH');
     setValue('2');
     setUnitTypeId('all');
-    setRange({ start: null, end: null });
+    setRange(initialRange);
     setError(null);
     setNotice(null);
     setOpen(true);

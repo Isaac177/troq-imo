@@ -1,5 +1,6 @@
 import { Button, Dialog, Input, Section, Select, Skeleton, Switch } from '@mungini/ui-web';
 import { useHostSettings } from '@/hooks/settings/useHostSettings';
+import { HostContactSection } from '@/components/settings/HostContactSection';
 
 export default function SettingsView() {
   const view = useHostSettings();
@@ -30,6 +31,8 @@ export default function SettingsView() {
           </div>
         </dl>
       </Section>
+
+      <HostContactSection />
 
       <Section title={view.labels.notifications} description={view.labels.notificationsHint}>
         {view.error ? <p role="alert" className="text-label text-destructive">{view.error}</p> : null}

@@ -13,9 +13,11 @@ export type ModuleRoute = {
 
 export type ModuleDefinition = {
   id: string;
+  component?: ComponentType;
   labelKey: string;
   section: SidebarSection;
   route: string;
   icon: LucideIcon;
   permission?: Permission;
+  permissions?: Permission[];
 };

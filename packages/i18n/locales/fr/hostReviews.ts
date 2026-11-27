@@ -7,6 +7,7 @@ export const hostReviews = {
   allStatuses: 'Tous les statuts',
   rating: 'Note',
   unit: 'Logement',
+  unknownGuest: 'Client',
   date: 'Date',
   comment: 'Commentaire',
   replyStatus: 'Réponse',

@@ -1,5 +1,7 @@
 # Parity ledger B7, reviews
 
+Host review identity: `host_list.rs` checks host membership and property-scoped `reviews.write` before enriching the paginated host list with the reservation's non-anonymized primary guest name. Public `ReviewView` remains unchanged. Existing review seeds cover named guests; `reviews/03-review-anonymized.sql` adds the anonymized fallback. Open: Rust and SQL read-checked only, owner verification and client contract regeneration pending.
+
 Source on main: `tzone-rs/stay-service/src/reviews` (11 files), gateway `routes/stays/reviews.rs`, `routes/stays/engagement_routes.rs`, `routes/public/stays.rs`, `routes/merchant/stays.rs`, `routes/admin/stays.rs`, `routes/admin/stay_review_handlers.rs`, `stay-service/src/engagement.rs` (subscriptions), migration `00024_guest_messages_reviews.sql`, seed `goma_engagement.sql`, auth migration `00029_stay_review_presets.sql`. Target: `backend/crates/domain/src/reviews`, `backend/migrations/00015_reviews.sql`, `backend/seeds/reviews`. Status: done, dropped by decision D#, open. Rust is read-checked only, never compiled.
 
 Legacy review states are PENDING, APPROVED and HIDDEN (there is no published or rejected state). Wire route paths drop the `/stays` prefix because the audience prefix replaces it.

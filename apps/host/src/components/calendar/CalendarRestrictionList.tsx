@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react';
 import { Button } from '@mungini/ui-web';
 
 type Row = { id: string; name: string; value: number | null | undefined; start: string; end: string };
@@ -14,7 +15,7 @@ export default function CalendarRestrictionList({ rows, empty, removeLabel, onRe
             <span className="block truncate font-medium text-foreground">{row.name}{row.value === null || row.value === undefined ? '' : ` · ${row.value}`}</span>
             <span className="block truncate text-label tabular-nums text-muted-foreground">{row.start || '—'} – {row.end || '—'}</span>
           </span>
-          {onRemove && removeLabel ? <Button size="sm" variant="outline" onClick={() => onRemove(row)}>{removeLabel}</Button> : null}
+          {onRemove && removeLabel ? <Button size="sm" variant="outline" icon={<Trash2 />} collapseLabel aria-label={removeLabel} title={removeLabel} onClick={() => onRemove(row)}>{removeLabel}</Button> : null}
         </li>
       ))}
     </ul>

@@ -2,7 +2,7 @@ use kernel::audit::{self, AuditEntry};
 use kernel::auth::Actor;
 use kernel::error::{codes, Error, Result};
 use kernel::outbox;
-use kernel::permissions::names::PROPERTIES_WRITE;
+use kernel::permissions::names::{PROPERTIES_READ, PROPERTIES_WRITE};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use sqlx::PgPool;
@@ -23,6 +23,23 @@ pub struct HostContact {
     pub host_id: String,
     pub guest_contact_phone: String,
     pub guest_contact_email: String,
+}
+
+pub async fn get_contact(pool: &PgPool, actor: &Actor, host_id: &str) -> Result<HostContact> {
+    if !actor.access.is_member_of(host_id) {
+        return Err(Error::not_found(codes::NOT_FOUND));
+    }
+    actor.require_scoped_any(&[PROPERTIES_READ, PROPERTIES_WRITE], Some(host_id), None)?;
+    let row: Option<(String, String, String)> = sqlx::query_as(
+        "SELECT h.id, h.guest_contact_phone, h.guest_contact_email FROM hosts h WHERE h.id = $1 AND h.city_id = $2 AND h.status = 'ACTIVE' AND EXISTS (SELECT 1 FROM host_members m JOIN identity_users u ON u.id = m.user_id WHERE m.host_id = h.id AND m.user_id = $3 AND m.status = 'ACTIVE' AND u.status = 'ACTIVE')",
+    )
+    .bind(host_id)
+    .bind(actor.city.code())
+    .bind(actor.user_id().as_str())
+    .fetch_optional(pool)
+    .await?;
+    let (host_id, guest_contact_phone, guest_contact_email) = row.ok_or_else(|| Error::not_found(codes::NOT_FOUND))?;
+    Ok(HostContact { host_id, guest_contact_phone, guest_contact_email })
 }
 
 pub async fn update_contact(

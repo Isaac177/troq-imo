@@ -1,0 +1,22 @@
+export const hostReports = {
+  title: 'Reports',
+  subtitle: 'Reservation and review results grouped by check-in date.',
+  host: 'Host',
+  property: 'Property',
+  allProperties: 'All properties',
+  dates: 'Check-in date range',
+  error: 'Could not load the report.',
+  empty: 'No host with report access is available.',
+  revenue: 'Gross booking value',
+  reservations: 'Reservations',
+  confirmed: 'Confirmed including stays in progress or completed',
+  checkedIn: 'Checked in',
+  checkedOut: 'Checked out',
+  cancelled: 'Cancelled',
+  noShow: 'No-shows',
+  reviews: 'Published reviews',
+  rating: 'Average rating',
+  unavailable: 'No ratings',
+  accessDenied: 'You do not have access to this page.',
+};
+export type HostReports = typeof hostReports;

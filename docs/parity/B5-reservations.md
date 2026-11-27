@@ -66,6 +66,7 @@ Routes are mounted under `/api/guest`, `/api/host`, `/api/admin`. Permission nam
 | `amendments/availability.rs`, `queries.rs`, `types.rs`, `db_tests.rs` (2 tests) | `amendments/availability.rs`, `queries.rs`, `types.rs`, `db_tests.rs` | done |
 | `amendments/subscriptions.rs`, `reservations` NATS wiring in `consumers.rs` | replaced by routes | dropped by decision (no NATS) |
 | `guest_messages.rs`, `GET and POST /reservations/{id}/messages`, `stay.message.list`, `.send` | `messages/`, guest and host routes `/reservations/:id/messages`; host side needs `messages.write` scoped | done |
+| Guest and host message audience for the same account | `messages/service.rs`, `http/{guest,host}.rs` | open: route audience controls authorization and sender role; regression test written but not run, Rust read-checked only |
 | `engagement.rs` review and analytics subjects | reviews to B7, analytics to B10 | done (owned elsewhere) |
 | `cases/handler.rs`, `read.rs`, `rules.rs` (6 tests), `queries.rs`, `access.rs` | `cases/service.rs`, `read.rs`, `rules.rs`, `queries.rs`, `access.rs`; routes `POST /api/guest/cases`, `/api/host/cases`, `GET /api/guest/cases/mine`, `/api/host/cases`, `GET and POST close` on `cases/:id` for both audiences | done |
 | `cases/evidence.rs` (4 tests), `GET and POST /cases/{id}/evidence`, `GET /cases/evidence/{id}` | `cases/evidence.rs`, both audiences, body limit 8 MB kept | done |

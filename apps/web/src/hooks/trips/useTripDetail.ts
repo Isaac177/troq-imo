@@ -16,9 +16,16 @@ export const useTripDetail = (reservationId: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const photos = (trip?.unitTypeImages ?? []).map((photo) => ({ id: photo.id, url: photo.url, alt: (i18n.language.startsWith('fr') ? photo.altFr || photo.altEn : photo.altEn || photo.altFr) || trip?.reference || '' }));
+  if (!photos.length && trip?.unitTypeCoverUrl) photos.push({ id: 'cover', url: trip.unitTypeCoverUrl, alt: trip.reference });
+  const photo = photos[photoIndex] ?? photos[0];
+  const previousPhoto = () => setPhotoIndex((index) => (index + photos.length - 1) % photos.length);
+  const nextPhoto = () => setPhotoIndex((index) => (index + 1) % photos.length);
   const retry = () => setRefresh((value) => value + 1);
   const actions = useTripActions(reservationId, trip, retry);
   useEffect(() => {
+    setPhotoIndex(0);
     if (status !== 'authenticated') return;
     let active = true;
     setLoading(true);
@@ -32,6 +39,7 @@ export const useTripDetail = (reservationId: string) => {
     state: trip ? t(keys[trip.state] ?? 'unknown') : '',
     checkIn: trip ? formatIsoDay(trip.checkIn) : '', checkOut: trip ? formatIsoDay(trip.checkOut) : '',
     total: trip ? formatCdf(trip.total, i18n.language) : '',
+    discount: trip?.discount ? `- ${formatCdf(trip.discount.amount, i18n.language)}` : '',
     nights: trip ? trip.nights.length : 0,
     nightLines: (trip?.nights ?? []).map((night) => ({ date: formatIsoDay(night.date), amount: formatCdf(night.amount, i18n.language) })),
     approvalDeadline: trip?.approvalDeadlineAt ? formatDateTime(trip.approvalDeadlineAt, actions.timezone) : '',
@@ -43,11 +51,11 @@ export const useTripDetail = (reservationId: string) => {
     })() : '',
     contactEmail: trip?.guest.contactEmail ?? '',
     contactPhone: trip?.guest.contactPhone ?? '',
-    coverUrl: trip?.unitTypeCoverUrl ?? '',
+    photo, hasMultiplePhotos: photos.length > 1, previousPhoto, nextPhoto,
     propertyHref: trip ? `/stays/${trip.propertyId}` : '',
     labels: {
       title: t('detailTitle'), back: t('backToTrips'), signIn: t('signIn'), signInPrompt: t('signInPrompt'), loading: t('loading'), error: t('error'), retry: t('retry'), reference: t('reference'), status: t('status'), checkIn: t('checkIn'), checkOut: t('checkOut'), total: t('total'), guest: t('guest'), adults: t('adults'), children: t('children'), request: t('specialRequest'),
-      nights: t('nights'), nightlyRate: t('nightlyRate'), approvalDeadline: t('approvalDeadline'), holdExpiry: t('holdExpiry'), contact: t('contact'), viewListing: t('viewListing'), started: t('started'),
+      nights: t('nights'), nightlyRate: t('nightlyRate'), discount: t('discount'), approvalDeadline: t('approvalDeadline'), holdExpiry: t('holdExpiry'), contact: t('contact'), viewListing: t('viewListing'), started: t('started'), previousPhoto: t('previousPhoto'), nextPhoto: t('nextPhoto'),
     },
   };
 };

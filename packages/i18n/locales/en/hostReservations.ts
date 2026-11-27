@@ -4,6 +4,7 @@ export const hostReservations = {
   search: 'Search reservations',
   statusFilter: 'Reservation status',
   propertyFilter: 'Property',
+  checkInRange: 'Check-in dates',
   allStates: 'All statuses',
   allProperties: 'All properties',
   empty: 'No reservation matches these filters.',

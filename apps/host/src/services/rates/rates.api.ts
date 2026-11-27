@@ -1,10 +1,16 @@
 import type { SessionClient } from '@mungini/session';
 import { apiErrorCode } from '@mungini/session';
-import type { Policy, Promotion, RatePlan, RateRule, RequestResult, UnitType } from '@/types/rates/rates';
+import type { Policy, PricePreview, PricePreviewInput, Promotion, RatePlan, RateRule, RequestResult, UnitType } from '@/types/rates/rates';
 
 const fail = <T>(error: unknown): RequestResult<T> => ({ data: null, error: apiErrorCode(error) });
 
 export type PagedResult<T> = { items: T[]; total: number; page: number; pageSize: number };
+
+export const previewPrice = async (client: SessionClient, body: PricePreviewInput): Promise<RequestResult<PricePreview>> => {
+  const response = await client.api.POST('/api/host/price-preview', { body });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};
 
 export const listProperties = (client: SessionClient, hostId: string, page: number, pageSize: number) =>
   client.api.GET('/api/host/properties', { params: { query: { hostId, page, pageSize } } });

@@ -13,6 +13,8 @@ export type ReservationExportFilters = {
   propertyId: string;
   state: string;
   search: string;
+  checkInFrom: string | null;
+  checkInTo: string | null;
 };
 
 export const useReservationsExport = (filters: ReservationExportFilters) => {
@@ -28,6 +30,8 @@ export const useReservationsExport = (filters: ReservationExportFilters) => {
     propertyId: filters.propertyId === 'all' ? '' : filters.propertyId,
     state: filters.state === 'all' ? '' : filters.state,
     search: filters.search,
+    checkInFrom: filters.checkInFrom,
+    checkInTo: filters.checkInTo,
   };
   const canExport = target.hostId.length > 0 && can(EXPORT_PERMISSION, target.hostId);
 

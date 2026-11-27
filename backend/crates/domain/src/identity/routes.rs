@@ -29,6 +29,7 @@ where S: KernelState + Clone + Send + Sync + 'static {
         .route("/auth/login", post(public::login::<S>))
         .route("/auth/refresh", post(public::refresh::<S>))
         .route("/cities", get(public::cities::<S>))
+        .route("/languages", get(public::languages::<S>))
         .route("/city-context", get(public::city_context::<S>))
         .route("/permission-catalog", get(public::permission_catalog::<S>))
         .route("/host-reference", get(public::host_reference::<S>))
@@ -48,7 +49,7 @@ pub fn host_routes<S>() -> Router<S>
 where S: KernelState + Clone + Send + Sync + 'static {
     Router::new()
         .route("/hosts", get(host::my_hosts::<S>))
-        .route("/hosts/:host_id/contact", patch(host::update_contact::<S>))
+        .route("/hosts/:host_id/contact", get(host::get_contact::<S>).patch(host::update_contact::<S>))
         .route("/hosts/:host_id/members", get(host::list_host_members::<S>))
         .route("/hosts/:host_id/members/:user_id", delete(host::remove::<S>))
         .route("/hosts/:host_id/members/:user_id/permissions", put(host::set_permissions::<S>))
@@ -67,10 +68,10 @@ where S: KernelState + Clone + Send + Sync + 'static {
 #[openapi(
     paths(
         public::otp_channel, public::issue_otp, public::verify_otp, public::register, public::login,
-        public::refresh, public::cities, public::city_context, public::permission_catalog, public::host_reference,
+        public::refresh, public::cities, public::languages, public::city_context, public::permission_catalog, public::host_reference,
         session::session, session::logout, session::update_me,
         invitations::mine, invitations::accept, invitations::create, invitations::list, invitations::revoke,
-        host::my_hosts, host::update_contact, host::list_host_members, host::set_permissions,
+        host::my_hosts, host::get_contact, host::update_contact, host::list_host_members, host::set_permissions,
         host::remove, host::set_override, host::clear_override
     ),
     components(schemas(

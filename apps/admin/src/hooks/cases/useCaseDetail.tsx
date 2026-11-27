@@ -105,6 +105,7 @@ export const useCaseDetail = (caseId: string | null, onChanged: () => void) => {
   const evidenceRows = (detail?.evidence ?? []).map((evidence) => ({ ...evidence, size: `${Math.max(1, Math.ceil(evidence.sizeBytes / 1024))} KB` }));
 
   return {
+    assignmentChanged: () => { setReloadToken((value) => value + 1); onChanged(); },
     detail,
     loading,
     error,

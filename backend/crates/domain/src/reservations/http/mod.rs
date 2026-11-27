@@ -40,6 +40,7 @@ pub fn guest_routes<S: AppState>() -> Router<S> {
 
 pub fn host_routes<S: AppState>() -> Router<S> {
     Router::new()
+        .route("/message-conversations", get(host::message_conversations::<S>))
         .route("/reservations", get(host::list::<S>))
         .route("/reservations/export", get(host::export::<S>))
         .route("/reservations/:reservation_id", get(host::get::<S>))
@@ -51,6 +52,7 @@ pub fn host_routes<S: AppState>() -> Router<S> {
         .route("/reservations/:reservation_id/cancel", post(host::cancel::<S>))
         .route("/reservations/:reservation_id/amendments", post(host::amend::<S>))
         .route("/reservations/:reservation_id/messages", get(host::messages_list::<S>).post(host::messages_send::<S>))
+        .route("/reservations/:reservation_id/messages/read", post(host::messages_mark_read::<S>))
         .route("/cases", get(host_cases::list::<S>).post(host_cases::open::<S>))
         .route("/cases/evidence/:evidence_id", get(host_cases::evidence_get::<S>))
         .route("/cases/:case_id", get(host_cases::get::<S>))
@@ -68,6 +70,7 @@ pub fn admin_routes<S: AppState>() -> Router<S> {
     Router::new()
         .route("/cases", get(admin::cases_list::<S>).post(admin::cases_open::<S>))
         .route("/cases/evidence/:evidence_id", get(admin::cases_evidence::<S>))
+        .route("/cases/assignees", get(admin::cases_assignees::<S>))
         .route("/cases/:case_id", get(admin::cases_get::<S>))
         .route("/cases/:case_id/close", post(admin::cases_close::<S>))
         .route("/cases/:case_id/assign", post(admin::cases_assign::<S>))
@@ -92,11 +95,11 @@ pub fn admin_routes<S: AppState>() -> Router<S> {
     guest_cases::open, guest_cases::mine, guest_cases::get, guest_cases::close, guest_cases::evidence_list,
     guest_cases::evidence_add, guest_cases::evidence_get,
     host::list, host::export, host::get, host::decide, host::special_request, host::check_in, host::check_out,
-    host::no_show, host::cancel, host::amend, host::messages_list, host::messages_send,
+    host::no_show, host::cancel, host::amend, host::messages_list, host::messages_send, host::messages_mark_read, host::message_conversations,
     host_cases::list, host_cases::open, host_cases::get, host_cases::close, host_cases::evidence_list,
     host_cases::evidence_add, host_cases::evidence_get, host_cases::tasks_list, host_cases::tasks_create,
     host_cases::tasks_get, host_cases::tasks_transition,
-    admin::cases_list, admin::cases_open, admin::cases_get, admin::cases_close, admin::cases_assign,
+    admin::cases_list, admin::cases_open, admin::cases_assignees, admin::cases_get, admin::cases_close, admin::cases_assign,
     admin::cases_escalate, admin::cases_evidence, admin::cancel_preview, admin::reservation_cancel,
     admin_ops::tasks_list, admin_ops::tasks_create, admin_ops::tasks_get, admin_ops::tasks_transition,
     admin_ops::claims_list, admin_ops::claims_summary, admin_ops::claims_get, admin_ops::claims_statement,

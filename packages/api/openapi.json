@@ -1859,6 +1859,29 @@
         ],
         "type": "object"
       },
+      "CaseAssignee": {
+        "properties": {
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId"
+        ],
+        "type": "object"
+      },
       "CaseView": {
         "properties": {
           "caseType": {
@@ -2356,6 +2379,47 @@
         "required": [
           "resolution",
           "expectedVersion"
+        ],
+        "type": "object"
+      },
+      "ConversationView": {
+        "properties": {
+          "lastAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "lastBody": {
+            "type": "string"
+          },
+          "propertyNameEn": {
+            "type": "string"
+          },
+          "propertyNameFr": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          },
+          "reservationId": {
+            "type": "string"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "unreadCount": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "reservationId",
+          "reference",
+          "propertyNameEn",
+          "propertyNameFr",
+          "timezone",
+          "lastBody",
+          "lastAt",
+          "unreadCount"
         ],
         "type": "object"
       },
@@ -5955,37 +6019,6 @@
         ],
         "type": "object"
       },
-      "Envelope_MediaContent": {
-        "properties": {
-          "data": {
-            "properties": {
-              "media": {
-                "$ref": "#/components/schemas/MediaView"
-              },
-              "url": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "media",
-              "url"
-            ],
-            "type": "object"
-          },
-          "metadata": {
-            "$ref": "#/components/schemas/Metadata"
-          },
-          "success": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "success",
-          "data",
-          "metadata"
-        ],
-        "type": "object"
-      },
       "Envelope_MediaContentView": {
         "properties": {
           "data": {
@@ -6008,123 +6041,6 @@
               "mimeType",
               "alt",
               "url"
-            ],
-            "type": "object"
-          },
-          "metadata": {
-            "$ref": "#/components/schemas/Metadata"
-          },
-          "success": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "success",
-          "data",
-          "metadata"
-        ],
-        "type": "object"
-      },
-      "Envelope_MediaRemoved": {
-        "properties": {
-          "data": {
-            "properties": {
-              "mediaId": {
-                "type": "string"
-              },
-              "status": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "mediaId",
-              "status"
-            ],
-            "type": "object"
-          },
-          "metadata": {
-            "$ref": "#/components/schemas/Metadata"
-          },
-          "success": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "success",
-          "data",
-          "metadata"
-        ],
-        "type": "object"
-      },
-      "Envelope_MediaView": {
-        "properties": {
-          "data": {
-            "properties": {
-              "altEn": {
-                "type": "string"
-              },
-              "altFr": {
-                "type": "string"
-              },
-              "createdAt": {
-                "format": "date-time",
-                "type": "string"
-              },
-              "fileName": {
-                "type": "string"
-              },
-              "id": {
-                "type": "string"
-              },
-              "isCover": {
-                "type": "boolean"
-              },
-              "mimeType": {
-                "type": "string"
-              },
-              "ownerId": {
-                "type": "string"
-              },
-              "rejectionReason": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "sizeBytes": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "sortOrder": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "status": {
-                "type": "string"
-              },
-              "updatedAt": {
-                "format": "date-time",
-                "type": "string"
-              },
-              "version": {
-                "format": "int32",
-                "type": "integer"
-              }
-            },
-            "required": [
-              "id",
-              "ownerId",
-              "status",
-              "sortOrder",
-              "isCover",
-              "altEn",
-              "altFr",
-              "fileName",
-              "mimeType",
-              "sizeBytes",
-              "version",
-              "createdAt",
-              "updatedAt"
             ],
             "type": "object"
           },
@@ -6306,6 +6222,57 @@
               "enabled",
               "low",
               "lowThreshold"
+            ],
+            "type": "object"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "Envelope_MyReservationsPage": {
+        "properties": {
+          "data": {
+            "properties": {
+              "counts": {
+                "$ref": "#/components/schemas/MyReservationCounts"
+              },
+              "items": {
+                "items": {
+                  "$ref": "#/components/schemas/MyReservationView"
+                },
+                "type": "array"
+              },
+              "page": {
+                "format": "int32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "pageSize": {
+                "format": "int32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "total": {
+                "format": "int64",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "items",
+              "total",
+              "page",
+              "pageSize",
+              "counts"
             ],
             "type": "object"
           },
@@ -8052,6 +8019,73 @@
         ],
         "type": "object"
       },
+      "Envelope_Page_CaseAssignee": {
+        "properties": {
+          "data": {
+            "properties": {
+              "items": {
+                "items": {
+                  "properties": {
+                    "email": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "name": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "userId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "userId"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "page": {
+                "format": "int32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "pageSize": {
+                "format": "int32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "total": {
+                "format": "int64",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "items",
+              "total",
+              "page",
+              "pageSize"
+            ],
+            "type": "object"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "Envelope_Page_CaseView": {
         "properties": {
           "data": {
@@ -8346,6 +8380,91 @@
                     "caseState",
                     "openedAt",
                     "deadlineAt"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "page": {
+                "format": "int32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "pageSize": {
+                "format": "int32",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "total": {
+                "format": "int64",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "items",
+              "total",
+              "page",
+              "pageSize"
+            ],
+            "type": "object"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "Envelope_Page_ConversationView": {
+        "properties": {
+          "data": {
+            "properties": {
+              "items": {
+                "items": {
+                  "properties": {
+                    "lastAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "lastBody": {
+                      "type": "string"
+                    },
+                    "propertyNameEn": {
+                      "type": "string"
+                    },
+                    "propertyNameFr": {
+                      "type": "string"
+                    },
+                    "reference": {
+                      "type": "string"
+                    },
+                    "reservationId": {
+                      "type": "string"
+                    },
+                    "timezone": {
+                      "type": "string"
+                    },
+                    "unreadCount": {
+                      "format": "int64",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "reservationId",
+                    "reference",
+                    "propertyNameEn",
+                    "propertyNameFr",
+                    "timezone",
+                    "lastBody",
+                    "lastAt",
+                    "unreadCount"
                   ],
                   "type": "object"
                 },
@@ -9291,176 +9410,6 @@
                     "hostName",
                     "permissions",
                     "expiresAt"
-                  ],
-                  "type": "object"
-                },
-                "type": "array"
-              },
-              "page": {
-                "format": "int32",
-                "minimum": 0,
-                "type": "integer"
-              },
-              "pageSize": {
-                "format": "int32",
-                "minimum": 0,
-                "type": "integer"
-              },
-              "total": {
-                "format": "int64",
-                "type": "integer"
-              }
-            },
-            "required": [
-              "items",
-              "total",
-              "page",
-              "pageSize"
-            ],
-            "type": "object"
-          },
-          "metadata": {
-            "$ref": "#/components/schemas/Metadata"
-          },
-          "success": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "success",
-          "data",
-          "metadata"
-        ],
-        "type": "object"
-      },
-      "Envelope_Page_MyReservationView": {
-        "properties": {
-          "data": {
-            "properties": {
-              "items": {
-                "items": {
-                  "properties": {
-                    "adultCount": {
-                      "format": "int32",
-                      "type": "integer"
-                    },
-                    "approvalDeadlineAt": {
-                      "format": "date-time",
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "checkIn": {
-                      "format": "date",
-                      "type": "string"
-                    },
-                    "checkOut": {
-                      "format": "date",
-                      "type": "string"
-                    },
-                    "childCount": {
-                      "format": "int32",
-                      "type": "integer"
-                    },
-                    "cover": {
-                      "oneOf": [
-                        {
-                          "type": "null"
-                        },
-                        {
-                          "$ref": "#/components/schemas/MineCover"
-                        }
-                      ]
-                    },
-                    "currency": {
-                      "type": "string"
-                    },
-                    "discount": {
-                      "oneOf": [
-                        {
-                          "type": "null"
-                        },
-                        {
-                          "$ref": "#/components/schemas/DiscountView"
-                        }
-                      ]
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "nights": {
-                      "items": {
-                        "$ref": "#/components/schemas/NightLine"
-                      },
-                      "type": "array"
-                    },
-                    "pendingAmendment": {
-                      "oneOf": [
-                        {
-                          "type": "null"
-                        },
-                        {
-                          "$ref": "#/components/schemas/PendingAmendmentView"
-                        }
-                      ]
-                    },
-                    "propertyId": {
-                      "type": "string"
-                    },
-                    "propertyNameEn": {
-                      "type": "string"
-                    },
-                    "propertyNameFr": {
-                      "type": "string"
-                    },
-                    "reference": {
-                      "type": "string"
-                    },
-                    "state": {
-                      "type": "string"
-                    },
-                    "total": {
-                      "type": "string"
-                    },
-                    "unitNameEn": {
-                      "type": "string"
-                    },
-                    "unitNameFr": {
-                      "type": "string"
-                    },
-                    "unitTypeCoverUrl": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "unitTypeId": {
-                      "type": "string"
-                    },
-                    "version": {
-                      "format": "int32",
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "reference",
-                    "state",
-                    "propertyId",
-                    "unitTypeId",
-                    "checkIn",
-                    "checkOut",
-                    "adultCount",
-                    "childCount",
-                    "currency",
-                    "total",
-                    "version",
-                    "nights",
-                    "propertyNameEn",
-                    "propertyNameFr",
-                    "unitNameEn",
-                    "unitNameFr"
                   ],
                   "type": "object"
                 },
@@ -12108,6 +12057,154 @@
         ],
         "type": "object"
       },
+      "Envelope_PropertyMediaContent": {
+        "properties": {
+          "data": {
+            "properties": {
+              "media": {
+                "$ref": "#/components/schemas/PropertyMediaView"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "media",
+              "url"
+            ],
+            "type": "object"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "Envelope_PropertyMediaRemoved": {
+        "properties": {
+          "data": {
+            "properties": {
+              "mediaId": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "mediaId",
+              "status"
+            ],
+            "type": "object"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "Envelope_PropertyMediaView": {
+        "properties": {
+          "data": {
+            "properties": {
+              "altEn": {
+                "type": "string"
+              },
+              "altFr": {
+                "type": "string"
+              },
+              "createdAt": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "fileName": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "isCover": {
+                "type": "boolean"
+              },
+              "mimeType": {
+                "type": "string"
+              },
+              "ownerId": {
+                "type": "string"
+              },
+              "rejectionReason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "sizeBytes": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "sortOrder": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "status": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "version": {
+                "format": "int32",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "ownerId",
+              "status",
+              "sortOrder",
+              "isCover",
+              "altEn",
+              "altFr",
+              "fileName",
+              "mimeType",
+              "sizeBytes",
+              "version",
+              "createdAt",
+              "updatedAt"
+            ],
+            "type": "object"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "Envelope_PropertyView": {
         "properties": {
           "data": {
@@ -12475,6 +12572,33 @@
         ],
         "type": "object"
       },
+      "Envelope_ReadMessagesResult": {
+        "properties": {
+          "data": {
+            "properties": {
+              "marked": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "marked"
+            ],
+            "type": "object"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
       "Envelope_ReadinessView": {
         "properties": {
           "data": {
@@ -12628,6 +12752,16 @@
               "currency": {
                 "type": "string"
               },
+              "discount": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/DiscountView"
+                  }
+                ]
+              },
               "guest": {
                 "$ref": "#/components/schemas/GuestView"
               },
@@ -12683,6 +12817,12 @@
               "unitTypeId": {
                 "type": "string"
               },
+              "unitTypeImages": {
+                "items": {
+                  "$ref": "#/components/schemas/TripImageView"
+                },
+                "type": "array"
+              },
               "version": {
                 "format": "int32",
                 "type": "integer"
@@ -12694,6 +12834,7 @@
               "state",
               "propertyId",
               "unitTypeId",
+              "unitTypeImages",
               "ratePlanId",
               "checkIn",
               "checkOut",
@@ -13895,7 +14036,50 @@
         ],
         "type": "object"
       },
-      "Envelope_Vec_MediaView": {
+      "Envelope_Vec_PolicyView": {
+        "properties": {
+          "data": {
+            "items": {
+              "properties": {
+                "content": {
+                  "type": "object"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "versionNumber": {
+                  "format": "int32",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "versionNumber",
+                "content"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "metadata"
+        ],
+        "type": "object"
+      },
+      "Envelope_Vec_PropertyMediaView": {
         "properties": {
           "data": {
             "items": {
@@ -13984,32 +14168,11 @@
         ],
         "type": "object"
       },
-      "Envelope_Vec_PolicyView": {
+      "Envelope_Vec_String": {
         "properties": {
           "data": {
             "items": {
-              "properties": {
-                "content": {
-                  "type": "object"
-                },
-                "id": {
-                  "type": "string"
-                },
-                "kind": {
-                  "type": "string"
-                },
-                "versionNumber": {
-                  "format": "int32",
-                  "type": "integer"
-                }
-              },
-              "required": [
-                "id",
-                "kind",
-                "versionNumber",
-                "content"
-              ],
-              "type": "object"
+              "type": "string"
             },
             "type": "array"
           },
@@ -15203,6 +15366,34 @@
         ],
         "type": "object"
       },
+      "ListingDecisionInput": {
+        "properties": {
+          "decision": {
+            "type": "string"
+          },
+          "expectedVersion": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "guidance": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reasonCodes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "decision",
+          "expectedVersion"
+        ],
+        "type": "object"
+      },
       "LoginRequest": {
         "properties": {
           "identifier": {
@@ -15230,21 +15421,6 @@
         ],
         "type": "object"
       },
-      "MediaContent": {
-        "properties": {
-          "media": {
-            "$ref": "#/components/schemas/MediaView"
-          },
-          "url": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "media",
-          "url"
-        ],
-        "type": "object"
-      },
       "MediaContentView": {
         "properties": {
           "alt": {
@@ -15265,21 +15441,6 @@
           "mimeType",
           "alt",
           "url"
-        ],
-        "type": "object"
-      },
-      "MediaRemoved": {
-        "properties": {
-          "mediaId": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "mediaId",
-          "status"
         ],
         "type": "object"
       },
@@ -15624,6 +15785,43 @@
         ],
         "type": "object"
       },
+      "MyReservationCounts": {
+        "properties": {
+          "active": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "all": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "cancelled": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "past": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "pending": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "upcoming": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "all",
+          "pending",
+          "upcoming",
+          "active",
+          "past",
+          "cancelled"
+        ],
+        "type": "object"
+      },
       "MyReservationView": {
         "properties": {
           "adultCount": {
@@ -15747,6 +15945,41 @@
           "propertyNameFr",
           "unitNameEn",
           "unitNameFr"
+        ],
+        "type": "object"
+      },
+      "MyReservationsPage": {
+        "properties": {
+          "counts": {
+            "$ref": "#/components/schemas/MyReservationCounts"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MyReservationView"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "counts"
         ],
         "type": "object"
       },
@@ -17218,6 +17451,106 @@
         ],
         "type": "object"
       },
+      "PropertyMediaContent": {
+        "properties": {
+          "media": {
+            "$ref": "#/components/schemas/PropertyMediaView"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "media",
+          "url"
+        ],
+        "type": "object"
+      },
+      "PropertyMediaRemoved": {
+        "properties": {
+          "mediaId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "mediaId",
+          "status"
+        ],
+        "type": "object"
+      },
+      "PropertyMediaView": {
+        "properties": {
+          "altEn": {
+            "type": "string"
+          },
+          "altFr": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "isCover": {
+            "type": "boolean"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "rejectionReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sizeBytes": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sortOrder": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "version": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "status",
+          "sortOrder",
+          "isCover",
+          "altEn",
+          "altFr",
+          "fileName",
+          "mimeType",
+          "sizeBytes",
+          "version",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
       "PropertyView": {
         "properties": {
           "addressLine": {
@@ -17791,6 +18124,28 @@
         ],
         "type": "object"
       },
+      "ReadMessagesInput": {
+        "properties": {
+          "messageId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "messageId"
+        ],
+        "type": "object"
+      },
+      "ReadMessagesResult": {
+        "properties": {
+          "marked": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "marked"
+        ],
+        "type": "object"
+      },
       "ReadinessView": {
         "properties": {
           "blockers": {
@@ -18115,6 +18470,16 @@
           "currency": {
             "type": "string"
           },
+          "discount": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DiscountView"
+              }
+            ]
+          },
           "guest": {
             "$ref": "#/components/schemas/GuestView"
           },
@@ -18170,6 +18535,12 @@
           "unitTypeId": {
             "type": "string"
           },
+          "unitTypeImages": {
+            "items": {
+              "$ref": "#/components/schemas/TripImageView"
+            },
+            "type": "array"
+          },
           "version": {
             "format": "int32",
             "type": "integer"
@@ -18181,6 +18552,7 @@
           "state",
           "propertyId",
           "unitTypeId",
+          "unitTypeImages",
           "ratePlanId",
           "checkIn",
           "checkOut",
@@ -19564,6 +19936,29 @@
         ],
         "type": "object"
       },
+      "TripImageView": {
+        "properties": {
+          "altEn": {
+            "type": "string"
+          },
+          "altFr": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "altEn",
+          "altFr"
+        ],
+        "type": "object"
+      },
       "UnitOptionView": {
         "properties": {
           "id": {
@@ -20500,7 +20895,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_Vec_MediaView"
+                  "$ref": "#/components/schemas/Envelope_Vec_PropertyMediaView"
                 }
               }
             },
@@ -20563,7 +20958,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaView"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaView"
                 }
               }
             },
@@ -20646,7 +21041,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaRemoved"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaRemoved"
                 }
               }
             },
@@ -20727,7 +21122,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaView"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaView"
                 }
               }
             },
@@ -20810,7 +21205,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaContent"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaContent"
                 }
               }
             },
@@ -21767,6 +22162,71 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Envelope_AdminCaseItem"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/cases/assignees": {
+      "get": {
+        "operationId": "admin_case_assignees_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Page_CaseAssignee"
                 }
               }
             },
@@ -24232,7 +24692,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DecisionInput"
+                "$ref": "#/components/schemas/ListingDecisionInput"
               }
             }
           },
@@ -24318,7 +24778,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaContent"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaContent"
                 }
               }
             },
@@ -25062,7 +25522,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_Vec_MediaView"
+                  "$ref": "#/components/schemas/Envelope_Vec_PropertyMediaView"
                 }
               }
             },
@@ -25125,7 +25585,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaView"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaView"
                 }
               }
             },
@@ -25208,7 +25668,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaRemoved"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaRemoved"
                 }
               }
             },
@@ -25289,7 +25749,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaView"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaView"
                 }
               }
             },
@@ -26658,6 +27118,71 @@
         ],
         "tags": [
           "admin_rates"
+        ]
+      }
+    },
+    "/api/admin/reports/summary": {
+      "get": {
+        "operationId": "admin_reports_summary",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_AnalyticsSummary"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform_report"
         ]
       }
     },
@@ -29308,7 +29833,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_Page_MyReservationView"
+                  "$ref": "#/components/schemas/Envelope_MyReservationsPage"
                 }
               }
             },
@@ -30698,7 +31223,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_Vec_MediaView"
+                  "$ref": "#/components/schemas/Envelope_Vec_PropertyMediaView"
                 }
               }
             },
@@ -30761,7 +31286,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaView"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaView"
                 }
               }
             },
@@ -30844,7 +31369,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaRemoved"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaRemoved"
                 }
               }
             },
@@ -30925,7 +31450,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaView"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaView"
                 }
               }
             },
@@ -31008,7 +31533,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaContent"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaContent"
                 }
               }
             },
@@ -32957,6 +33482,59 @@
       }
     },
     "/api/host/hosts/{hostId}/contact": {
+      "get": {
+        "operationId": "host_contact_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "hostId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_HostContact"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "host"
+        ]
+      },
       "patch": {
         "operationId": "host_contact_update",
         "parameters": [
@@ -33645,7 +34223,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaContent"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaContent"
                 }
               }
             },
@@ -33679,6 +34257,79 @@
         ],
         "tags": [
           "media"
+        ]
+      }
+    },
+    "/api/host/message-conversations": {
+      "get": {
+        "operationId": "host_message_conversations",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "hostId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Page_ConversationView"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "host"
         ]
       }
     },
@@ -34432,7 +35083,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_Vec_MediaView"
+                  "$ref": "#/components/schemas/Envelope_Vec_PropertyMediaView"
                 }
               }
             },
@@ -34495,7 +35146,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaView"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaView"
                 }
               }
             },
@@ -34578,7 +35229,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaRemoved"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaRemoved"
                 }
               }
             },
@@ -34659,7 +35310,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope_MediaView"
+                  "$ref": "#/components/schemas/Envelope_PropertyMediaView"
                 }
               }
             },
@@ -36587,6 +37238,24 @@
           },
           {
             "in": "query",
+            "name": "checkInFrom",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "checkInTo",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
             "name": "locale",
             "required": false,
             "schema": {
@@ -36679,6 +37348,24 @@
             "name": "search",
             "required": false,
             "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "checkInFrom",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "checkInTo",
+            "required": false,
+            "schema": {
+              "format": "date",
               "type": "string"
             }
           },
@@ -37169,6 +37856,61 @@
             "description": ""
           },
           "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "host"
+        ]
+      }
+    },
+    "/api/host/reservations/{reservationId}/messages/read": {
+      "post": {
+        "operationId": "host_messages_mark_read",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reservationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReadMessagesInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_ReadMessagesResult"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
             "content": {
               "application/json": {
                 "schema": {
@@ -38531,6 +39273,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Envelope_HostReferenceView"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "public"
+        ]
+      }
+    },
+    "/api/public/languages": {
+      "get": {
+        "operationId": "languages_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Vec_String"
                 }
               }
             },

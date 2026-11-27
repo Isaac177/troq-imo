@@ -28,7 +28,10 @@ export const useAppShell = () => {
     setMenuOpen(false);
   }, [location.pathname]);
 
-  const modules = moduleRegistry.filter((module) => !module.permission || can(module.permission));
+  const modules = moduleRegistry.filter((module) => {
+    if (module.permissions?.length) return module.permissions.some((permission) => can(permission));
+    return !module.permission || can(module.permission);
+  });
   const name = [session?.user.firstName, session?.user.lastName].filter(Boolean).join(' ') || session?.user.email || session?.user.phone || '';
 
   return {

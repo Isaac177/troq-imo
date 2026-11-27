@@ -1,5 +1,6 @@
 import { CheckCircle2, FileText, TriangleAlert } from 'lucide-react';
 import { Button, Dialog, Drawer, Skeleton, Textarea } from '@mungini/ui-web';
+import CaseAssignment from '@/components/cases/CaseAssignment';
 import { useCaseDetail } from '@/hooks/cases/useCaseDetail';
 
 type Props = { caseId: string | null; onClose: () => void; onChanged: () => void };
@@ -64,6 +65,7 @@ export default function CaseDetailDrawer({ caseId, onClose, onChanged }: Props) 
 
             {view.canAct ? (
               <div className="flex flex-col gap-2 border-t border-border pt-3 sm:flex-row">
+                <CaseAssignment item={item} onChanged={view.assignmentChanged} />
                 <Button size="sm" variant="primary" icon={<CheckCircle2 />} onClick={() => view.openAction('close')}>{view.labels.closeCase}</Button>
                 <Button size="sm" variant="outline" icon={<TriangleAlert />} disabled={Boolean(item.escalatedAt)} onClick={() => view.openAction('escalate')}>{view.labels.escalateCase}</Button>
               </div>

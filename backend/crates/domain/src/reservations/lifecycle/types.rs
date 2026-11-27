@@ -33,6 +33,15 @@ pub struct GuestView {
 
 #[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
+pub struct TripImageView {
+    pub id: String,
+    pub url: String,
+    pub alt_en: String,
+    pub alt_fr: String,
+}
+
+#[derive(Debug, Serialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct ReservationView {
     pub id: String,
     pub reference: String,
@@ -40,6 +49,7 @@ pub struct ReservationView {
     pub property_id: String,
     pub unit_type_id: String,
     pub unit_type_cover_url: Option<String>,
+    pub unit_type_images: Vec<TripImageView>,
     pub rate_plan_id: String,
     pub check_in: NaiveDate,
     pub check_out: NaiveDate,
@@ -48,6 +58,7 @@ pub struct ReservationView {
     pub currency: String,
     pub total: String,
     pub nights: Vec<NightLine>,
+    pub discount: Option<DiscountView>,
     pub guest: GuestView,
     pub hold_expires_at: Option<DateTime<Utc>>,
     pub payment_required: bool,
@@ -189,6 +200,8 @@ pub struct OperatorReservationQuery {
     pub property_id: Option<String>,
     pub state: Option<String>,
     pub search: Option<String>,
+    pub check_in_from: Option<NaiveDate>,
+    pub check_in_to: Option<NaiveDate>,
     pub locale: Option<String>,
     pub page: Option<u32>,
     pub page_size: Option<u32>,

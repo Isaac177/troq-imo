@@ -5,7 +5,7 @@ import { apiErrorCode } from '@mungini/session';
 export type PropertyView = components['schemas']['PropertyView'];
 export type UnitType = components['schemas']['Envelope_Page_UnitTypeView']['data']['items'][number];
 export type Category = components['schemas']['CategoryView'];
-export type PropertyMedia = { id: string; ownerId: string; status: string; sortOrder: number; isCover: boolean; altEn: string; altFr: string; fileName: string; mimeType: string; sizeBytes: number; rejectionReason: string | null; version: number; url: string | null };
+export type PropertyMedia = components['schemas']['PropertyMediaView'] & { url: string | null };
 export type RevisionSummary = components['schemas']['RevisionSummary'];
 export type Revision = components['schemas']['RevisionView'];
 export type ListingContent = components['schemas']['ListingContent'];
@@ -77,7 +77,16 @@ export const archiveUnitType = async (client: SessionClient, propertyId: string,
 export const listMedia = async (client: SessionClient, propertyId: string): Promise<RequestResult<PropertyMedia[]>> => {
   const response = await client.api.GET('/api/host/properties/{propertyId}/media', { params: { path: { propertyId } } });
   if (response.error || !response.data) return fail(response.error);
-  return { data: response.data.data as unknown as PropertyMedia[], error: null, blockers: [] };
+  const media = await Promise.all(response.data.data.map(async (item) => {
+    if (item.status !== 'READY') return { ...item, url: null };
+    try {
+      const content = await client.api.GET('/api/host/media/{mediaId}/content', { params: { path: { mediaId: item.id } } });
+      return { ...item, url: content.data?.data.url ?? null };
+    } catch {
+      return { ...item, url: null };
+    }
+  }));
+  return { data: media, error: null, blockers: [] };
 };
 
 export const addMedia = async (client: SessionClient, propertyId: string, input: { fileName: string; mimeType: string; contentBase64: string; altEn: string; altFr: string }): Promise<RequestResult<PropertyMedia>> => {
@@ -86,7 +95,7 @@ export const addMedia = async (client: SessionClient, propertyId: string, input:
     body: { ...input, clientKey: crypto.randomUUID() },
   });
   if (response.error || !response.data) return fail(response.error);
-  return { data: response.data.data as unknown as PropertyMedia, error: null, blockers: [] };
+  return { data: { ...response.data.data, url: null }, error: null, blockers: [] };
 };
 
 export const updateMedia = async (client: SessionClient, propertyId: string, mediaId: string, body: { expectedVersion: number; altEn?: string; altFr?: string; isCover?: boolean; sortOrder?: number }): Promise<RequestResult<PropertyMedia>> => {
@@ -95,7 +104,7 @@ export const updateMedia = async (client: SessionClient, propertyId: string, med
     body,
   });
   if (response.error || !response.data) return fail(response.error);
-  return { data: response.data.data as unknown as PropertyMedia, error: null, blockers: [] };
+  return { data: { ...response.data.data, url: null }, error: null, blockers: [] };
 };
 
 export const removeMedia = async (client: SessionClient, propertyId: string, mediaId: string, expectedVersion: number): Promise<RequestResult<{ mediaId: string; status: string }>> => {

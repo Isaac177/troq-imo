@@ -55,3 +55,15 @@ export const getEvidence = async (client: SessionClient, evidenceId: string): Pr
 };
 
 export const listCities = (client: SessionClient) => client.api.GET('/api/public/cities');
+
+export const listAssignees = async (client: SessionClient, search: string, page: number): Promise<RequestResult<PagedResult<import('@/types/cases/cases').CaseAssignee>>> => {
+  const response = await client.api.GET('/api/admin/cases/assignees', { params: { query: { search, page, pageSize: 20 } } });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};
+
+export const assignCase = async (client: SessionClient, caseId: string, expectedVersion: number, assigneeUserId: string | null): Promise<RequestResult<AdminCase>> => {
+  const response = await client.api.POST('/api/admin/cases/{caseId}/assign', { params: { path: { caseId } }, body: { expectedVersion, assigneeUserId } });
+  if (response.error || !response.data) return fail(response.error);
+  return { data: response.data.data, error: null };
+};

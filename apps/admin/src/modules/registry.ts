@@ -1,4 +1,5 @@
-import { Bell, Building2, ClipboardList, FileCheck2, FolderOpen, LayoutDashboard, ShieldAlert, Star, Users, CalendarDays } from 'lucide-react';
+import { BarChart3, Bell, Building2, ClipboardList, FileCheck2, FolderOpen, LayoutDashboard, ListChecks, ShieldAlert, Star, Users, Wallet, CalendarDays } from 'lucide-react';
+import ReportsView from '@/views/reports/ReportsView';
 import DashboardView from '@/views/dashboard/DashboardView';
 import ApplicationsView from '@/views/applications/ApplicationsView';
 import HostsView from '@/views/hosts/HostsView';
@@ -11,6 +12,8 @@ import ListingReviewsView from '@/views/listings/ListingReviewsView';
 import ClaimsView from '@/views/claims/ClaimsView';
 import PropertiesView from '@/views/properties/PropertiesView';
 import NotificationsView from '@/views/notifications/NotificationsView';
+import TasksView from '@/views/tasks/TasksView';
+import CreditsView from '@/views/credits/CreditsView';
 import type { ModuleDefinition } from '@/types/modules/module';
 
 export const moduleRegistry: ModuleDefinition[] = [
@@ -21,6 +24,11 @@ export const moduleRegistry: ModuleDefinition[] = [
     section: 'sectionPlatform',
     route: '/',
     icon: LayoutDashboard,
+    permission: 'properties.moderate',
+  },
+  {
+    id: 'reports', component: ReportsView, labelKey: 'navReports',
+    section: 'sectionPlatform', route: '/reports', icon: BarChart3,
     permission: 'properties.moderate',
   },
   {
@@ -58,6 +66,16 @@ export const moduleRegistry: ModuleDefinition[] = [
   {
     id: 'reservations', component: ReservationsView, labelKey: 'navReservations',
     section: 'sectionOperations', route: '/reservations', icon: CalendarDays,
+    permission: 'properties.moderate',
+  },
+  {
+    id: 'tasks', component: TasksView, labelKey: 'navTasks',
+    section: 'sectionOperations', route: '/tasks', icon: ListChecks,
+    permission: 'properties.moderate',
+  },
+  {
+    id: 'credits', component: CreditsView, labelKey: 'navCredits',
+    section: 'sectionOperations', route: '/credits', icon: Wallet,
     permission: 'properties.moderate',
   },
   {

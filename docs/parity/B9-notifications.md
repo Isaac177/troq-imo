@@ -64,6 +64,8 @@ Defaults followed: D1 own identity (platform team resolved from `identity_grants
 | `notify/service.rs` `notify` (resolve, drop actor, dedupe 10 minutes, prefs, insert, channels) | `dispatch.rs` `send` | done |
 | actor taken from NATS metadata (always empty for outbox events) | `Notice.actor_id` stays empty | done (ported as is) |
 | `notify/store.rs` insert, `recent_duplicates`, `unread_count` | `inbox_write.rs`, `inbox_read.rs` | done |
+| Unread count excludes expired inbox rows | `inbox_read.rs` | open: expiry predicate aligned with inbox list; Rust and SQL read-checked only, owner compilation and live verification pending |
+| Separate guest, host and admin inboxes for the same account | `api_{guest,host,admin,shared}.rs`, `inbox_read.rs`, `backend/seeds/notifications/03-audience-expiry.sql` | open: list, count and read actions scoped by audience; database regression test written but not run; null-audience historical rows need a cutover decision; Rust and SQL read-checked only |
 | `notify/prefs.rs` precedence event, category, `*`, URGENT forces in-app and email | `prefs.rs` | done |
 | `notify/render.rs` `fill`, `pick` | `render.rs` | done |
 | `notify/links.rs` Stay deep links | `links.rs` (guest `/trips`, host `/reservations`, `/properties`, `/cases`, `/tasks`, admin `/audit`) | done (paths follow the legacy shapes without the `/stays` prefix, owner to confirm against app route tables) |

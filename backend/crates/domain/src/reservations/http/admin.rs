@@ -11,6 +11,7 @@ use crate::reservations::cases::admin_actions::{
     self as actions, AdminEvidenceContent, AdminOpenCaseInput, AssignCaseInput, EscalateCaseInput,
 };
 use crate::reservations::cases::types::CloseCaseInput;
+use crate::reservations::cases::assignees::{self, AssigneeQuery, CaseAssignee};
 use crate::reservations::lifecycle::platform_cancel;
 use crate::reservations::lifecycle::types::{CancelPreview, PlatformCancelInput, ReservationView};
 
@@ -89,4 +90,12 @@ pub async fn cancel_preview<S: AppState>(State(state): State<S>, actor: Actor, R
 )]
 pub async fn reservation_cancel<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Path(reservation_id): Path<String>, Body(input): Body<PlatformCancelInput>) -> Reply<ReservationView> {
     Ok(reply(platform_cancel::platform_cancel(app_kernel(&state), &actor, &reservation_id, input).await?, id))
+}
+
+#[utoipa::path(
+    get, path = "/api/admin/cases/assignees", operation_id = "admin_case_assignees_list", params(AssigneeQuery),
+    responses((status = 200, body = Envelope<Page<CaseAssignee>>), (status = 403, body = ErrorBody))
+)]
+pub async fn cases_assignees<S: AppState>(State(state): State<S>, actor: Actor, RequestId(id): RequestId, Params(query): Params<AssigneeQuery>) -> Reply<Page<CaseAssignee>> {
+    Ok(reply(assignees::list(app_kernel(&state), &actor, query).await?, id))
 }

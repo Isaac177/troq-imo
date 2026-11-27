@@ -239,6 +239,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/cases/assignees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["admin_case_assignees_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/cases/evidence/{evidenceId}": {
         parameters: {
             query?: never;
@@ -1239,6 +1255,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["admin_rate_policies_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/reports/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["admin_reports_summary"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2582,7 +2614,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["host_contact_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2711,6 +2743,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["host_property_media_content"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/host/message-conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["host_message_conversations"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3359,6 +3407,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/host/reservations/{reservationId}/messages/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["host_messages_mark_read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/host/reservations/{reservationId}/no-show": {
         parameters: {
             query?: never;
@@ -3735,6 +3799,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["host_reference"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/languages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["languages_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4281,6 +4361,11 @@ export interface components {
             reservationId: string;
             state: string;
         };
+        CaseAssignee: {
+            email?: string | null;
+            name?: string | null;
+            userId: string;
+        };
         CaseView: {
             caseType: string;
             closedAt?: string | null;
@@ -4384,6 +4469,16 @@ export interface components {
         CloseCaseInput: {
             expectedVersion: number;
             resolution: string;
+        };
+        ConversationView: {
+            lastAt: string;
+            lastBody: string;
+            propertyNameEn: string;
+            propertyNameFr: string;
+            reference: string;
+            reservationId: string;
+            timezone: string;
+            unreadCount: number;
         };
         Core: {
             approvalDeadlineAt?: string | null;
@@ -5196,48 +5291,12 @@ export interface components {
             metadata: components["schemas"]["Metadata"];
             success: boolean;
         };
-        Envelope_MediaContent: {
-            data: {
-                media: components["schemas"]["MediaView"];
-                url: string;
-            };
-            metadata: components["schemas"]["Metadata"];
-            success: boolean;
-        };
         Envelope_MediaContentView: {
             data: {
                 alt: string;
                 mediaId: string;
                 mimeType: string;
                 url: string;
-            };
-            metadata: components["schemas"]["Metadata"];
-            success: boolean;
-        };
-        Envelope_MediaRemoved: {
-            data: {
-                mediaId: string;
-                status: string;
-            };
-            metadata: components["schemas"]["Metadata"];
-            success: boolean;
-        };
-        Envelope_MediaView: {
-            data: {
-                altEn: string;
-                altFr: string;
-                createdAt: string;
-                fileName: string;
-                id: string;
-                isCover: boolean;
-                mimeType: string;
-                ownerId: string;
-                rejectionReason?: string | null;
-                sizeBytes: number;
-                sortOrder: number;
-                status: string;
-                updatedAt: string;
-                version: number;
             };
             metadata: components["schemas"]["Metadata"];
             success: boolean;
@@ -5280,6 +5339,17 @@ export interface components {
                 low: boolean;
                 lowThreshold: number;
                 rateBps: number;
+            };
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
+        Envelope_MyReservationsPage: {
+            data: {
+                counts: components["schemas"]["MyReservationCounts"];
+                items: components["schemas"]["MyReservationView"][];
+                page: number;
+                pageSize: number;
+                total: number;
             };
             metadata: components["schemas"]["Metadata"];
             success: boolean;
@@ -5646,6 +5716,20 @@ export interface components {
             metadata: components["schemas"]["Metadata"];
             success: boolean;
         };
+        Envelope_Page_CaseAssignee: {
+            data: {
+                items: {
+                    email?: string | null;
+                    name?: string | null;
+                    userId: string;
+                }[];
+                page: number;
+                pageSize: number;
+                total: number;
+            };
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
         Envelope_Page_CaseView: {
             data: {
                 items: {
@@ -5708,6 +5792,25 @@ export interface components {
                     propertyNameEn?: string | null;
                     propertyNameFr?: string | null;
                     reservationReference?: string | null;
+                }[];
+                page: number;
+                pageSize: number;
+                total: number;
+            };
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
+        Envelope_Page_ConversationView: {
+            data: {
+                items: {
+                    lastAt: string;
+                    lastBody: string;
+                    propertyNameEn: string;
+                    propertyNameFr: string;
+                    reference: string;
+                    reservationId: string;
+                    timezone: string;
+                    unreadCount: number;
                 }[];
                 page: number;
                 pageSize: number;
@@ -5906,39 +6009,6 @@ export interface components {
                     hostName: string;
                     id: string;
                     permissions: string[];
-                }[];
-                page: number;
-                pageSize: number;
-                total: number;
-            };
-            metadata: components["schemas"]["Metadata"];
-            success: boolean;
-        };
-        Envelope_Page_MyReservationView: {
-            data: {
-                items: {
-                    adultCount: number;
-                    approvalDeadlineAt?: string | null;
-                    checkIn: string;
-                    checkOut: string;
-                    childCount: number;
-                    cover?: null | components["schemas"]["MineCover"];
-                    currency: string;
-                    discount?: null | components["schemas"]["DiscountView"];
-                    id: string;
-                    nights: components["schemas"]["NightLine"][];
-                    pendingAmendment?: null | components["schemas"]["PendingAmendmentView"];
-                    propertyId: string;
-                    propertyNameEn: string;
-                    propertyNameFr: string;
-                    reference: string;
-                    state: string;
-                    total: string;
-                    unitNameEn: string;
-                    unitNameFr: string;
-                    unitTypeCoverUrl?: string | null;
-                    unitTypeId: string;
-                    version: number;
                 }[];
                 page: number;
                 pageSize: number;
@@ -6500,6 +6570,42 @@ export interface components {
             metadata: components["schemas"]["Metadata"];
             success: boolean;
         };
+        Envelope_PropertyMediaContent: {
+            data: {
+                media: components["schemas"]["PropertyMediaView"];
+                url: string;
+            };
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
+        Envelope_PropertyMediaRemoved: {
+            data: {
+                mediaId: string;
+                status: string;
+            };
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
+        Envelope_PropertyMediaView: {
+            data: {
+                altEn: string;
+                altFr: string;
+                createdAt: string;
+                fileName: string;
+                id: string;
+                isCover: boolean;
+                mimeType: string;
+                ownerId: string;
+                rejectionReason?: string | null;
+                sizeBytes: number;
+                sortOrder: number;
+                status: string;
+                updatedAt: string;
+                version: number;
+            };
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
         Envelope_PropertyView: {
             data: {
                 addressLine: string;
@@ -6579,6 +6685,13 @@ export interface components {
             metadata: components["schemas"]["Metadata"];
             success: boolean;
         };
+        Envelope_ReadMessagesResult: {
+            data: {
+                marked: boolean;
+            };
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
         Envelope_ReadinessView: {
             data: {
                 blockers: string[];
@@ -6616,6 +6729,7 @@ export interface components {
                 checkOut: string;
                 childCount: number;
                 currency: string;
+                discount?: null | components["schemas"]["DiscountView"];
                 guest: components["schemas"]["GuestView"];
                 holdExpiresAt?: string | null;
                 id: string;
@@ -6630,6 +6744,7 @@ export interface components {
                 total: string;
                 unitTypeCoverUrl?: string | null;
                 unitTypeId: string;
+                unitTypeImages: components["schemas"]["TripImageView"][];
                 version: number;
             };
             metadata: components["schemas"]["Metadata"];
@@ -6903,7 +7018,17 @@ export interface components {
             metadata: components["schemas"]["Metadata"];
             success: boolean;
         };
-        Envelope_Vec_MediaView: {
+        Envelope_Vec_PolicyView: {
+            data: {
+                content: Record<string, never>;
+                id: string;
+                kind: string;
+                versionNumber: number;
+            }[];
+            metadata: components["schemas"]["Metadata"];
+            success: boolean;
+        };
+        Envelope_Vec_PropertyMediaView: {
             data: {
                 altEn: string;
                 altFr: string;
@@ -6923,13 +7048,8 @@ export interface components {
             metadata: components["schemas"]["Metadata"];
             success: boolean;
         };
-        Envelope_Vec_PolicyView: {
-            data: {
-                content: Record<string, never>;
-                id: string;
-                kind: string;
-                versionNumber: number;
-            }[];
+        Envelope_Vec_String: {
+            data: string[];
             metadata: components["schemas"]["Metadata"];
             success: boolean;
         };
@@ -7197,6 +7317,12 @@ export interface components {
             petsPolicy?: string | null;
             smokingPolicy?: string | null;
         };
+        ListingDecisionInput: {
+            decision: string;
+            expectedVersion: number;
+            guidance?: string | null;
+            reasonCodes?: string[];
+        };
         LoginRequest: {
             identifier: string;
             password: string;
@@ -7204,19 +7330,11 @@ export interface components {
         MarkedCount: {
             updated: number;
         };
-        MediaContent: {
-            media: components["schemas"]["MediaView"];
-            url: string;
-        };
         MediaContentView: {
             alt: string;
             mediaId: string;
             mimeType: string;
             url: string;
-        };
-        MediaRemoved: {
-            mediaId: string;
-            status: string;
         };
         MediaView: {
             alt: string;
@@ -7297,6 +7415,14 @@ export interface components {
             id: string;
             permissions: string[];
         };
+        MyReservationCounts: {
+            active: number;
+            all: number;
+            cancelled: number;
+            past: number;
+            pending: number;
+            upcoming: number;
+        };
         MyReservationView: {
             adultCount: number;
             approvalDeadlineAt?: string | null;
@@ -7320,6 +7446,13 @@ export interface components {
             unitTypeCoverUrl?: string | null;
             unitTypeId: string;
             version: number;
+        };
+        MyReservationsPage: {
+            counts: components["schemas"]["MyReservationCounts"];
+            items: components["schemas"]["MyReservationView"][];
+            page: number;
+            pageSize: number;
+            total: number;
         };
         NightAvailability: {
             date: string;
@@ -7638,6 +7771,30 @@ export interface components {
             unitCount: number;
             unitTypeCount: number;
         };
+        PropertyMediaContent: {
+            media: components["schemas"]["PropertyMediaView"];
+            url: string;
+        };
+        PropertyMediaRemoved: {
+            mediaId: string;
+            status: string;
+        };
+        PropertyMediaView: {
+            altEn: string;
+            altFr: string;
+            createdAt: string;
+            fileName: string;
+            id: string;
+            isCover: boolean;
+            mimeType: string;
+            ownerId: string;
+            rejectionReason?: string | null;
+            sizeBytes: number;
+            sortOrder: number;
+            status: string;
+            updatedAt: string;
+            version: number;
+        };
         PropertyView: {
             addressLine: string;
             amenities: unknown;
@@ -7765,6 +7922,12 @@ export interface components {
             id: string;
             rateBps: number;
         };
+        ReadMessagesInput: {
+            messageId: string;
+        };
+        ReadMessagesResult: {
+            marked: boolean;
+        };
         ReadinessView: {
             blockers: string[];
             ready: boolean;
@@ -7838,6 +8001,7 @@ export interface components {
             checkOut: string;
             childCount: number;
             currency: string;
+            discount?: null | components["schemas"]["DiscountView"];
             guest: components["schemas"]["GuestView"];
             holdExpiresAt?: string | null;
             id: string;
@@ -7852,6 +8016,7 @@ export interface components {
             total: string;
             unitTypeCoverUrl?: string | null;
             unitTypeId: string;
+            unitTypeImages: components["schemas"]["TripImageView"][];
             version: number;
         };
         RestrictionOperation: {
@@ -8139,6 +8304,12 @@ export interface components {
         TransitionInput: {
             action: string;
             expectedVersion: number;
+        };
+        TripImageView: {
+            altEn: string;
+            altFr: string;
+            id: string;
+            url: string;
         };
         UnitOptionView: {
             id: string;
@@ -8536,7 +8707,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_Vec_MediaView"];
+                    "application/json": components["schemas"]["Envelope_Vec_PropertyMediaView"];
                 };
             };
             403: {
@@ -8577,7 +8748,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaView"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaView"];
                 };
             };
             400: {
@@ -8627,7 +8798,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaRemoved"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaRemoved"];
                 };
             };
             403: {
@@ -8677,7 +8848,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaView"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaView"];
                 };
             };
             400: {
@@ -8731,7 +8902,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaContent"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaContent"];
                 };
             };
             403: {
@@ -9268,6 +9439,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_AdminCaseItem"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
+    admin_case_assignees_list: {
+        parameters: {
+            query?: {
+                search?: string;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Page_CaseAssignee"];
                 };
             };
             403: {
@@ -10646,7 +10848,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DecisionInput"];
+                "application/json": components["schemas"]["ListingDecisionInput"];
             };
         };
         responses: {
@@ -10708,7 +10910,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaContent"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaContent"];
                 };
             };
             403: {
@@ -11152,7 +11354,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_Vec_MediaView"];
+                    "application/json": components["schemas"]["Envelope_Vec_PropertyMediaView"];
                 };
             };
             403: {
@@ -11193,7 +11395,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaView"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaView"];
                 };
             };
             400: {
@@ -11243,7 +11445,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaRemoved"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaRemoved"];
                 };
             };
             403: {
@@ -11293,7 +11495,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaView"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaView"];
                 };
             };
             400: {
@@ -12070,6 +12272,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_Vec_PolicyView"];
+                };
+            };
+        };
+    };
+    admin_reports_summary: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_AnalyticsSummary"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
                 };
             };
         };
@@ -13496,7 +13736,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_Page_MyReservationView"];
+                    "application/json": components["schemas"]["Envelope_MyReservationsPage"];
                 };
             };
             400: {
@@ -14304,7 +14544,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_Vec_MediaView"];
+                    "application/json": components["schemas"]["Envelope_Vec_PropertyMediaView"];
                 };
             };
             403: {
@@ -14345,7 +14585,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaView"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaView"];
                 };
             };
             400: {
@@ -14395,7 +14635,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaRemoved"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaRemoved"];
                 };
             };
             403: {
@@ -14445,7 +14685,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaView"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaView"];
                 };
             };
             400: {
@@ -14499,7 +14739,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaContent"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaContent"];
                 };
             };
             403: {
@@ -15647,6 +15887,43 @@ export interface operations {
             };
         };
     };
+    host_contact_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                hostId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_HostContact"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
     host_contact_update: {
         parameters: {
             query?: never;
@@ -16064,7 +16341,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaContent"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaContent"];
                 };
             };
             403: {
@@ -16076,6 +16353,38 @@ export interface operations {
                 };
             };
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
+    host_message_conversations: {
+        parameters: {
+            query: {
+                hostId: string;
+                search?: string;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Page_ConversationView"];
+                };
+            };
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -16516,7 +16825,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_Vec_MediaView"];
+                    "application/json": components["schemas"]["Envelope_Vec_PropertyMediaView"];
                 };
             };
             403: {
@@ -16557,7 +16866,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaView"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaView"];
                 };
             };
             400: {
@@ -16607,7 +16916,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaRemoved"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaRemoved"];
                 };
             };
             403: {
@@ -16657,7 +16966,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Envelope_MediaView"];
+                    "application/json": components["schemas"]["Envelope_PropertyMediaView"];
                 };
             };
             400: {
@@ -17739,6 +18048,8 @@ export interface operations {
                 propertyId?: string;
                 state?: string;
                 search?: string;
+                checkInFrom?: string;
+                checkInTo?: string;
                 locale?: string;
                 page?: number;
                 pageSize?: number;
@@ -17774,6 +18085,8 @@ export interface operations {
                 propertyId?: string;
                 state?: string;
                 search?: string;
+                checkInFrom?: string;
+                checkInTo?: string;
                 locale?: string;
                 page?: number;
                 pageSize?: number;
@@ -18054,6 +18367,39 @@ export interface operations {
                 };
             };
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
+    host_messages_mark_read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reservationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReadMessagesInput"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_ReadMessagesResult"];
+                };
+            };
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -18916,6 +19262,25 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_HostReferenceView"];
+                };
+            };
+        };
+    };
+    languages_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Vec_String"];
                 };
             };
         };
